@@ -1,0 +1,50 @@
+indicador,anio,periodo,valor,unidad,fuente_pagina,uso_proyecto
+Facturación total eCommerce AR,2021,Anual,1406294,millones_ARS,CACE Anual 2025 p.20,benchmark
+Facturación total eCommerce AR,2022,Anual,2846154,millones_ARS,CACE Anual 2025 p.20,benchmark
+Facturación total eCommerce AR,2023,Anual,7829835,millones_ARS,CACE Anual 2025 p.20,benchmark
+Facturación total eCommerce AR,2024,Anual,22025462,millones_ARS,CACE Anual 2025 p.20,benchmark
+Facturación total eCommerce AR,2025,Anual,34033238,millones_ARS,CACE Anual 2025 p.20,benchmark
+Facturación total eCommerce AR,2025,H1,15317918,millones_ARS,CACE Mid Term 2025 p.15,benchmark
+Órdenes de compra,2023,Anual,234,millones,CACE Anual 2025 p.21,benchmark
+Órdenes de compra,2024,Anual,246,millones,CACE Anual 2025 p.21,benchmark
+Órdenes de compra,2025,Anual,253,millones,CACE Anual 2025 p.21,benchmark
+Órdenes de compra,2025,H1,149.5,millones,CACE Mid Term 2025 p.16,benchmark
+Unidades vendidas,2023,Anual,489,millones,CACE Anual 2025 p.22,benchmark
+Unidades vendidas,2024,Anual,504,millones,CACE Anual 2025 p.22,benchmark
+Unidades vendidas,2025,Anual,645,millones,CACE Anual 2025 p.22,benchmark
+Unidades vendidas,2025,H1,203.9,millones,CACE Mid Term 2025 p.17,benchmark
+Ticket promedio,2023,Anual,33457,ARS,CACE Anual 2025 p.21,kpi_referencia
+Ticket promedio,2024,Anual,92341,ARS,CACE Anual 2025 p.21,kpi_referencia
+Ticket promedio,2025,Anual,134519,ARS,CACE Anual 2025 p.21,kpi_referencia
+Ticket promedio,2025,H1,102449,ARS,CACE Mid Term 2025 p.17,kpi_referencia
+Tasa de conversión promedio,2022,MID,1.25,porcentaje,CACE Mid Term 2025 p.20,kpi_referencia
+Tasa de conversión promedio,2023,MID,1.22,porcentaje,CACE Mid Term 2025 p.20,kpi_referencia
+Tasa de conversión promedio,2024,Anual,1.24,porcentaje,CACE Mid Term 2025 p.20,kpi_referencia
+Tasa de conversión promedio,2025,Anual,1.45,porcentaje,CACE Anual 2025 p.24,kpi_referencia
+Tasa de conversión promedio,2025,H1,1.32,porcentaje,CACE Mid Term 2025 p.20,kpi_referencia
+Sesiones totales,2025,Anual,7957,millones,CACE Anual 2025 p.24,benchmark
+Compradores online acumulados,2025,Anual,25123572,personas,CACE Anual 2025 p.7,contexto
+Nuevos compradores en el año,2025,Anual,1338952,personas,CACE Anual 2025 p.7,contexto
+Inflación interanual IPC,2025,Anual,31.5,porcentaje,CACE Anual 2025 p.20,dim_inflacion
+Inflación interanual IPC,2025,H1,39.4,porcentaje,CACE Mid Term 2025 p.9,dim_inflacion
+Crecimiento facturación YoY,2022,Anual,175,porcentaje,CACE Anual 2025 p.20,benchmark
+Crecimiento facturación YoY,2023,Anual,181,porcentaje,CACE Anual 2025 p.20,benchmark
+Crecimiento facturación YoY,2024,Anual,181,porcentaje,CACE Anual 2025 p.20,benchmark
+Crecimiento facturación YoY,2025,Anual,55,porcentaje,CACE Anual 2025 p.20,benchmark
+Crecimiento facturación YoY,2025,H1,79,porcentaje,CACE Mid Term 2025 p.15,benchmark
+Participación marketplace en facturación,2023,Anual,41,porcentaje,CACE Anual 2025 p.25,sintetico
+Participación marketplace en facturación,2024,Anual,49,porcentaje,CACE Anual 2025 p.25,sintetico
+Participación marketplace en facturación,2025,Anual,47,porcentaje,CACE Anual 2025 p.25,sintetico
+Participación eCommerce propio,2025,Anual,45,porcentaje,CACE Anual 2025 p.25,sintetico
+Participación eCommerce propio,2025,H1,75,porcentaje,CACE Mid Term 2025 p.28,sintetico
+Compradores con hábito mensual o más frecuente,2024,Anual,60,porcentaje,CACE Anual 2025 p.8,contexto
+Compradores con hábito mensual o más frecuente,2025,Anual,60,porcentaje,CACE Anual 2025 p.8,contexto
+Segmento comprador cotidiano,2024,Anual,17,porcentaje,CACE Anual 2025 p.8,sintetico
+Segmento comprador cotidiano,2025,Anual,19,porcentaje,CACE Anual 2025 p.8,sintetico
+Segmento comprador regular,2024,Anual,43,porcentaje,CACE Anual 2025 p.8,sintetico
+Segmento comprador regular,2025,Anual,40,porcentaje,CACE Anual 2025 p.8,sintetico
+Segmento comprador ocasional,2024,Anual,40,porcentaje,CACE Anual 2025 p.8,sintetico
+Segmento comprador ocasional,2025,Anual,41,porcentaje,CACE Anual 2025 p.8,sintetico
+Canal online pct total ventas BM,2024,H1,18,porcentaje,CACE Mid Term 2025 p.18,kpi_referencia
+Canal online pct total ventas BM,2025,H1,25,porcentaje,CACE Mid Term 2025 p.18,kpi_referencia
+Canal online pct total ventas BM,2025,Anual,21,porcentaje,CACE Anual 2025 p.26,kpi_referencia

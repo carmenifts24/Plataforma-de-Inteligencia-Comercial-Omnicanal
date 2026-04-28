@@ -1,0 +1,8 @@
+region,provincias,pct_facturacion_2024,pct_facturacion_2025,variacion_pp,zona_simplificada,fuente_pagina,uso_proyecto
+AMBA,CABA y Gran Buenos Aires,42,52,+10,AMBA,CACE Anual 2025 p.27,dim_geografia
+Litoral,"Entre Ríos, Corrientes, Misiones, Santa Fe",13,12,-1,Interior,CACE Anual 2025 p.27,dim_geografia
+Sur,"Neuquén, Chubut, La Pampa, Río Negro, Santa Cruz, Tierra del Fuego",8,9,+1,Interior,CACE Anual 2025 p.27,dim_geografia
+Centro,Córdoba,8,9,+1,Interior,CACE Anual 2025 p.27,dim_geografia
+NOA,"Jujuy, Catamarca, Chaco, Formosa, La Rioja, Salta, Santiago del Estero, Tucumán",7,7,0,Interior,CACE Anual 2025 p.27,dim_geografia
+Cuyo,"San Juan, Mendoza, San Luis",5,5,0,Interior,CACE Anual 2025 p.27,dim_geografia
+Buenos Aires interior,Interior de la provincia de Buenos Aires,17,5,-12,Interior,CACE Anual 2025 p.27,dim_geografia

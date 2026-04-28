@@ -1,0 +1,14 @@
+categoria_rubro,categoria_simplificada,facturacion_2021_mARS,facturacion_2022_mARS,facturacion_2023_mARS,facturacion_2024_mARS,facturacion_2025_mARS,participacion_2025_pct,crecimiento_2024_2025_pct,ranking_unidades_2025,ranking_facturacion_2025,fuente_pagina,uso_proyecto
+Pasajes y Turismo,Turismo,177041,637803,1671045,3756503,6310925,19,68,17,1,CACE Anual 2025 p.23,dim_producto
+Alimentos Bebidas y Artículos de Limpieza,Alimentos y Bebidas,226088,420281,1172585,3755984,6159813,18,64,1,2,CACE Anual 2025 p.23,dim_producto
+Equipos audio imagen consolas TI y telefonía,Electrónica,247085,380440,924469,2554881,3977546,12,56,14,3,CACE Anual 2025 p.23,dim_producto
+Artículos para el hogar muebles decoración,Hogar y Deco,197251,339048,942553,2418816,3870106,11,60,3,4,CACE Anual 2025 p.23,dim_producto
+Electrodomésticos línea blanca y marrón,Electrodomésticos,112102,186982,564687,1625952,2829156,8,74,4,5,CACE Anual 2025 p.23,dim_producto
+Deportes,Deportes,64531,136216,408648,1401810,2635403,8,88,11,6,CACE Anual 2025 p.23,dim_producto
+Indumentaria no deportiva,Indumentaria,57950,117790,366328,956633,1387118,4,45,5,7,CACE Anual 2025 p.23,dim_producto
+Accesorios para autos motos y otros vehículos,Accesorios Vehículos,52909,100977,299902,860882,1274613,4,48,6,8,CACE Anual 2025 p.23,dim_producto
+Cosmética y Perfumería,Belleza,45808,101885,315842,1022603,1165767,3,14,15,9,CACE Anual 2025 p.23,dim_producto
+Artículos de oficina,Oficina,26178,53217,137300,385801,760028,2,97,7,10,CACE Anual 2025 p.23,dim_producto
+Materiales y Herramientas de construcción,Construcción,21477,35724,101457,403623,665978,2,65,2,11,CACE Anual 2025 p.23,dim_producto
+Infantiles,Infantil,29716,54779,153928,441581,556392,2,26,12,12,CACE Anual 2025 p.23,dim_producto
+Otros,Otros,127808,236445,673490,2440394,2440394,7,,,,CACE Anual 2025 p.23,dim_producto

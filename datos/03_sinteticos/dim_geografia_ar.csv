@@ -1,0 +1,68 @@
+﻿GeografiaID,region,provincia,ciudad,zona,peso_facturacion
+1,AMBA,Ciudad Autónoma de Buenos Aires,CABA,AMBA,0.25
+2,AMBA,Ciudad Autónoma de Buenos Aires,Palermo,AMBA,0.25
+3,AMBA,Ciudad Autónoma de Buenos Aires,Belgrano,AMBA,0.25
+4,AMBA,Ciudad Autónoma de Buenos Aires,Caballito,AMBA,0.25
+5,AMBA,Ciudad Autónoma de Buenos Aires,Flores,AMBA,0.25
+6,AMBA,Buenos Aires GBA Norte,San Isidro,AMBA,0.12
+7,AMBA,Buenos Aires GBA Norte,Vicente López,AMBA,0.12
+8,AMBA,Buenos Aires GBA Norte,Tigre,AMBA,0.12
+9,AMBA,Buenos Aires GBA Norte,Pilar,AMBA,0.12
+10,AMBA,Buenos Aires GBA Oeste,Morón,AMBA,0.1
+11,AMBA,Buenos Aires GBA Oeste,La Matanza,AMBA,0.1
+12,AMBA,Buenos Aires GBA Oeste,Merlo,AMBA,0.1
+13,AMBA,Buenos Aires GBA Oeste,Moreno,AMBA,0.1
+14,AMBA,Buenos Aires GBA Sur,Quilmes,AMBA,0.05
+15,AMBA,Buenos Aires GBA Sur,Lomas de Zamora,AMBA,0.05
+16,AMBA,Buenos Aires GBA Sur,Lanús,AMBA,0.05
+17,AMBA,Buenos Aires GBA Sur,Avellaneda,AMBA,0.05
+18,Litoral,Santa Fe,Rosario,Interior,0.06
+19,Litoral,Santa Fe,Santa Fe Capital,Interior,0.06
+20,Litoral,Santa Fe,Rafaela,Interior,0.06
+21,Litoral,Santa Fe,Venado Tuerto,Interior,0.06
+22,Litoral,Entre Ríos,Paraná,Interior,0.03
+23,Litoral,Entre Ríos,Concordia,Interior,0.03
+24,Litoral,Entre Ríos,Gualeguaychú,Interior,0.03
+25,Litoral,Corrientes,Corrientes Capital,Interior,0.02
+26,Litoral,Corrientes,Goya,Interior,0.02
+27,Litoral,Misiones,Posadas,Interior,0.01
+28,Litoral,Misiones,Eldorado,Interior,0.01
+29,Litoral,Misiones,Oberá,Interior,0.01
+30,Centro,Córdoba,Córdoba Capital,Interior,0.09
+31,Centro,Córdoba,Villa Carlos Paz,Interior,0.09
+32,Centro,Córdoba,Río Cuarto,Interior,0.09
+33,Centro,Córdoba,Bell Ville,Interior,0.09
+34,Sur,Neuquén,Neuquén Capital,Interior,0.03
+35,Sur,Neuquén,San Martín de los Andes,Interior,0.03
+36,Sur,Neuquén,Bariloche,Interior,0.03
+37,Sur,Río Negro,Viedma,Interior,0.02
+38,Sur,Río Negro,Bariloche,Interior,0.02
+39,Sur,Río Negro,Cipolletti,Interior,0.02
+40,Sur,Chubut,Rawson,Interior,0.02
+41,Sur,Chubut,Comodoro Rivadavia,Interior,0.02
+42,Sur,Chubut,Puerto Madryn,Interior,0.02
+43,Sur,Santa Cruz,Río Gallegos,Interior,0.01
+44,Sur,Santa Cruz,Caleta Olivia,Interior,0.01
+45,Sur,Tierra del Fuego,Ushuaia,Interior,0.01
+46,Sur,Tierra del Fuego,Río Grande,Interior,0.01
+47,NOA,Tucumán,San Miguel de Tucumán,Interior,0.03
+48,NOA,Tucumán,Yerba Buena,Interior,0.03
+49,NOA,Tucumán,Tafí Viejo,Interior,0.03
+50,NOA,Salta,Salta Capital,Interior,0.02
+51,NOA,Salta,Orán,Interior,0.02
+52,NOA,Salta,Tartagal,Interior,0.02
+53,NOA,Jujuy,San Salvador de Jujuy,Interior,0.01
+54,NOA,Jujuy,Palpalá,Interior,0.01
+55,NOA,Santiago del Estero,Santiago del Estero Capital,Interior,0.005
+56,NOA,Santiago del Estero,La Banda,Interior,0.005
+57,NOA,Catamarca,San Fernando del Valle de Catamarca,Interior,0.003
+58,NOA,La Rioja,La Rioja Capital,Interior,0.002
+59,Cuyo,Mendoza,Mendoza Capital,Interior,0.03
+60,Cuyo,Mendoza,Godoy Cruz,Interior,0.03
+61,Cuyo,Mendoza,Luján de Cuyo,Interior,0.03
+62,Cuyo,Mendoza,San Rafael,Interior,0.03
+63,Cuyo,San Juan,San Juan Capital,Interior,0.01
+64,Cuyo,San Juan,Rawson,Interior,0.01
+65,Cuyo,San Juan,Rivadavia,Interior,0.01
+66,Cuyo,San Luis,San Luis Capital,Interior,0.01
+67,Cuyo,San Luis,Villa Mercedes,Interior,0.01

@@ -1,0 +1,9 @@
+medio_pago,tipo,MID_2022_pct,MID_2023_pct,MID_2024_pct,Anual_2024_pct,MID_2025_pct,Anual_2025_pct,fuente_pagina,uso_proyecto
+Tarjeta crédito vía plataformas y billeteras,credito,61,58,55,55,56,55,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Tarjeta crédito vía gateway online,credito,12,16,14,18,5,,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Tarjeta crédito al retirar el producto,credito,1,0,1,1,1,1,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Transferencia desde billetera electrónica,transferencia,5,4,6,8,20,24,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Transferencia bancaria,transferencia,1,1,2,1,3,16,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Tarjeta débito online,debito,9,9,10,7,9,21,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
+Tarjeta débito al retirar,debito,,,1,1,2,,CACE Anual 2025 p.28,sintetico
+Pago efectivo Pago Fácil y Rapipago,efectivo,10,10,11,9,1,6,CACE Anual 2025 p.28 / MidTerm p.31,sintetico
