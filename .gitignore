@@ -1,0 +1,58 @@
+# Entornos virtuales
+venv/
+env/
+.env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Variables de entorno
+.env
+.env.local
+*.env
+
+# Datos sensibles / grandes (ignorar raw, subir solo procesados si son pequeños)
+datos/raw/*.csv
+datos/raw/*.xlsx
+datos/raw/*.xls
+"set de datos/*.csv"
+"set de datos/*.xlsx"
+"set de datos/*.xls"
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Archivos temporales de Office
+~$*.docx
+~$*.xlsx
+~$*.xls
+
+# Logs
+*.log
+logs/
+
+# Outputs grandes
+*.pkl
+*.h5
+*.hdf5
