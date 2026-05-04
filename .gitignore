@@ -25,13 +25,17 @@ build/
 .env.local
 *.env
 
-# Datos sensibles / grandes (ignorar raw, subir solo procesados si son pequeños)
-datos/raw/*.csv
-datos/raw/*.xlsx
-datos/raw/*.xls
-"set de datos/*.csv"
-"set de datos/*.xlsx"
-"set de datos/*.xls"
+# Datos raw — archivos grandes, no versionados
+datos/01_raw/
+datos/respaldo de datos/
+
+# Datos sintéticos — se regeneran con el notebook 01
+datos/03_sinteticos/
+
+# Datos procesados — se regeneran con los notebooks de EDA
+# Excepción: dim_inflacion_ipc.csv se versiona porque requiere procesamiento complejo
+datos/04_procesados/*
+!datos/04_procesados/dim_inflacion_ipc.csv
 
 # Archivos de sistema
 .DS_Store
@@ -53,7 +57,7 @@ desktop.ini
 *.log
 logs/
 
-# Outputs grandes
+# Outputs grandes de modelos
 *.pkl
 *.h5
 *.hdf5

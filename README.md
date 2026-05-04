@@ -1,6 +1,6 @@
-# Plataforma de Inteligencia Comercial Omnicanal
+# RetailIQ 360° — Plataforma de Inteligencia Comercial Omnicanal
 
-Proyecto integrador de análisis de datos comerciales con enfoque omnicanal. Integra datasets de e-commerce, logística, medios de pago y comportamiento del comprador para generar inteligencia accionable.
+Proyecto integrador de análisis de datos con enfoque omnicanal. Integra datasets de e-commerce brasileño, retail internacional, benchmarks del comercio electrónico argentino y contexto macroeconómico para construir una plataforma de inteligencia comercial.
 
 ## Objetivo
 
@@ -10,26 +10,35 @@ Construir una plataforma de análisis que permita visualizar KPIs clave, detecta
 
 | Dataset | Descripción |
 |---|---|
-| Olist | Transacciones de e-commerce brasileño (pedidos, clientes, vendedores, reseñas) |
-| Sample Superstore | Ventas retail multicanal por región y categoría |
-| CACE | Indicadores del comercio electrónico argentino (KPIs, conversión, logística) |
-| RetailIQ Faker | Dataset sintético generado para simulación de escenarios |
-| IPC / Tipos de cambio | Contexto macroeconómico para análisis ajustado por inflación |
+| Olist | Transacciones de e-commerce brasileño (pedidos, ítems, productos, reseñas) |
+| Sample Superstore | Ventas retail multicanal — referencia de márgenes y descuentos |
+| CACE | Benchmarks del comercio electrónico argentino (KPIs, conversión, logística, medios de pago) |
+| IPC INDEC | Índice de precios al consumidor para ajuste por inflación |
+| Tipos de cambio | Cotizaciones históricas USD/ARS — columna `dolar_estadounidense` |
+| Datos sintéticos | Capa argentina generada con Faker: clientes, sucursales, canales, ventas base |
 
 ## Estructura del proyecto
 
 ```
 integrador_carrera/
-├── notebooks/          # Análisis exploratorio y modelado
-├── src/                # Módulos Python reutilizables
+├── notebooks/                        # Notebooks Jupyter numerados
+│   ├── 00_configuracion_entorno.ipynb
+│   ├── 01_creador_datos_sinteticos.ipynb
+│   ├── 02_EDA_nivel_1.ipynb          # Diagnóstico estructural por archivo
+│   └── 03_EDA_nivel_2.ipynb          # Exploración por grupo funcional
+├── extras/                           # Explicaciones en texto de cada notebook
+├── src/
+│   └── utils.py                      # Funciones helper reutilizables
 ├── datos/
-│   ├── raw/            # Datos originales sin modificar
-│   ├── procesados/     # Datos limpios y transformados
-│   └── exportados/     # Outputs para reportes y dashboards
-├── diseño/             # Diagramas del modelo de datos
-├── informacion_teorica/# Bibliografía y guías de referencia
-├── docs/               # Documentación del proyecto
-├── requirements.txt    # Dependencias Python
+│   ├── 01_raw/                       # Datos originales sin modificar (no versionados)
+│   ├── 02_cace_benchmarks/           # Benchmarks CACE del comercio argentino
+│   ├── 03_sinteticos/                # Datos sintéticos generados (no versionados)
+│   ├── 04_procesados/                # Outputs del EDA listos para ETL
+│   └── respaldo de datos/            # Archivos comprimidos de respaldo (no versionados)
+├── diseño/                           # Diagramas del modelo de datos
+├── informacion_teorica/              # Bibliografía y guías de referencia
+├── docs/                             # Documentación del proyecto
+├── requirements.txt
 └── .gitignore
 ```
 
@@ -45,32 +54,31 @@ integrador_carrera/
 ## Instalación
 
 ```bash
-# Clonar el repositorio
 git clone https://github.com/carmenifts24/Plataforma-de-Inteligencia-Comercial-Omnicanal.git
 cd Plataforma-de-Inteligencia-Comercial-Omnicanal
-
-# Instalar dependencias
 pip install -r requirements.txt
-
-# Iniciar JupyterLab
 jupyter lab
 ```
 
 ## Modelo de datos
 
 El proyecto utiliza un **esquema galaxia** con dos tablas de hechos:
-- `fact_ventas` — transacciones y revenue
-- `fact_logistica` — tiempos y tipos de entrega
+- `FactVentas` — ítems vendidos, revenue, canal, cliente y geografía
+- `FactPreciosComp` — precios propios vs competencia por categoría y período
 
-Conectadas a dimensiones compartidas: tiempo, cliente, producto, región, canal y vendedor.
+Conectadas a dimensiones compartidas: tiempo, cliente, producto, región, canal, vendedor e inflación.
 
-## Fases del proyecto
+## Estado del proyecto
 
-- [x] Fase 1 — Exploración y generación de datos sintéticos
-- [ ] Fase 2 — Limpieza e integración de datasets
-- [ ] Fase 3 — Análisis exploratorio (EDA)
-- [ ] Fase 4 — Modelado y KPIs
-- [ ] Fase 5 — Dashboard y presentación final
+| Fase | Descripción | Estado |
+|------|-------------|--------|
+| 0 | Configuración del entorno | ✓ Completo |
+| 1 | Generación de datos sintéticos argentinos | ✓ Completo |
+| 2 | EDA Nivel 1 — diagnóstico estructural por archivo | ✓ Completo |
+| 3 | EDA Nivel 2 — exploración por grupo funcional | ✓ Completo |
+| 4 | ETL — limpieza, integración y conversión de datos | Pendiente |
+| 5 | Modelado y KPIs | Pendiente |
+| 6 | Dashboard y presentación final | Pendiente |
 
 ## Autora
 
