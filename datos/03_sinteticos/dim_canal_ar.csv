@@ -1,5 +1,0 @@
-﻿CanalID,nombre,tipo,plataforma,flag_online,peso_facturacion
-1,Tienda física,Físico,POS físico,0,0.08
-2,Web propia,Online,Sitio web,1,0.25
-3,App móvil,Online,App iOS/Android,1,0.2
-4,Marketplace,Marketplace,MercadoLibre,1,0.47

@@ -360,6 +360,118 @@
       gap: 12px;
     }
 
+    .data-structure {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .schema-map {
+      min-height: 520px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #ffffff, #f4f8f8);
+    }
+
+    .schema-map__body {
+      position: relative;
+      min-height: 520px;
+      padding: 22px;
+    }
+
+    .schema-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .schema-node {
+      position: absolute;
+      width: 168px;
+      min-height: 88px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(23, 33, 43, 0.08);
+    }
+
+    .schema-node strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--navy);
+      font-size: 0.92rem;
+    }
+
+    .schema-node span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .schema-node--fact {
+      width: 198px;
+      min-height: 104px;
+      border: 2px solid var(--teal);
+      background: #eef9f7;
+    }
+
+    .schema-node--pricing {
+      border-color: var(--gold);
+      background: #fff8eb;
+    }
+
+    .schema-node--ventas {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .schema-node--precios {
+      left: 50%;
+      top: 78%;
+      transform: translateX(-50%);
+    }
+
+    .schema-node--tiempo { left: 6%; top: 8%; }
+    .schema-node--producto { left: 38%; top: 7%; }
+    .schema-node--cliente { right: 6%; top: 8%; }
+    .schema-node--canal { left: 6%; top: 43%; }
+    .schema-node--geo { right: 6%; top: 43%; }
+    .schema-node--inflacion { left: 6%; bottom: 7%; }
+    .schema-node--vendedor { right: 6%; bottom: 7%; }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .legend__item {
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .legend__swatch {
+      width: 14px;
+      height: 14px;
+      margin-top: 4px;
+      border-radius: 4px;
+      background: var(--teal);
+    }
+
+    .legend__swatch--gold { background: var(--gold); }
+    .legend__swatch--line { background: var(--blue); }
+
     .kpi {
       padding: 16px;
       border-left: 5px solid var(--teal);
@@ -482,6 +594,10 @@
       .viz {
         grid-template-columns: 1fr;
       }
+
+      .data-structure {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 720px) {
@@ -511,6 +627,37 @@
         display: block;
         overflow-x: auto;
       }
+
+      .schema-map,
+      .schema-map__body {
+        min-height: auto;
+      }
+
+      .schema-map__body {
+        display: grid;
+        gap: 12px;
+      }
+
+      .schema-lines {
+        display: none;
+      }
+
+      .schema-node,
+      .schema-node--fact,
+      .schema-node--ventas,
+      .schema-node--precios,
+      .schema-node--tiempo,
+      .schema-node--producto,
+      .schema-node--cliente,
+      .schema-node--canal,
+      .schema-node--geo,
+      .schema-node--inflacion,
+      .schema-node--vendedor {
+        position: static;
+        width: 100%;
+        min-height: auto;
+        transform: none;
+      }
     }
   </style>
 </head>
@@ -526,6 +673,7 @@
         <a href="#objetivo">Objetivo</a>
         <a href="#pipeline">Pipeline</a>
         <a href="#tecnicas">Técnicas</a>
+        <a href="#estructura">Estructura</a>
         <a href="#modelo">Modelo</a>
         <a href="#notebooks">Notebooks</a>
         <a href="#validacion">Validación</a>
@@ -757,6 +905,102 @@
             </tr>
           </tbody>
         </table>
+      </section>
+
+      <section class="section section--white" id="estructura">
+        <div class="section__head">
+          <h2>Estructura De Datos</h2>
+          <p>
+            La estructura combina tablas de hechos, que registran eventos medibles,
+            con dimensiones, que explican esos eventos desde distintas miradas del negocio.
+          </p>
+        </div>
+
+        <div class="data-structure">
+          <div class="card schema-map" aria-label="Esquema galaxia de datos del proyecto">
+            <div class="schema-map__body">
+              <svg class="schema-lines" viewBox="0 0 760 520" preserveAspectRatio="none" aria-hidden="true">
+                <line x1="380" y1="260" x2="115" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="380" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="642" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="115" y2="260" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="642" y2="260" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="115" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="642" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="406" x2="380" y2="82" stroke="#c8943f" stroke-width="2"/>
+                <line x1="380" y1="406" x2="642" y2="260" stroke="#c8943f" stroke-width="2"/>
+              </svg>
+
+              <div class="schema-node schema-node--tiempo">
+                <strong>DimTiempo</strong>
+                <span>Año, mes, trimestre y fecha para analizar evolución temporal.</span>
+              </div>
+              <div class="schema-node schema-node--producto">
+                <strong>DimProducto</strong>
+                <span>Producto, categoría y traducción para comparar familias comerciales.</span>
+              </div>
+              <div class="schema-node schema-node--cliente">
+                <strong>DimCliente</strong>
+                <span>Perfil, región y segmento para entender quién compra.</span>
+              </div>
+              <div class="schema-node schema-node--canal">
+                <strong>DimCanal</strong>
+                <span>Tienda física, web, app y marketplace para análisis omnicanal.</span>
+              </div>
+              <div class="schema-node schema-node--geo">
+                <strong>DimGeografía</strong>
+                <span>Provincia, ciudad, región y zona para lectura territorial.</span>
+              </div>
+              <div class="schema-node schema-node--inflacion">
+                <strong>DimInflación</strong>
+                <span>IPC mensual e índice acumulado para precios reales.</span>
+              </div>
+              <div class="schema-node schema-node--vendedor">
+                <strong>DimVendedor</strong>
+                <span>Seller o sucursal para analizar origen operativo de la venta.</span>
+              </div>
+              <div class="schema-node schema-node--fact schema-node--ventas">
+                <strong>FactVentas</strong>
+                <span>Ítems vendidos, precio BRL, precio ARS, flete, IPC y precio real.</span>
+              </div>
+              <div class="schema-node schema-node--fact schema-node--pricing schema-node--precios">
+                <strong>FactPreciosComp</strong>
+                <span>Precio propio, precio web, competencia, descuento y price index.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card__body">
+              <span class="tag tag--teal">Cómo leerlo</span>
+              <h3>Esquema galaxia</h3>
+              <p>
+                En el centro están las tablas que miden hechos del negocio. Alrededor
+                están las tablas que permiten explicar esos hechos por fecha, producto,
+                cliente, canal, geografía, inflación y vendedor.
+              </p>
+              <div class="legend">
+                <div class="legend__item">
+                  <span class="legend__swatch"></span>
+                  <span><strong>FactVentas</strong> registra lo vendido y concentra la mayor parte del análisis comercial.</span>
+                </div>
+                <div class="legend__item">
+                  <span class="legend__swatch legend__swatch--gold"></span>
+                  <span><strong>FactPreciosComp</strong> permite comparar precios propios contra competencia.</span>
+                </div>
+                <div class="legend__item">
+                  <span class="legend__swatch legend__swatch--line"></span>
+                  <span><strong>Dimensiones</strong> funcionan como filtros y contexto para responder preguntas de negocio.</span>
+                </div>
+              </div>
+              <ul class="compact-list">
+                <li>Si se pregunta cuánto se vendió, se mira una tabla de hechos.</li>
+                <li>Si se pregunta dónde, cuándo, por qué canal o qué categoría, se usan dimensiones.</li>
+                <li>Si se comparan períodos, el IPC ayuda a evitar conclusiones distorsionadas por inflación.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="section" id="modelo">

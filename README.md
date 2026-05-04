@@ -105,4 +105,6 @@ La carpeta `extras/` contiene explicaciones didácticas de cada notebook para qu
 
 ## Autora
 
-Carmen — IFTS N° 24 | Tecnicatura en Ciencia de Datos
+Carmen Rodríguez y Tamara Peña
+Proyecto Final Integrador
+IFTS N° 24 | Tecnicatura en Ciencia de Datos
