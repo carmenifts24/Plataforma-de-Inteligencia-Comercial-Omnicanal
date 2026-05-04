@@ -25,15 +25,16 @@ integrador_carrera/
 │   ├── 00_configuracion_entorno.ipynb
 │   ├── 01_creador_datos_sinteticos.ipynb
 │   ├── 02_EDA_nivel_1.ipynb          # Diagnóstico estructural por archivo
-│   └── 03_EDA_nivel_2.ipynb          # Exploración por grupo funcional
-├── extras/                           # Explicaciones en texto de cada notebook
+│   ├── 03_EDA_nivel_2.ipynb          # Exploración por grupo funcional
+│   └── 04_ETL.ipynb                  # Integración, conversión monetaria e inflación
+├── extras/                           # Explicaciones, guía GitHub y dashboard HTML
 ├── src/
 │   └── utils.py                      # Funciones helper reutilizables
 ├── datos/
 │   ├── 01_raw/                       # Datos originales sin modificar (no versionados)
 │   ├── 02_cace_benchmarks/           # Benchmarks CACE del comercio argentino
 │   ├── 03_sinteticos/                # Datos sintéticos generados (no versionados)
-│   ├── 04_procesados/                # Outputs del EDA listos para ETL
+│   ├── 04_procesados/                # Outputs procesados: IPC y fact_ventas.csv
 │   └── respaldo de datos/            # Archivos comprimidos de respaldo (no versionados)
 ├── diseño/                           # Diagramas del modelo de datos
 ├── informacion_teorica/              # Bibliografía y guías de referencia
@@ -68,6 +69,28 @@ El proyecto utiliza un **esquema galaxia** con dos tablas de hechos:
 
 Conectadas a dimensiones compartidas: tiempo, cliente, producto, región, canal, vendedor e inflación.
 
+## Pipeline de notebooks
+
+| Notebook | Propósito | Resultado principal |
+|----------|-----------|--------------------|
+| `00_configuracion_entorno.ipynb` | Verificar entorno, librerías y lectura inicial de datos | Ambiente validado para trabajar |
+| `01_creador_datos_sinteticos.ipynb` | Crear capa argentina ficticia y reproducible | Dimensiones y hechos sintéticos |
+| `02_EDA_nivel_1.ipynb` | Diagnosticar calidad de cada archivo por separado | Semáforo de calidad y `dim_inflacion_ipc.csv` |
+| `03_EDA_nivel_2.ipynb` | Validar relaciones entre datasets | Base preliminar de `FactVentas` y decisiones de joins |
+| `04_ETL.ipynb` | Integrar ventas, convertir BRL a ARS y ajustar por inflación | `datos/04_procesados/fact_ventas.csv` |
+
+## Documentación explicativa
+
+La carpeta `extras/` contiene explicaciones didácticas de cada notebook para que el proyecto pueda entenderse aunque la persona no tenga experiencia en desarrollo de software:
+
+- `00_configuracion_entorno_explicacion.md`
+- `01_creador_datos_sinteticos_explicacion.md`
+- `02_EDA_nivel_1_explicacion.md`
+- `03_EDA_nivel_2_explicacion.md`
+- `04_ETL_explicacion.md`
+- `dashboard_retailiq360.html`
+- `procedimiento_actualizar_repositorio_github.md`
+
 ## Estado del proyecto
 
 | Fase | Descripción | Estado |
@@ -76,9 +99,9 @@ Conectadas a dimensiones compartidas: tiempo, cliente, producto, región, canal,
 | 1 | Generación de datos sintéticos argentinos | ✓ Completo |
 | 2 | EDA Nivel 1 — diagnóstico estructural por archivo | ✓ Completo |
 | 3 | EDA Nivel 2 — exploración por grupo funcional | ✓ Completo |
-| 4 | ETL — limpieza, integración y conversión de datos | Pendiente |
+| 4 | ETL — limpieza, integración, conversión BRL→ARS y ajuste por inflación | ✓ Completo |
 | 5 | Modelado y KPIs | Pendiente |
-| 6 | Dashboard y presentación final | Pendiente |
+| 6 | Dashboard explicativo y presentación final | En progreso |
 
 ## Autora
 

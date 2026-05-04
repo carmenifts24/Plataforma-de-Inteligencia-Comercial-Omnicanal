@@ -212,7 +212,7 @@ git restore --staged README.md
 Cuando ya verificaste que está todo correcto, creá el commit:
 
 ```powershell
-git commit -m "Agregar documentacion explicativa en extras"
+git commit -m "Actualización del EDA Nivel 1 y Nivel 2. Creación de archivos informativos en la carpeta extras"
 ```
 
 El mensaje debe resumir qué cambio estás subiendo.

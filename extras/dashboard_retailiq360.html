@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard explicativo RetailIQ 360</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #17212b;
+      --muted: #607080;
+      --line: #d9e0e7;
+      --navy: #18364a;
+      --teal: #2d8f85;
+      --blue: #4f79a8;
+      --gold: #c8943f;
+      --rose: #b85f6a;
+      --green: #5d8b61;
+      --shadow: 0 12px 34px rgba(23, 33, 43, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      background: #102839;
+      color: #eef5f7;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: auto;
+    }
+
+    .brand {
+      margin-bottom: 28px;
+    }
+
+    .brand__mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--teal);
+      color: white;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 8px 0 0;
+      color: #bfd0d9;
+      font-size: 0.9rem;
+    }
+
+    nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    nav a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #dce9ee;
+      font-size: 0.92rem;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .hero {
+      min-height: 86vh;
+      display: grid;
+      align-items: center;
+      padding: 54px clamp(24px, 5vw, 72px) 42px;
+      background:
+        linear-gradient(90deg, rgba(16, 40, 57, 0.92), rgba(16, 40, 57, 0.55)),
+        url("../diseño/flujo_datos_analitica.svg") center / cover no-repeat;
+      color: #fff;
+    }
+
+    .hero__content {
+      max-width: 940px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #d9f1ef;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero h2 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(2.1rem, 5vw, 4.8rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: #e2edf0;
+      font-size: clamp(1rem, 2vw, 1.22rem);
+    }
+
+    .hero__metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+      max-width: 820px;
+      margin-top: 34px;
+    }
+
+    .metric {
+      min-height: 92px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(4px);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.7rem;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 5px;
+      color: #d0dde2;
+      font-size: 0.84rem;
+    }
+
+    .section {
+      padding: 46px clamp(20px, 5vw, 72px);
+    }
+
+    .section--white {
+      background: #fff;
+    }
+
+    .section__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .section__head h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      letter-spacing: 0;
+    }
+
+    .section__head p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid--2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .card__body {
+      padding: 20px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      color: white;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .tag--blue { background: var(--blue); }
+    .tag--teal { background: var(--teal); }
+    .tag--gold { background: var(--gold); }
+    .tag--rose { background: var(--rose); }
+    .tag--green { background: var(--green); }
+    .tag--navy { background: var(--navy); }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 230px;
+      border-top: 5px solid var(--teal);
+    }
+
+    .stage:nth-child(2) { border-top-color: var(--blue); }
+    .stage:nth-child(3) { border-top-color: var(--gold); }
+    .stage:nth-child(4) { border-top-color: var(--rose); }
+    .stage:nth-child(5) { border-top-color: var(--green); }
+
+    .stage__num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      border-radius: 50%;
+      background: #eef4f4;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .stage ul,
+    .compact-list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .stage li,
+    .compact-list li {
+      margin: 6px 0;
+    }
+
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .tech-table th,
+    .tech-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .tech-table th {
+      background: #edf2f5;
+      color: var(--navy);
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tech-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .viz {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .diagram {
+      min-height: 360px;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .diagram img {
+      width: 100%;
+      height: 100%;
+      min-height: 310px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .kpi-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .kpi {
+      padding: 16px;
+      border-left: 5px solid var(--teal);
+    }
+
+    .kpi:nth-child(2) { border-left-color: var(--gold); }
+    .kpi:nth-child(3) { border-left-color: var(--rose); }
+    .kpi:nth-child(4) { border-left-color: var(--green); }
+
+    .kpi strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .kpi span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.is-active {
+      display: block;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .check__icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #dff1ed;
+      color: #176d65;
+      font-weight: 800;
+    }
+
+    .check strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .check span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer {
+      padding: 30px clamp(20px, 5vw, 72px);
+      background: #102839;
+      color: #d9e8ed;
+    }
+
+    .footer strong {
+      color: #fff;
+    }
+
+    @media (max-width: 1060px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        height: auto;
+      }
+
+      nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .pipeline,
+      .grid--3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .viz {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      nav,
+      .hero__metrics,
+      .pipeline,
+      .grid--3,
+      .grid--2,
+      .checklist {
+        grid-template-columns: 1fr;
+      }
+
+      .section__head {
+        display: block;
+      }
+
+      .section__head p {
+        margin-top: 10px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 44px;
+      }
+
+      .tech-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <div class="brand__mark">RIQ</div>
+        <h1>RetailIQ 360</h1>
+        <p>Dashboard explicativo del proyecto integrador de inteligencia comercial omnicanal.</p>
+      </div>
+      <nav aria-label="Secciones del dashboard">
+        <a href="#objetivo">Objetivo</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#tecnicas">Técnicas</a>
+        <a href="#modelo">Modelo</a>
+        <a href="#notebooks">Notebooks</a>
+        <a href="#validacion">Validación</a>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero__content">
+          <span class="eyebrow">Plataforma de Inteligencia Comercial Omnicanal</span>
+          <h2>De archivos dispersos a decisiones comerciales explicables.</h2>
+          <p>
+            El proyecto integra datos de e-commerce, retail, benchmarks argentinos,
+            inflación, tipo de cambio y datos sintéticos para construir una visión 360
+            de ventas, clientes, canales, precios y operación logística.
+          </p>
+          <div class="hero__metrics" aria-label="Indicadores de alcance">
+            <div class="metric">
+              <strong>5</strong>
+              <span>notebooks documentados y conectados</span>
+            </div>
+            <div class="metric">
+              <strong>9+</strong>
+              <span>fuentes revisadas para calidad y uso</span>
+            </div>
+            <div class="metric">
+              <strong>150k</strong>
+              <span>transacciones sintéticas argentinas</span>
+            </div>
+            <div class="metric">
+              <strong>360°</strong>
+              <span>lectura comercial, logística y económica</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="objetivo">
+        <div class="section__head">
+          <h2>Qué Busca El Proyecto</h2>
+          <p>
+            El objetivo es preparar una base analítica para entender el negocio desde
+            varias dimensiones: qué se vende, dónde, por qué canal, con qué margen,
+            bajo qué contexto económico y con qué señales de satisfacción.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <div class="card__body">
+              <span class="tag tag--teal">Negocio</span>
+              <h3>Inteligencia comercial</h3>
+              <p>Transformar datos operativos en información útil para analizar ventas, categorías, ticket promedio, canales y comportamiento del cliente.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card__body">
+              <span class="tag tag--blue">Datos</span>
+              <h3>Integración de fuentes</h3>
+              <p>Combinar Olist, Superstore, CACE, IPC, tipo de cambio y datos sintéticos sin perder trazabilidad ni claridad metodológica.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card__body">
+              <span class="tag tag--gold">Decisión</span>
+              <h3>Base para dashboard</h3>
+              <p>Preparar tablas confiables para que un tablero pueda explicar ventas, rentabilidad, logística, pricing y contexto económico.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="pipeline">
+        <div class="section__head">
+          <h2>Pipeline Del Proyecto</h2>
+          <p>
+            Cada etapa agrega una capa de confianza: primero se comprueba el entorno,
+            luego se crean datos faltantes, después se revisa la calidad y finalmente
+            se valida que las fuentes puedan conectarse.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">1</div>
+              <h3>Configuración</h3>
+              <p>Se verifica que Python, librerías y archivos puedan utilizarse.</p>
+              <ul>
+                <li>Versiones de librerías.</li>
+                <li>Lectura inicial de CSV.</li>
+                <li>Configuración visual.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">2</div>
+              <h3>Datos sintéticos</h3>
+              <p>Se crea la capa argentina que los datasets originales no tienen.</p>
+              <ul>
+                <li>Clientes y sucursales.</li>
+                <li>Canales y logística.</li>
+                <li>Precios de competencia.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">3</div>
+              <h3>EDA nivel 1</h3>
+              <p>Se revisa cada archivo por separado para detectar problemas básicos.</p>
+              <ul>
+                <li>Nulos y duplicados.</li>
+                <li>Tipos de datos.</li>
+                <li>Semáforo de calidad.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">4</div>
+              <h3>EDA nivel 2</h3>
+              <p>Se comprueba que las tablas se puedan unir correctamente.</p>
+              <ul>
+                <li>Integridad referencial.</li>
+                <li>Cobertura temporal.</li>
+                <li>Base preliminar de ventas.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">5</div>
+              <h3>ETL integrado</h3>
+              <p>Se genera la tabla principal de ventas lista para análisis.</p>
+              <ul>
+                <li>Join Olist limpio.</li>
+                <li>Conversión BRL a ARS.</li>
+                <li>Ajuste por inflación.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section--white" id="tecnicas">
+        <div class="section__head">
+          <h2>Técnicas Utilizadas</h2>
+          <p>
+            Las técnicas no se usan por decoración: cada una responde a una necesidad
+            concreta del proyecto y reduce un riesgo distinto.
+          </p>
+        </div>
+
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Técnica</th>
+              <th>Para qué se utiliza</th>
+              <th>Cómo contribuye al objetivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Inventario de datos</strong></td>
+              <td>Identificar qué archivos existen, su formato y su tamaño.</td>
+              <td>Evita trabajar a ciegas y ordena el punto de partida del proyecto.</td>
+            </tr>
+            <tr>
+              <td><strong>Diagnóstico de calidad</strong></td>
+              <td>Revisar nulos, duplicados, tipos de datos y claves.</td>
+              <td>Permite decidir qué archivos están listos y cuáles requieren limpieza.</td>
+            </tr>
+            <tr>
+              <td><strong>Datos sintéticos con Faker</strong></td>
+              <td>Crear clientes, sucursales y datos argentinos ficticios.</td>
+              <td>Completa información faltante sin usar datos privados reales.</td>
+            </tr>
+            <tr>
+              <td><strong>Semillas aleatorias</strong></td>
+              <td>Generar siempre los mismos datos sintéticos al ejecutar el notebook.</td>
+              <td>Hace que el trabajo sea reproducible y defendible.</td>
+            </tr>
+            <tr>
+              <td><strong>Joins entre tablas</strong></td>
+              <td>Unir órdenes, ítems, productos y traducciones.</td>
+              <td>Construye la base de ventas que alimentará el modelo analítico.</td>
+            </tr>
+            <tr>
+              <td><strong>Integridad referencial</strong></td>
+              <td>Comprobar que las claves de una tabla existen en la tabla relacionada.</td>
+              <td>Evita perder ventas o crear relaciones inconsistentes.</td>
+            </tr>
+            <tr>
+              <td><strong>IPC y tipo de cambio</strong></td>
+              <td>Agregar contexto macroeconómico a precios y ventas.</td>
+              <td>Permite comparar valores en escenarios con inflación y variación cambiaria.</td>
+            </tr>
+            <tr>
+              <td><strong>Modelo estrella/galaxia</strong></td>
+              <td>Organizar hechos y dimensiones para análisis en dashboards.</td>
+              <td>Facilita KPIs claros, filtros consistentes y consultas eficientes.</td>
+            </tr>
+            <tr>
+              <td><strong>Forward fill en tipo de cambio</strong></td>
+              <td>Completar cotizaciones faltantes (fines de semana y feriados) con el último valor conocido.</td>
+              <td>Garantiza que cada transacción Olist tenga un tipo de cambio asignado sin inventar valores.</td>
+            </tr>
+            <tr>
+              <td><strong>Índice IPC acumulado</strong></td>
+              <td>Construir un índice mensual acumulado a partir de variaciones porcentuales del INDEC.</td>
+              <td>Permite dividir el precio nominal por el índice y obtener precios en pesos constantes (base dic-2016).</td>
+            </tr>
+            <tr>
+              <td><strong>Conversión BRL → ARS vía USD</strong></td>
+              <td>Usar el dólar como moneda puente: price_ars = price_brl × (ARS/USD) ÷ (BRL/USD).</td>
+              <td>Resuelve la ausencia de un tipo de cambio BRL/ARS directo en los datasets disponibles.</td>
+            </tr>
+            <tr>
+              <td><strong>Imputación de meses sin IPC</strong></td>
+              <td>Asignar índice = 1.0 a los meses sep-dic 2016 que no tienen cobertura del INDEC.</td>
+              <td>Conserva las ventas sin descartarlas y documenta claramente el supuesto de base aplicado.</td>
+            </tr>
+            <tr>
+              <td><strong>Validación de nulos críticos</strong></td>
+              <td>Controlar que columnas esenciales no queden vacías antes de guardar.</td>
+              <td>Da confianza sobre la tabla final fact_ventas.csv antes de usarla en reportes.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="modelo">
+        <div class="section__head">
+          <h2>Modelo Analítico</h2>
+          <p>
+            El diseño apunta a separar eventos medibles, como ventas o precios, de
+            descripciones del negocio, como cliente, producto, tiempo, canal y geografía.
+          </p>
+        </div>
+
+        <div class="viz">
+          <div class="card diagram">
+            <img src="../diseño/retailiq_modelo_estrella_galaxia.svg" alt="Diagrama del modelo de datos RetailIQ 360">
+          </div>
+          <div class="kpi-list">
+            <article class="card kpi">
+              <strong>FactVentas</strong>
+              <span>Tabla central para medir ventas, ticket, cantidad, canal, cliente y fecha.</span>
+            </article>
+            <article class="card kpi">
+              <strong>FactPreciosComp</strong>
+              <span>Tabla para comparar precios propios contra competencia y analizar pricing.</span>
+            </article>
+            <article class="card kpi">
+              <strong>Dimensiones</strong>
+              <span>Clientes, productos, tiempo, canal, geografía y sucursales explican el contexto de cada hecho.</span>
+            </article>
+            <article class="card kpi">
+              <strong>Contexto económico</strong>
+              <span>IPC y tipo de cambio permiten interpretar ventas nominales con más cuidado.</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="notebooks">
+        <div class="section__head">
+          <h2>Lectura Por Notebook</h2>
+          <p>
+            Seleccioná una etapa para ver qué aporta al proyecto. Esta vista resume
+            la lógica completa sin necesidad de abrir cada notebook.
+          </p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Notebooks del proyecto">
+          <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="tab-00" id="btn-00">00 Entorno</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-01" id="btn-01">01 Sintéticos</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-02" id="btn-02">02 EDA 1</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-03" id="btn-03">03 EDA 2</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-04" id="btn-04">04 ETL</button>
+        </div>
+
+        <div class="card">
+          <div class="card__body">
+            <div class="tab-panel is-active" role="tabpanel" id="tab-00" aria-labelledby="btn-00">
+              <span class="tag tag--navy">Preparación</span>
+              <h3>Configuración del entorno</h3>
+              <p>Comprueba que la computadora puede ejecutar el proyecto: versiones, librerías, visualización y lectura inicial de archivos. Contribuye evitando errores tempranos por dependencias faltantes o rutas incorrectas.</p>
+              <ul class="compact-list">
+                <li>Verifica Python, pandas, numpy, matplotlib, seaborn, plotly y sklearn.</li>
+                <li>Configura cómo se muestran tablas y gráficos.</li>
+                <li>Hace una primera lectura de Olist y Superstore.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-01" aria-labelledby="btn-01">
+              <span class="tag tag--teal">Simulación</span>
+              <h3>Generación de datos sintéticos</h3>
+              <p>Construye la capa argentina del proyecto: clientes, sucursales, canales, ventas base, medios de pago, entregas y precios de competencia. Contribuye completando lo que las fuentes originales no traen.</p>
+              <ul class="compact-list">
+                <li>Usa Faker y probabilidades calibradas con CACE.</li>
+                <li>Crea datos reproducibles con una semilla fija.</li>
+                <li>Prepara insumos para análisis omnicanal argentino.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-02" aria-labelledby="btn-02">
+              <span class="tag tag--gold">Calidad</span>
+              <h3>EDA nivel 1</h3>
+              <p>Revisa cada fuente por separado para detectar nulos, duplicados, claves, tipos de datos y rangos. Contribuye definiendo qué se puede usar, qué se debe limpiar y qué decisiones tomará el ETL.</p>
+              <ul class="compact-list">
+                <li>Define el uso de órdenes delivered.</li>
+                <li>Procesa IPC del INDEC para dejarlo listo.</li>
+                <li>Selecciona tipo de cambio útil para el período de Olist.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-03" aria-labelledby="btn-03">
+              <span class="tag tag--rose">Integración</span>
+              <h3>EDA nivel 2</h3>
+              <p>Comprueba que las tablas se conectan correctamente. Contribuye validando la ruta hacia FactVentas: órdenes, ítems, productos, categorías, fechas, IPC y tipo de cambio.</p>
+              <ul class="compact-list">
+                <li>Verifica integridad entre orders, items y products.</li>
+                <li>Evalúa cobertura temporal de IPC y dólar.</li>
+                <li>Construye una base preliminar de ventas.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-04" aria-labelledby="btn-04">
+              <span class="tag tag--green">Producción analítica</span>
+              <h3>ETL de FactVentas</h3>
+              <p>Materializa la tabla principal del proyecto. Une órdenes entregadas, ítems, productos y categorías; convierte precios de BRL a ARS; ajusta valores por inflación y guarda `fact_ventas.csv` para análisis posterior.</p>
+              <ul class="compact-list">
+                <li>Aplica joins controlados: inner join para ventas con ítems y left join para no perder ventas por categorías faltantes.</li>
+                <li>Usa el dólar como moneda puente para convertir reales brasileños a pesos argentinos.</li>
+                <li>Calcula precios reales con IPC acumulado y valida nulos críticos antes de guardar.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="validacion">
+        <div class="section__head">
+          <h2>Cómo Saber Que Vamos Bien</h2>
+          <p>
+            Estas validaciones muestran que el proyecto no solo genera resultados,
+            sino que también controla la calidad de lo que produce.
+          </p>
+        </div>
+
+        <div class="checklist">
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Rutas y fuentes identificadas</strong>
+              <span>Se sabe de dónde sale cada archivo y qué rol cumple dentro del modelo.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Claves revisadas</strong>
+              <span>Se diferencian claves únicas, claves repetibles y relaciones esperadas.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Datos sintéticos justificados</strong>
+              <span>La simulación se usa para completar contexto argentino, no para ocultar datos reales.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Decisiones de ETL documentadas</strong>
+              <span>Queda claro qué se filtra, qué se transforma y qué se conserva.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>FactVentas generada</strong>
+              <span>El pipeline produce `datos/04_procesados/fact_ventas.csv` con moneda convertida e inflación ajustada.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Modelo orientado a preguntas</strong>
+              <span>La estructura permite responder preguntas de ventas, canales, pricing y contexto.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Trazabilidad del análisis</strong>
+              <span>Cada etapa explica cómo contribuye al objetivo general del proyecto.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>RetailIQ 360</strong>
+        <span> · Dashboard explicativo creado para acompañar la documentación del proyecto en la carpeta extras.</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((item) => item.setAttribute('aria-selected', 'false'));
+        panels.forEach((panel) => panel.classList.remove('is-active'));
+
+        tab.setAttribute('aria-selected', 'true');
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        panel.classList.add('is-active');
+      });
+    });
+  </script>
+</body>
+</html>
