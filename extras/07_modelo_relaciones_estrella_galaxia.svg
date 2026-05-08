@@ -1,0 +1,304 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1180" viewBox="0 0 1920 1180" role="img" aria-labelledby="title desc">
+  <title id="title">RetailIQ360 - Modelo de relaciones: esquema estrella y galaxia</title>
+  <desc id="desc">Diagrama de tablas y relaciones del modelo RetailIQ360. Muestra tablas de hechos, dimensiones, relaciones formales N:1 y tablas CACE de referencia sin relaciones formales.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#49a6ff"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#52d273"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#f5a623"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+    <style>
+      .bg { fill: #0b1020; }
+      .grid { stroke: #172038; stroke-width: 1; opacity: .65; }
+      .title { fill: #eef6ff; font: 700 31px Segoe UI, Arial, sans-serif; }
+      .subtitle { fill: #9fb2cc; font: 400 15px Segoe UI, Arial, sans-serif; }
+      .zone-ar { fill: #101a31; stroke: #2d6cdf; stroke-width: 2; opacity: .96; }
+      .zone-olist { fill: #10221a; stroke: #25a55f; stroke-width: 2; opacity: .96; }
+      .zone-cace { fill: #261c08; stroke: #c4871c; stroke-width: 2; opacity: .96; }
+      .zone-title { font: 700 18px Segoe UI, Arial, sans-serif; }
+      .zone-note { font: 400 13px Segoe UI, Arial, sans-serif; }
+      .fact .body { fill: #391321; stroke: #ef4b6d; stroke-width: 2; }
+      .fact .head { fill: #9a1837; }
+      .dim-blue .body { fill: #111d34; stroke: #2f80ed; stroke-width: 2; }
+      .dim-blue .head { fill: #174b93; }
+      .dim-green .body { fill: #10251b; stroke: #27ae60; stroke-width: 2; }
+      .dim-green .head { fill: #176b3a; }
+      .ref .body { fill: #2b200c; stroke: #d99a25; stroke-width: 1.5; }
+      .ref .head { fill: #7d570e; }
+      .box-title { fill: #ffffff; font: 700 16px Segoe UI, Arial, sans-serif; }
+      .box-sub { fill: #d5e2f2; opacity: .82; font: 400 12px Segoe UI, Arial, sans-serif; }
+      .col { fill: #c9d7ea; font: 400 13px Consolas, Segoe UI, monospace; }
+      .pk { fill: #ffd966; font: 700 13px Consolas, Segoe UI, monospace; }
+      .fk { fill: #8fd3ff; font: 700 13px Consolas, Segoe UI, monospace; }
+      .calc { fill: #a7f3b7; font: 700 13px Consolas, Segoe UI, monospace; }
+      .line-blue { fill: none; stroke: #49a6ff; stroke-width: 3; marker-end: url(#arrow-blue); }
+      .line-green { fill: none; stroke: #52d273; stroke-width: 3; marker-end: url(#arrow-green); }
+      .line-orange { fill: none; stroke: #f5a623; stroke-width: 2.5; stroke-dasharray: 8 7; marker-end: url(#arrow-orange); }
+      .rel-label { fill: #d8e8ff; font: 700 12px Segoe UI, Arial, sans-serif; }
+      .rel-bg { fill: #0b1020; stroke: #23324f; stroke-width: 1; }
+      .legend-text { fill: #c8d6eb; font: 400 14px Segoe UI, Arial, sans-serif; }
+      .note { fill: #b4c4dc; font: 400 14px Segoe UI, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1920" height="1180"/>
+  <g opacity=".5">
+    <path class="grid" d="M0 80H1920M0 160H1920M0 240H1920M0 320H1920M0 400H1920M0 480H1920M0 560H1920M0 640H1920M0 720H1920M0 800H1920M0 880H1920M0 960H1920M0 1040H1920M0 1120H1920"/>
+    <path class="grid" d="M80 0V1180M160 0V1180M240 0V1180M320 0V1180M400 0V1180M480 0V1180M560 0V1180M640 0V1180M720 0V1180M800 0V1180M880 0V1180M960 0V1180M1040 0V1180M1120 0V1180M1200 0V1180M1280 0V1180M1360 0V1180M1440 0V1180M1520 0V1180M1600 0V1180M1680 0V1180M1760 0V1180M1840 0V1180"/>
+  </g>
+
+  <text x="960" y="46" text-anchor="middle" class="title">RetailIQ360 - Modelo de relaciones de tablas</text>
+  <text x="960" y="72" text-anchor="middle" class="subtitle">Lectura rapida: una galaxia combina varias tablas de hechos; cada hecho conserva su propia estrella de dimensiones.</text>
+
+  <g transform="translate(40 90)">
+    <rect width="1080" height="770" rx="18" class="zone-ar"/>
+    <text x="22" y="34" class="zone-title" fill="#8dc1ff">Constelacion AR sintetica</text>
+    <text x="22" y="56" class="zone-note" fill="#b7c9e6">Estrella principal alrededor de fact_ventas_base_ar, con fact_precios_comp compartiendo dim_canal_ar.</text>
+  </g>
+  <g transform="translate(1140 90)">
+    <rect width="740" height="770" rx="18" class="zone-olist"/>
+    <text x="22" y="34" class="zone-title" fill="#8df0aa">Constelacion Olist procesada</text>
+    <text x="22" y="56" class="zone-note" fill="#b9dfc5">Hecho de ventas historicas relacionado por periodo con la dimension de inflacion.</text>
+  </g>
+
+  <!-- Formal relationships behind tables -->
+  <path class="line-blue" d="M276 310 C350 258 430 245 510 278"/>
+  <rect x="365" y="242" width="84" height="22" rx="5" class="rel-bg"/>
+  <text x="407" y="258" text-anchor="middle" class="rel-label">ClienteID</text>
+
+  <path class="line-blue" d="M276 655 C356 620 430 520 510 408"/>
+  <rect x="357" y="537" width="92" height="22" rx="5" class="rel-bg"/>
+  <text x="403" y="553" text-anchor="middle" class="rel-label">SucursalID</text>
+
+  <path class="line-blue" d="M850 286 C785 270 720 278 666 302"/>
+  <rect x="738" y="255" width="72" height="22" rx="5" class="rel-bg"/>
+  <text x="774" y="271" text-anchor="middle" class="rel-label">CanalID</text>
+
+  <path class="line-blue" d="M164 464 C210 496 250 554 276 613"/>
+  <rect x="189" y="532" width="98" height="22" rx="5" class="rel-bg"/>
+  <text x="238" y="548" text-anchor="middle" class="rel-label">GeografiaID</text>
+
+  <path class="line-orange" d="M164 444 C210 405 236 365 248 327"/>
+  <rect x="162" y="374" width="152" height="22" rx="5" class="rel-bg"/>
+  <text x="238" y="390" text-anchor="middle" class="rel-label">prov/ciudad o GeoID</text>
+
+  <path class="line-blue" d="M922 380 C922 430 922 478 922 525"/>
+  <rect x="888" y="449" width="72" height="22" rx="5" class="rel-bg"/>
+  <text x="924" y="465" text-anchor="middle" class="rel-label">CanalID</text>
+
+  <path class="line-green" d="M1478 329 C1478 405 1478 482 1478 558"/>
+  <rect x="1435" y="442" width="88" height="22" rx="5" class="rel-bg"/>
+  <text x="1479" y="458" text-anchor="middle" class="rel-label">anio_mes</text>
+
+  <path class="line-orange" d="M975 650 C1165 675 1302 690 1400 720"/>
+  <rect x="1127" y="657" width="138" height="22" rx="5" class="rel-bg"/>
+  <text x="1196" y="673" text-anchor="middle" class="rel-label">categoria / periodo</text>
+
+  <!-- Table helper groups -->
+  <g class="dim-blue" transform="translate(70 390)" filter="url(#shadow)">
+    <rect class="body" width="190" height="112" rx="10"/>
+    <rect class="head" width="190" height="38" rx="10"/>
+    <path d="M0 30H190V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_geografia_ar</text>
+    <text x="12" y="55" class="box-sub">67 filas - dimension</text>
+    <text x="12" y="76" class="pk">PK GeografiaID</text>
+    <text x="12" y="96" class="col">region, provincia, ciudad</text>
+  </g>
+
+  <g class="dim-blue" transform="translate(70 220)" filter="url(#shadow)">
+    <rect class="body" width="206" height="142" rx="10"/>
+    <rect class="head" width="206" height="38" rx="10"/>
+    <path d="M0 30H206V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_clientes_ar</text>
+    <text x="12" y="55" class="box-sub">10.000 filas - dimension</text>
+    <text x="12" y="76" class="pk">PK ClienteID</text>
+    <text x="12" y="96" class="col">provincia, ciudad, region</text>
+    <text x="12" y="116" class="col">nse, edad, genero, RFM</text>
+  </g>
+
+  <g class="dim-blue" transform="translate(70 610)" filter="url(#shadow)">
+    <rect class="body" width="206" height="142" rx="10"/>
+    <rect class="head" width="206" height="38" rx="10"/>
+    <path d="M0 30H206V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_sucursales_ar</text>
+    <text x="12" y="55" class="box-sub">50 filas - dimension</text>
+    <text x="12" y="76" class="pk">PK SucursalID</text>
+    <text x="12" y="96" class="fk">FK GeografiaID</text>
+    <text x="12" y="116" class="col">tipo, m2_ventas, empleados</text>
+  </g>
+
+  <g class="fact" transform="translate(510 250)" filter="url(#shadow)">
+    <rect class="body" width="230" height="214" rx="12"/>
+    <rect class="head" width="230" height="44" rx="12"/>
+    <path d="M0 34H230V50H0Z" fill="#9a1837"/>
+    <text x="14" y="27" class="box-title">fact_ventas_base_ar</text>
+    <text x="14" y="62" class="box-sub">150.000 filas - hecho AR</text>
+    <text x="14" y="84" class="pk">PK VentaID</text>
+    <text x="14" y="104" class="fk">FK ClienteID</text>
+    <text x="14" y="124" class="fk">FK CanalID</text>
+    <text x="14" y="144" class="fk">FK SucursalID</text>
+    <text x="14" y="164" class="col">fecha, medio_pago, cuotas</text>
+    <text x="14" y="184" class="col">tipo_entrega, plazo_entrega</text>
+    <text x="14" y="204" class="col">precio, costo, cantidad</text>
+  </g>
+
+  <g class="dim-blue" transform="translate(850 230)" filter="url(#shadow)">
+    <rect class="body" width="206" height="150" rx="10"/>
+    <rect class="head" width="206" height="38" rx="10"/>
+    <path d="M0 30H206V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_canal_ar</text>
+    <text x="12" y="55" class="box-sub">4 filas - dimension compartida</text>
+    <text x="12" y="76" class="pk">PK CanalID</text>
+    <text x="12" y="96" class="col">Fisico / Online / Market</text>
+    <text x="12" y="116" class="col">plataforma, flag_online</text>
+    <text x="12" y="136" class="col">peso_facturacion</text>
+  </g>
+
+  <g class="fact" transform="translate(810 525)" filter="url(#shadow)">
+    <rect class="body" width="230" height="166" rx="12"/>
+    <rect class="head" width="230" height="44" rx="12"/>
+    <path d="M0 34H230V50H0Z" fill="#9a1837"/>
+    <text x="14" y="27" class="box-title">fact_precios_comp</text>
+    <text x="14" y="62" class="box-sub">360 filas - hecho precios</text>
+    <text x="14" y="84" class="pk">PK PrecioID</text>
+    <text x="14" y="104" class="fk">FK CanalID</text>
+    <text x="14" y="124" class="col">categoria, anio, mes</text>
+    <text x="14" y="144" class="col">precio_web, competencia</text>
+  </g>
+
+  <g class="dim-green" transform="translate(1365 190)" filter="url(#shadow)">
+    <rect class="body" width="226" height="140" rx="10"/>
+    <rect class="head" width="226" height="38" rx="10"/>
+    <path d="M0 30H226V44H0Z" fill="#176b3a"/>
+    <text x="12" y="24" class="box-title">dim_inflacion_ipc</text>
+    <text x="12" y="55" class="box-sub">111 filas - dimension tiempo IPC</text>
+    <text x="12" y="76" class="calc">anio + mes = anio_mes</text>
+    <text x="12" y="96" class="col">fecha, ipc_nivel_general</text>
+    <text x="12" y="116" class="col">ipc por rubro</text>
+  </g>
+
+  <g class="fact" transform="translate(1365 558)" filter="url(#shadow)">
+    <rect class="body" width="250" height="210" rx="12"/>
+    <rect class="head" width="250" height="44" rx="12"/>
+    <path d="M0 34H250V50H0Z" fill="#9a1837"/>
+    <text x="14" y="27" class="box-title">fact_ventas</text>
+    <text x="14" y="62" class="box-sub">110.197 filas - hecho Olist</text>
+    <text x="14" y="84" class="col">order_id, product_id, seller_id</text>
+    <text x="14" y="104" class="col">fecha, anio, mes, trimestre</text>
+    <text x="14" y="124" class="calc">anio_mes calculada</text>
+    <text x="14" y="144" class="col">category_en</text>
+    <text x="14" y="164" class="col">price_brl, price_ars</text>
+    <text x="14" y="184" class="col">ipc, price_ars_real</text>
+  </g>
+
+  <!-- CACE reference band -->
+  <g transform="translate(40 895)">
+    <rect width="1840" height="210" rx="18" class="zone-cace"/>
+    <text x="22" y="34" class="zone-title" fill="#ffd083">Benchmarks CACE - tablas de referencia</text>
+    <text x="22" y="56" class="zone-note" fill="#e9c98c">No tienen relaciones formales en Power BI. Se comparan en visualizaciones por categoria, canal, region, medios de pago, logistica y perfil.</text>
+  </g>
+
+  <g class="ref" transform="translate(70 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_01</text>
+    <text x="10" y="47" class="col">kpis_macro</text>
+    <text x="10" y="66" class="box-sub">KPI mercado</text>
+  </g>
+  <g class="ref" transform="translate(235 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_02</text>
+    <text x="10" y="47" class="col">categorias</text>
+    <text x="10" y="66" class="box-sub">rubros y mix</text>
+  </g>
+  <g class="ref" transform="translate(400 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_03a</text>
+    <text x="10" y="47" class="col">conversion</text>
+    <text x="10" y="66" class="box-sub">por categoria</text>
+  </g>
+  <g class="ref" transform="translate(565 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_03b</text>
+    <text x="10" y="47" class="col">ranking</text>
+    <text x="10" y="66" class="box-sub">demanda</text>
+  </g>
+  <g class="ref" transform="translate(730 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_04a</text>
+    <text x="10" y="47" class="col">medios_pago</text>
+    <text x="10" y="66" class="box-sub">oferta</text>
+  </g>
+  <g class="ref" transform="translate(895 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_04b</text>
+    <text x="10" y="47" class="col">cuotas</text>
+    <text x="10" y="66" class="box-sub">financiacion</text>
+  </g>
+  <g class="ref" transform="translate(1060 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_05a</text>
+    <text x="10" y="47" class="col">tipo_entrega</text>
+    <text x="10" y="66" class="box-sub">logistica</text>
+  </g>
+  <g class="ref" transform="translate(1225 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_05b</text>
+    <text x="10" y="47" class="col">plazos</text>
+    <text x="10" y="66" class="box-sub">entrega</text>
+  </g>
+  <g class="ref" transform="translate(1390 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_06a</text>
+    <text x="10" y="47" class="col">regional</text>
+    <text x="10" y="66" class="box-sub">region/zona</text>
+  </g>
+  <g class="ref" transform="translate(1555 975)" filter="url(#shadow)">
+    <rect class="body" width="150" height="82" rx="8"/>
+    <rect class="head" width="150" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_06b</text>
+    <text x="10" y="47" class="col">perfil</text>
+    <text x="10" y="66" class="box-sub">genero/nse/edad</text>
+  </g>
+  <g class="ref" transform="translate(1720 975)" filter="url(#shadow)">
+    <rect class="body" width="130" height="82" rx="8"/>
+    <rect class="head" width="130" height="28" rx="8"/>
+    <text x="10" y="19" class="box-title" font-size="13">cace_07</text>
+    <text x="10" y="47" class="col">canal online</text>
+    <text x="10" y="66" class="box-sub">por categoria</text>
+  </g>
+
+  <!-- Legend and conceptual key -->
+  <g transform="translate(40 1128)">
+    <rect x="0" y="-28" width="1840" height="42" rx="9" fill="#111a2b" stroke="#253a5b"/>
+    <rect x="18" y="-17" width="18" height="18" rx="4" fill="#9a1837" stroke="#ef4b6d"/>
+    <text x="44" y="-3" class="legend-text">Tabla de hechos</text>
+    <rect x="188" y="-17" width="18" height="18" rx="4" fill="#174b93" stroke="#2f80ed"/>
+    <text x="214" y="-3" class="legend-text">Dimension AR</text>
+    <rect x="338" y="-17" width="18" height="18" rx="4" fill="#176b3a" stroke="#27ae60"/>
+    <text x="364" y="-3" class="legend-text">Dimension Olist/IPC</text>
+    <rect x="548" y="-17" width="18" height="18" rx="4" fill="#7d570e" stroke="#d99a25"/>
+    <text x="574" y="-3" class="legend-text">Referencia CACE</text>
+    <text x="750" y="-3" class="legend-text">PK = clave primaria</text>
+    <text x="910" y="-3" class="legend-text">FK = clave foranea</text>
+    <text x="1080" y="-3" class="legend-text">Lineas solidas = relaciones formales N:1</text>
+    <text x="1395" y="-3" class="legend-text">Linea punteada = comparacion, no relacion formal</text>
+  </g>
+
+  <text x="960" y="850" text-anchor="middle" class="note">Interpretacion: el modelo completo se lee como una galaxia porque contiene mas de una tabla de hechos. Cada hecho tiene su propia estrella de dimensiones, y algunas dimensiones pueden compartirse.</text>
+</svg>

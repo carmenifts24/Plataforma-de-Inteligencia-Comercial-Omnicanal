@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>RetailIQ360 — Diagrama de Relaciones</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; display: flex; flex-direction: column; align-items: center; padding: 12px 8px 20px; font-family: 'Segoe UI', Arial, sans-serif; }
+  canvas { border-radius: 10px; box-shadow: 0 0 40px rgba(0,0,0,0.8); max-width: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1800" height="870"></canvas>
+<script>
+const C = document.getElementById('c');
+const ctx = C.getContext('2d');
+const W = C.width, H = C.height;
+
+// ── Paleta ──────────────────────────────────────────────────────────────────
+const P = {
+  bg:   '#0d1117',
+  grid: '#161b22',
+  fact:     { hdr: '#7B1515', body: '#1A0E0E', border: '#A02020', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#D8B8B8' },
+  dim:      { hdr: '#1A3A6B', body: '#0E1520', border: '#2A60B0', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#B0CCE8' },
+  dimGreen: { hdr: '#1A5230', body: '#0E1810', border: '#2A8248', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#A8E0B8' },
+  cace:     { hdr: '#4A3800', body: '#140F00', border: '#886400', title: '#FFD878', sub: 'rgba(255,210,100,0.5)', col: '#C8A840' },
+  arrow:  '#3A7ABF',
+  arrowHL:'#5AA0EF',
+  lbl:    '#6A9FDF',
+  note:   '#6ECC88',
+  zone1:  { fill: 'rgba(30,60,120,0.07)', border: 'rgba(42,96,176,0.25)', text: '#3A6BBF' },
+  zone2:  { fill: 'rgba(26,82,48,0.07)',  border: 'rgba(42,130,72,0.25)', text: '#2A8248' },
+};
+
+const TW = 192, RH = 16, HH = 42, BPAD = 8;
+const th = cols => HH + cols.length * RH + BPAD;
+
+// ── Definición de tablas ─────────────────────────────────────────────────────
+const TABLES = [
+  { id:'geo', x:18,  y:282, type:'dim',
+    name:'dim_geografia_ar', sub:'67 filas  ·  03_sinteticos',
+    cols:['GeografiaID','region','provincia','ciudad','zona','peso_facturacion'],
+    pk:[0], fk:[], cal:[] },
+
+  { id:'cli', x:248, y:112, type:'dim',
+    name:'dim_clientes_ar', sub:'10.000 filas  ·  03_sinteticos',
+    cols:['ClienteID','nombre','email','telefono','provincia','ciudad',
+          'region','zona','nse','rango_edad','genero',
+          'canal_preferido','segmento_rfm','fecha_alta'],
+    pk:[0], fk:[], cal:[] },
+
+  { id:'suc', x:248, y:468, type:'dim',
+    name:'dim_sucursales_ar', sub:'50 filas  ·  03_sinteticos',
+    cols:['SucursalID','nombre','tipo','GeografiaID','provincia','ciudad',
+          'region','m2_ventas','empleados','fecha_apertura','flag_activa'],
+    pk:[0], fk:[3], cal:[] },
+
+  { id:'fvb', x:505, y:162, type:'fact',
+    name:'fact_ventas_base_ar', sub:'150.000 filas  ·  03_sinteticos',
+    cols:['VentaID','ClienteID','CanalID','SucursalID','fecha',
+          'anio','mes','trimestre','medio_pago','nro_cuotas',
+          'tipo_entrega','plazo_entrega','evento_comercial',
+          'precio_venta_ars','costo_unitario_ars','cantidad'],
+    pk:[0], fk:[1,2,3], cal:[] },
+
+  { id:'can', x:808, y:112, type:'dim',
+    name:'dim_canal_ar', sub:'4 filas  ·  03_sinteticos',
+    cols:['CanalID','nombre','tipo','plataforma','flag_online','peso_facturacion'],
+    pk:[0], fk:[], cal:[] },
+
+  { id:'fpc', x:808, y:370, type:'fact',
+    name:'fact_precios_comp', sub:'360 filas  ·  03_sinteticos',
+    cols:['PrecioID','categoria','anio','mes','fecha_relevamiento',
+          'precio_lista_ars','precio_web_ars','precio_competencia',
+          'descuento_pct','price_index','CanalID'],
+    pk:[0], fk:[10], cal:[] },
+
+  { id:'ipc', x:1118, y:98, type:'dimGreen',
+    name:'dim_inflacion_ipc', sub:'111 filas  ·  04_procesados',
+    cols:['fecha','ipc_nivel_general','ipc_alimentos_bebidas',
+          'ipc_indumentaria_calzado','ipc_equipamiento_hogar',
+          'ipc_transporte','ipc_comunicacion','anio','mes  →  anio_mes *'],
+    pk:[], fk:[], cal:[8] },
+
+  { id:'fv', x:1118, y:386, type:'fact',
+    name:'fact_ventas', sub:'110.197 filas  ·  04_procesados',
+    cols:['order_id','product_id','seller_id','fecha',
+          'anio','mes  →  anio_mes *','trimestre','category_en',
+          'price_brl','freight_brl','ars_por_usd','tipo_cambio',
+          'price_ars','freight_ars','ipc_nivel_general',
+          'indice_ipc_acum','price_ars_real','tiene_ipc'],
+    pk:[], fk:[], cal:[5] },
+];
+
+// Calcular bounds
+const B = {};
+TABLES.forEach(t => { B[t.id] = { x:t.x, y:t.y, w:TW, h:th(t.cols) }; });
+
+// ── Helpers de dibujo ────────────────────────────────────────────────────────
+function rr(x,y,w,h,r,fill,stroke,sw=1.5) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);   ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);     ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle=fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=sw; ctx.stroke(); }
+}
+
+function rrTop(x,y,w,h,r,fill) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h); ctx.lineTo(x,y+h);
+  ctx.lineTo(x,y+r);   ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+  ctx.fillStyle=fill; ctx.fill();
+}
+
+function text(str,x,y,color,size,bold,align='left') {
+  ctx.fillStyle=color;
+  ctx.font=(bold?'bold ':'')+size+'px Segoe UI,Arial';
+  ctx.textAlign=align;
+  ctx.fillText(str,x,y);
+  ctx.textAlign='left';
+}
+
+function arrow(x1,y1,x2,y2,color,dash=[]) {
+  const dx=x2-x1, dy=y2-y1;
+  const angle=Math.atan2(dy,dx);
+  const HLen=9, HW=0.4;
+  ctx.strokeStyle=color; ctx.lineWidth=1.8;
+  ctx.setLineDash(dash);
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  const mx=(x1+x2)/2;
+  ctx.bezierCurveTo(mx,y1,mx,y2,x2,y2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-HLen*Math.cos(angle-HW), y2-HLen*Math.sin(angle-HW));
+  ctx.lineTo(x2-HLen*Math.cos(angle+HW), y2-HLen*Math.sin(angle+HW));
+  ctx.closePath(); ctx.fill();
+}
+
+function arrowV(x1,y1,x2,y2,color) {
+  const angle=Math.atan2(y2-y1,x2-x1);
+  const HLen=9, HW=0.4;
+  ctx.strokeStyle=color; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(x1,y1);
+  ctx.bezierCurveTo(x1,((y1+y2)/2),x2,((y1+y2)/2),x2,y2);
+  ctx.stroke();
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-HLen*Math.cos(angle-HW), y2-HLen*Math.sin(angle-HW));
+  ctx.lineTo(x2-HLen*Math.cos(angle+HW), y2-HLen*Math.sin(angle+HW));
+  ctx.closePath(); ctx.fill();
+}
+
+function connLabel(lbl,x,y) {
+  ctx.fillStyle='rgba(13,17,23,0.75)';
+  const w=ctx.measureText(lbl).width;
+  ctx.fillRect(x-2,y-10,w+4,13);
+  text(lbl,x,y,P.lbl,8,false);
+}
+
+// ── Función principal: dibujar tabla ────────────────────────────────────────
+function drawTable(t) {
+  const pal = P[t.type];
+  const {x,y,name,sub,cols,pk,fk,cal} = t;
+  const h = th(cols);
+
+  ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=14; ctx.shadowOffsetY=5;
+  rr(x,y,TW,h,6,pal.body,null);
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+
+  rr(x,y,TW,h,6,null,pal.border);
+  rrTop(x,y,TW,HH,6,pal.hdr);
+
+  text(name,x+8,y+16,pal.title,10,true);
+  text(sub,x+8,y+32,pal.sub,8.5,false);
+
+  ctx.strokeStyle=pal.border; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.moveTo(x,y+HH); ctx.lineTo(x+TW,y+HH); ctx.stroke();
+
+  cols.forEach((col,i) => {
+    const cy = y+HH+4+i*RH;
+    if(i%2===0){ ctx.fillStyle='rgba(255,255,255,0.025)'; ctx.fillRect(x+1,cy,TW-2,RH); }
+    let color=pal.col, prefix='  ', bold=false;
+    if(pk.includes(i)){ color=pal.pk; prefix='◆ '; bold=true; }
+    else if(fk.includes(i)){ color=pal.fk; prefix='◇ '; }
+    else if(cal.includes(i)){ color=pal.cal; prefix='⟳ '; }
+    text(prefix+col, x+5, cy+11, color, 9, bold);
+  });
+}
+
+// ── Calcular y de fila específica ────────────────────────────────────────────
+function rowY(id, rowIdx) {
+  const b=B[id];
+  return b.y + HH + 4 + rowIdx*RH + RH/2;
+}
+function rightX(id){ return B[id].x+TW; }
+function leftX(id){ return B[id].x; }
+function topY(id){ return B[id].y; }
+function botY(id){ return B[id].y+B[id].h; }
+function midX(id){ return B[id].x+TW/2; }
+
+// ── FONDO ────────────────────────────────────────────────────────────────────
+ctx.fillStyle=P.bg; ctx.fillRect(0,0,W,H);
+
+// grid sutil
+ctx.strokeStyle=P.grid; ctx.lineWidth=1;
+for(let gx=0;gx<W;gx+=50){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+for(let gy=0;gy<H;gy+=50){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
+
+// ── ZONAS ────────────────────────────────────────────────────────────────────
+rr(8,82,1098,652,8,P.zone1.fill,P.zone1.border,1);
+text('Constelación 1 — Modelo AR Sintético', 18, 98, P.zone1.text, 11, true);
+
+rr(1106,82,685,652,8,P.zone2.fill,P.zone2.border,1);
+text('Constelación 2 — Modelo Olist Procesado', 1116, 98, P.zone2.text, 11, true);
+
+// ── CONEXIONES (antes de las tablas para quedar detrás) ───────────────────────
+
+// 1. dim_geo → dim_cli  (GeografiaID)
+arrow(rightX('geo'), rowY('geo',0),  leftX('cli'),  rowY('cli',0),  P.arrow);
+connLabel('GeografiaID', 360, (rowY('geo',0)+rowY('cli',0))/2);
+
+// 2. dim_geo → dim_suc  (GeografiaID FK)
+arrow(rightX('geo'), rowY('geo',0),  leftX('suc'),  rowY('suc',3),  P.arrow);
+connLabel('GeografiaID', 250, (rowY('geo',0)+rowY('suc',3))/2+8);
+
+// 3. dim_cli → fact_vb  (ClienteID)
+arrow(rightX('cli'), rowY('cli',0),  leftX('fvb'),  rowY('fvb',1),  P.arrowHL);
+connLabel('ClienteID', 440, (rowY('cli',0)+rowY('fvb',1))/2-4);
+
+// 4. dim_suc → fact_vb  (SucursalID)
+arrow(rightX('suc'), rowY('suc',0),  leftX('fvb'),  rowY('fvb',3),  P.arrowHL);
+connLabel('SucursalID', 440, (rowY('suc',0)+rowY('fvb',3))/2+4);
+
+// 5. dim_can → fact_vb  (CanalID) — de izquierda de can a derecha de fvb
+arrow(leftX('can'),  rowY('can',0),  rightX('fvb'), rowY('fvb',2),  P.arrowHL);
+connLabel('CanalID', 720, (rowY('can',0)+rowY('fvb',2))/2-4);
+
+// 6. dim_can → fact_pc  (CanalID) — vertical
+arrowV(midX('can'), botY('can'),  midX('fpc'), topY('fpc'),  P.arrow);
+connLabel('CanalID', midX('can')+4, (botY('can')+topY('fpc'))/2);
+
+// 7. dim_ipc → fact_v  (anio_mes*) — vertical
+arrowV(midX('ipc'), botY('ipc'),  midX('fv'), topY('fv'),  P.note);
+connLabel('anio_mes *', midX('ipc')+4, (botY('ipc')+topY('fv'))/2);
+
+// ── TABLAS ───────────────────────────────────────────────────────────────────
+TABLES.forEach(drawTable);
+
+// ── LEYENDA ──────────────────────────────────────────────────────────────────
+const LEG = [
+  { c:'#7B1515', l:'Tabla de Hechos' },
+  { c:'#1A3A6B', l:'Dimensión (modelo AR)' },
+  { c:'#1A5230', l:'Dimensión (Olist/procesado)' },
+  { c:'#4A3800', l:'Referencia CACE (sin relación formal)' },
+];
+const legendItems = [
+  { col:'#FFD700', sym:'◆', lbl:'Clave primaria (PK)' },
+  { col:'#87CEEB', sym:'◇', lbl:'Clave foránea (FK)' },
+  { col:'#90EE90', sym:'⟳', lbl:'Columna calculada (Power BI)' },
+];
+
+let lx=20, ly=50;
+ctx.fillStyle='rgba(22,27,34,0.8)';
+ctx.fillRect(14,36,W-28,28);
+
+LEG.forEach(item=>{
+  ctx.fillStyle=item.c; ctx.fillRect(lx,42,12,12);
+  text(item.l, lx+16, 52, '#A0B0C8',10,false);
+  lx += 16 + ctx.measureText(item.l).width + 22;
+});
+
+lx += 10;
+legendItems.forEach(item=>{
+  text(item.sym, lx, 52, item.col, 10, true);
+  text(item.lbl, lx+14, 52, '#A0B0C8', 10, false);
+  lx += 14 + ctx.measureText(item.lbl).width + 20;
+});
+
+// ── TÍTULO ───────────────────────────────────────────────────────────────────
+text('RetailIQ360  —  Diagrama de Relaciones', W/2, 22, '#D0DCF0', 17, true, 'center');
+ctx.textAlign='left';
+
+// ── SECCIÓN CACE ─────────────────────────────────────────────────────────────
+const CACE_DATA = [
+  { n:'cace_01', d:'kpis_macro',           ref:'KPIs del mercado AR' },
+  { n:'cace_02', d:'categorias_rubros',    ref:'Categorías y facturación' },
+  { n:'cace_03a',d:'conversion_cat.',      ref:'Conversión por categoría' },
+  { n:'cace_03b',d:'ranking_demanda',      ref:'Ranking por demanda' },
+  { n:'cace_04a',d:'medios_pago',          ref:'Mix de medios de pago' },
+  { n:'cace_04b',d:'financiamiento',       ref:'Distribución de cuotas' },
+  { n:'cace_05a',d:'logistica_entrega',    ref:'Tipos de entrega' },
+  { n:'cace_05b',d:'plazos_entrega',       ref:'Plazos de entrega' },
+  { n:'cace_06a',d:'dist_regional',        ref:'Distribución por región' },
+  { n:'cace_06b',d:'perfil_comprador',     ref:'Perfil sociodemográfico' },
+  { n:'cace_07', d:'canal_por_categoria',  ref:'Canal online por cat.' },
+];
+
+const CTW=148, CTH=62, CGAP=10;
+const totalCW = CACE_DATA.length*(CTW+CGAP)-CGAP;
+const CX0 = (W-totalCW)/2;
+const CY0 = 748;
+
+// Grupo CACE
+rr(CX0-14, CY0-28, totalCW+28, CTH+52, 8, 'rgba(74,56,0,0.18)', 'rgba(136,100,0,0.4)', 1);
+text('Tablas de Referencia CACE  —  Sin relaciones formales en el modelo. Se usan directamente en visualizaciones para comparar con benchmarks del mercado.', CX0-6, CY0-12, '#886400', 9, false);
+
+CACE_DATA.forEach((c,i)=>{
+  const cx = CX0 + i*(CTW+CGAP);
+  const cy = CY0;
+  rr(cx,cy,CTW,CTH,5,P.cace.body,P.cace.border,1);
+  rrTop(cx,cy,CTW,22,5,P.cace.hdr);
+  text(c.n, cx+5, cy+10, P.cace.title, 8.5, true);
+  ctx.strokeStyle=P.cace.border; ctx.lineWidth=0.4;
+  ctx.beginPath(); ctx.moveTo(cx,cy+22); ctx.lineTo(cx+CTW,cy+22); ctx.stroke();
+  text(c.d, cx+5, cy+33, P.cace.col, 8, false);
+  text(c.ref, cx+5, cy+46, 'rgba(200,168,64,0.6)', 7.5, false);
+  // Reference line end
+  text(c.ref.substring(0,24), cx+5, cy+46, 'rgba(200,168,64,0.55)', 7.5, false);
+});
+
+// Nota columna calculada
+text('* anio_mes: columna calculada en Power BI    FORMAT([anio],"0000") & "-" & FORMAT([mes],"00")',
+     20, 838, P.note, 9.5, false);
+
+// Cardinalidad en líneas
+text('Todas las relaciones son N:1  (muchos registros en la tabla de hechos → un registro en la dimensión)',
+     20, 854, '#5A7A9A', 9, false);
+</script>
+</body>
+</html>
