@@ -40,7 +40,6 @@
       .calc { fill: #a7f3b7; font: 700 13px Consolas, Segoe UI, monospace; }
       .line-blue { fill: none; stroke: #49a6ff; stroke-width: 3; marker-end: url(#arrow-blue); }
       .line-green { fill: none; stroke: #52d273; stroke-width: 3; marker-end: url(#arrow-green); }
-      .line-orange { fill: none; stroke: #f5a623; stroke-width: 2.5; stroke-dasharray: 8 7; marker-end: url(#arrow-orange); }
       .rel-label { fill: #d8e8ff; font: 700 12px Segoe UI, Arial, sans-serif; }
       .rel-bg { fill: #0b1020; stroke: #23324f; stroke-width: 1; }
       .legend-text { fill: #c8d6eb; font: 400 14px Segoe UI, Arial, sans-serif; }
@@ -85,10 +84,6 @@
   <rect x="189" y="532" width="98" height="22" rx="5" class="rel-bg"/>
   <text x="238" y="548" text-anchor="middle" class="rel-label">GeografiaID</text>
 
-  <path class="line-orange" d="M164 444 C210 405 236 365 248 327"/>
-  <rect x="162" y="374" width="152" height="22" rx="5" class="rel-bg"/>
-  <text x="238" y="390" text-anchor="middle" class="rel-label">prov/ciudad o GeoID</text>
-
   <path class="line-blue" d="M922 380 C922 430 922 478 922 525"/>
   <rect x="888" y="449" width="72" height="22" rx="5" class="rel-bg"/>
   <text x="924" y="465" text-anchor="middle" class="rel-label">CanalID</text>
@@ -96,10 +91,6 @@
   <path class="line-green" d="M1478 329 C1478 405 1478 482 1478 558"/>
   <rect x="1435" y="442" width="88" height="22" rx="5" class="rel-bg"/>
   <text x="1479" y="458" text-anchor="middle" class="rel-label">anio_mes</text>
-
-  <path class="line-orange" d="M975 650 C1165 675 1302 690 1400 720"/>
-  <rect x="1127" y="657" width="138" height="22" rx="5" class="rel-bg"/>
-  <text x="1196" y="673" text-anchor="middle" class="rel-label">categoria / periodo</text>
 
   <!-- Table helper groups -->
   <g class="dim-blue" transform="translate(70 390)" filter="url(#shadow)">
@@ -297,7 +288,7 @@
     <text x="750" y="-3" class="legend-text">PK = clave primaria</text>
     <text x="910" y="-3" class="legend-text">FK = clave foranea</text>
     <text x="1080" y="-3" class="legend-text">Lineas solidas = relaciones formales N:1</text>
-    <text x="1395" y="-3" class="legend-text">Linea punteada = comparacion, no relacion formal</text>
+    <text x="1395" y="-3" class="legend-text">Tablas CACE y hechos independientes se comparan en visuales</text>
   </g>
 
   <text x="960" y="850" text-anchor="middle" class="note">Interpretacion: el modelo completo se lee como una galaxia porque contiene mas de una tabla de hechos. Cada hecho tiene su propia estrella de dimensiones, y algunas dimensiones pueden compartirse.</text>

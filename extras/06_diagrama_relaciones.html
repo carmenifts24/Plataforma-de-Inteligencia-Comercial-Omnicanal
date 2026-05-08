@@ -227,13 +227,12 @@ text('Constelación 2 — Modelo Olist Procesado', 1116, 98, P.zone2.text, 11, t
 
 // ── CONEXIONES (antes de las tablas para quedar detrás) ───────────────────────
 
-// 1. dim_geo → dim_cli  (GeografiaID)
-arrow(rightX('geo'), rowY('geo',0),  leftX('cli'),  rowY('cli',0),  P.arrow);
-connLabel('GeografiaID', 360, (rowY('geo',0)+rowY('cli',0))/2);
-
-// 2. dim_geo → dim_suc  (GeografiaID FK)
+// 1. dim_geo → dim_suc  (GeografiaID FK — relación formal)
 arrow(rightX('geo'), rowY('geo',0),  leftX('suc'),  rowY('suc',3),  P.arrow);
 connLabel('GeografiaID', 250, (rowY('geo',0)+rowY('suc',3))/2+8);
+
+// Nota: dim_clientes NO tiene GeografiaID. Sus campos provincia/ciudad/region/zona
+// son texto autocontenido — NO hay relación formal con dim_geografia en Power BI.
 
 // 3. dim_cli → fact_vb  (ClienteID)
 arrow(rightX('cli'), rowY('cli',0),  leftX('fvb'),  rowY('fvb',1),  P.arrowHL);

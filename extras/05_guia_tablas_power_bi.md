@@ -122,8 +122,9 @@ Descripción de cada tabla, sus relaciones y las verificaciones principales a re
 
 **Relaciones:**
 - `ClienteID` → referenciada por `fact_ventas_base_ar.ClienteID` (1:N)
-- `provincia` / `ciudad` → vinculable con `dim_geografia_ar` por nombre
 - `nse`, `genero`, `rango_edad` → comparables con `cace_06b_perfil_comprador`
+
+> **Importante:** `dim_clientes_ar` **no tiene columna `GeografiaID`**. Sus campos `provincia`, `ciudad`, `region` y `zona` son texto autocontenido. No existe relación formal con `dim_geografia_ar` en Power BI. La única tabla con FK a `dim_geografia_ar` es `dim_sucursales_ar`.
 
 **Verificaciones:**
 - [ ] No hay `ClienteID` duplicados (deben ser 10,000 únicos)
@@ -505,7 +506,6 @@ Porcentaje del canal online sobre el total de ventas, por categoría, para H1 20
 | Tabla origen | Columna | Tabla destino | Columna | Cardinalidad |
 |---|---|---|---|---|
 | `dim_sucursales_ar` | `GeografiaID` | `dim_geografia_ar` | `GeografiaID` | N:1 |
-| `dim_clientes_ar` | `GeografiaID` | `dim_geografia_ar` | `GeografiaID` | N:1 |
 | `fact_ventas_base_ar` | `ClienteID` | `dim_clientes_ar` | `ClienteID` | N:1 |
 | `fact_ventas_base_ar` | `CanalID` | `dim_canal_ar` | `CanalID` | N:1 |
 | `fact_ventas_base_ar` | `SucursalID` | `dim_sucursales_ar` | `SucursalID` | N:1 |
@@ -513,6 +513,8 @@ Porcentaje del canal online sobre el total de ventas, por categoría, para H1 20
 | `fact_ventas` | `anio_mes`* | `dim_inflacion_ipc` | `anio_mes`* | N:1 |
 
 *Columna calculada a crear: `anio_mes = FORMAT([anio], "0000") & "-" & FORMAT([mes], "00")`
+
+> **Nota importante:** `dim_clientes_ar` **no se relaciona formalmente con `dim_geografia_ar`**. La tabla de clientes tiene los campos geográficos (`provincia`, `ciudad`, `region`, `zona`) como texto autocontenido, sin columna `GeografiaID`. La única tabla con FK hacia `dim_geografia_ar` es `dim_sucursales_ar`.
 
 > Las tablas CACE **no tienen relaciones formales** en el modelo. Se usan directamente en visualizaciones de comparación.
 
