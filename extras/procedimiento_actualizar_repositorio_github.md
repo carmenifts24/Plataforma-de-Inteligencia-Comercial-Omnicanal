@@ -212,7 +212,7 @@ git restore --staged README.md
 Cuando ya verificaste que está todo correcto, creá el commit:
 
 ```powershell
-git commit -m "Actualización del EDA Nivel 1 y Nivel 2. Creación de archivos informativos en la carpeta extras"
+git commit -m "Archivo inicial de Power Bi. Actualización de información en carpeta extras. Diagrama de estructura de las tablas"
 ```
 
 El mensaje debe resumir qué cambio estás subiendo.
