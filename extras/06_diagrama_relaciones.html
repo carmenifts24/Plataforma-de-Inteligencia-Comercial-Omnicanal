@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<canvas id="c" width="1800" height="870"></canvas>
+<canvas id="c" width="1800" height="1040"></canvas>
 <script>
 const C = document.getElementById('c');
 const ctx = C.getContext('2d');
@@ -29,7 +29,6 @@ const P = {
   lbl:    '#6A9FDF',
   note:   '#6ECC88',
   zone1:  { fill: 'rgba(30,60,120,0.07)', border: 'rgba(42,96,176,0.25)', text: '#3A6BBF' },
-  zone2:  { fill: 'rgba(26,82,48,0.07)',  border: 'rgba(42,130,72,0.25)', text: '#2A8248' },
 };
 
 const TW = 192, RH = 16, HH = 42, BPAD = 8;
@@ -37,59 +36,70 @@ const th = cols => HH + cols.length * RH + BPAD;
 
 // ── Definición de tablas ─────────────────────────────────────────────────────
 const TABLES = [
-  { id:'geo', x:18,  y:282, type:'dim',
+  { id:'geo', x:18,  y:370, type:'dim',
     name:'dim_geografia_ar', sub:'67 filas  ·  03_sinteticos',
     cols:['GeografiaID','region','provincia','ciudad','zona','peso_facturacion'],
     pk:[0], fk:[], cal:[] },
 
   { id:'cli', x:248, y:112, type:'dim',
-    name:'dim_clientes_ar', sub:'10.000 filas  ·  03_sinteticos',
-    cols:['ClienteID','nombre','email','telefono','provincia','ciudad',
-          'region','zona','nse','rango_edad','genero',
-          'canal_preferido','segmento_rfm','fecha_alta'],
-    pk:[0], fk:[], cal:[] },
+    name:'dim_clientes_ar', sub:'10.000 filas  ·  04_procesados',
+    cols:['ClienteID','GeografiaID','nombre','email','telefono',
+          'provincia','ciudad','region','zona',
+          'nse','rango_edad','genero','canal_preferido','segmento_rfm','fecha_alta'],
+    pk:[0], fk:[1], cal:[] },
 
-  { id:'suc', x:248, y:468, type:'dim',
+  { id:'suc', x:18,  y:580, type:'dim',
     name:'dim_sucursales_ar', sub:'50 filas  ·  03_sinteticos',
     cols:['SucursalID','nombre','tipo','GeografiaID','provincia','ciudad',
           'region','m2_ventas','empleados','fecha_apertura','flag_activa'],
     pk:[0], fk:[3], cal:[] },
 
-  { id:'fvb', x:505, y:162, type:'fact',
-    name:'fact_ventas_base_ar', sub:'150.000 filas  ·  03_sinteticos',
-    cols:['VentaID','ClienteID','CanalID','SucursalID','fecha',
-          'anio','mes','trimestre','medio_pago','nro_cuotas',
-          'tipo_entrega','plazo_entrega','evento_comercial',
-          'precio_venta_ars','costo_unitario_ars','cantidad'],
-    pk:[0], fk:[1,2,3], cal:[] },
+  { id:'ipc', x:248, y:450, type:'dimGreen',
+    name:'dim_inflacion_ipc', sub:'111 filas  ·  04_procesados',
+    cols:['PeriodoID','fecha','ipc_nivel_general','ipc_alimentos_bebidas',
+          'ipc_indumentaria_calzado','ipc_equipamiento_hogar',
+          'ipc_transporte','ipc_comunicacion','anio','mes','indice_ipc_acum'],
+    pk:[0], fk:[], cal:[] },
+
+  { id:'fvf', x:508, y:112, type:'fact',
+    name:'fact_ventas_final', sub:'110.197 filas  ·  28 columnas  ·  04_procesados',
+    cols:['VentaID','ClienteID','CanalID','SucursalID','PeriodoID',
+          'fecha','anio','mes','trimestre','category_en',
+          'medio_pago','nro_cuotas','tipo_entrega','plazo_entrega','cantidad',
+          'precio_venta_brl','precio_venta_ars','precio_venta_ars_real',
+          'ipc_nivel_general','tiene_ipc','order_id','product_id','seller_id'],
+    pk:[0], fk:[1,2,3,4,5,21], cal:[] },
 
   { id:'can', x:808, y:112, type:'dim',
     name:'dim_canal_ar', sub:'4 filas  ·  03_sinteticos',
     cols:['CanalID','nombre','tipo','plataforma','flag_online','peso_facturacion'],
     pk:[0], fk:[], cal:[] },
 
-  { id:'fpc', x:808, y:370, type:'fact',
-    name:'fact_precios_comp', sub:'360 filas  ·  03_sinteticos',
+  { id:'tpo', x:808, y:316, type:'dim',
+    name:'dim_tiempo', sub:'3.288 filas  ·  04_procesados  ·  2016-2024  ·  Date Table',
+    cols:['TiempoID','fecha','anio','semestre','trimestre','mes',
+          'nombre_mes','dia','dia_semana','nombre_dia',
+          'semana_anio','es_fin_semana','anio_mes','PeriodoID'],
+    pk:[0], fk:[], cal:[] },
+
+  { id:'fpc', x:1052, y:112, type:'fact',
+    name:'fact_precios_comp', sub:'360 filas  ·  04_procesados',
     cols:['PrecioID','categoria','anio','mes','fecha_relevamiento',
           'precio_lista_ars','precio_web_ars','precio_competencia',
-          'descuento_pct','price_index','CanalID'],
-    pk:[0], fk:[10], cal:[] },
+          'descuento_pct','price_index','CanalID','PeriodoID'],
+    pk:[0], fk:[1,4,10,11], cal:[] },
 
-  { id:'ipc', x:1118, y:98, type:'dimGreen',
-    name:'dim_inflacion_ipc', sub:'111 filas  ·  04_procesados',
-    cols:['fecha','ipc_nivel_general','ipc_alimentos_bebidas',
-          'ipc_indumentaria_calzado','ipc_equipamiento_hogar',
-          'ipc_transporte','ipc_comunicacion','anio','mes  →  anio_mes *'],
-    pk:[], fk:[], cal:[8] },
+  { id:'prd', x:1310, y:112, type:'dim',
+    name:'dim_productos', sub:'32.951 filas  ·  04_procesados',
+    cols:['product_id','product_category_name','category_en','categoria_es',
+          'product_weight_g','product_length_cm','product_height_cm',
+          'product_width_cm','volumen_cm3'],
+    pk:[0], fk:[3], cal:[8] },
 
-  { id:'fv', x:1118, y:386, type:'fact',
-    name:'fact_ventas', sub:'110.197 filas  ·  04_procesados',
-    cols:['order_id','product_id','seller_id','fecha',
-          'anio','mes  →  anio_mes *','trimestre','category_en',
-          'price_brl','freight_brl','ars_por_usd','tipo_cambio',
-          'price_ars','freight_ars','ipc_nivel_general',
-          'indice_ipc_acum','price_ars_real','tiene_ipc'],
-    pk:[], fk:[], cal:[5] },
+  { id:'cat', x:1310, y:430, type:'dim',
+    name:'dim_categorias', sub:'10 filas  ·  04_procesados  ·  tabla puente',
+    cols:['CategoriaID','categoria_es'],
+    pk:[0], fk:[], cal:[] },
 ];
 
 // Calcular bounds
@@ -209,6 +219,7 @@ function leftX(id){ return B[id].x; }
 function topY(id){ return B[id].y; }
 function botY(id){ return B[id].y+B[id].h; }
 function midX(id){ return B[id].x+TW/2; }
+function midY(id){ return B[id].y+B[id].h/2; }
 
 // ── FONDO ────────────────────────────────────────────────────────────────────
 ctx.fillStyle=P.bg; ctx.fillRect(0,0,W,H);
@@ -218,41 +229,63 @@ ctx.strokeStyle=P.grid; ctx.lineWidth=1;
 for(let gx=0;gx<W;gx+=50){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
 for(let gy=0;gy<H;gy+=50){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
 
-// ── ZONAS ────────────────────────────────────────────────────────────────────
-rr(8,82,1098,652,8,P.zone1.fill,P.zone1.border,1);
-text('Constelación 1 — Modelo AR Sintético', 18, 98, P.zone1.text, 11, true);
-
-rr(1106,82,685,652,8,P.zone2.fill,P.zone2.border,1);
-text('Constelación 2 — Modelo Olist Procesado', 1116, 98, P.zone2.text, 11, true);
+// ── ZONA PRINCIPAL ────────────────────────────────────────────────────────────
+rr(8, 82, 1530, 820, 8, P.zone1.fill, P.zone1.border, 1);
+text('Esquema Galaxia — RetailIQ360', 18, 98, P.zone1.text, 11, true);
 
 // ── CONEXIONES (antes de las tablas para quedar detrás) ───────────────────────
 
-// 1. dim_geo → dim_suc  (GeografiaID FK — relación formal)
-arrow(rightX('geo'), rowY('geo',0),  leftX('suc'),  rowY('suc',3),  P.arrow);
-connLabel('GeografiaID', 250, (rowY('geo',0)+rowY('suc',3))/2+8);
+// 1. geo → cli  (GeografiaID: de right(geo) a left(cli), subiendo)
+arrow(rightX('geo'), rowY('geo',0),  leftX('cli'),  rowY('cli',1),  P.arrow);
+connLabel('GeografiaID', 250, (rowY('geo',0)+rowY('cli',1))/2 - 6);
 
-// Nota: dim_clientes NO tiene GeografiaID. Sus campos provincia/ciudad/region/zona
-// son texto autocontenido — NO hay relación formal con dim_geografia en Power BI.
+// 2. geo → suc  (GeografiaID: arrowV vertical, ambas en columna izquierda)
+arrowV(midX('geo'), botY('geo'),  midX('suc'), topY('suc'),  P.arrow);
+connLabel('GeografiaID', midX('geo')+4, (botY('geo')+topY('suc'))/2);
 
-// 3. dim_cli → fact_vb  (ClienteID)
-arrow(rightX('cli'), rowY('cli',0),  leftX('fvb'),  rowY('fvb',1),  P.arrowHL);
-connLabel('ClienteID', 440, (rowY('cli',0)+rowY('fvb',1))/2-4);
+// 3. cli → fvf  (ClienteID: right(cli) → left(fvf))
+arrow(rightX('cli'), rowY('cli',0),  leftX('fvf'),  rowY('fvf',1),  P.arrowHL);
+connLabel('ClienteID', 444, (rowY('cli',0)+rowY('fvf',1))/2 - 4);
 
-// 4. dim_suc → fact_vb  (SucursalID)
-arrow(rightX('suc'), rowY('suc',0),  leftX('fvb'),  rowY('fvb',3),  P.arrowHL);
-connLabel('SucursalID', 440, (rowY('suc',0)+rowY('fvb',3))/2+4);
+// 4. ipc → fvf  (PeriodoID: right(ipc) → left(fvf) en fila PeriodoID=4)
+arrow(rightX('ipc'), rowY('ipc',0),  leftX('fvf'),  rowY('fvf',4),  P.note);
+connLabel('PeriodoID', 444, (rowY('ipc',0)+rowY('fvf',4))/2 + 4);
 
-// 5. dim_can → fact_vb  (CanalID) — de izquierda de can a derecha de fvb
-arrow(leftX('can'),  rowY('can',0),  rightX('fvb'), rowY('fvb',2),  P.arrowHL);
-connLabel('CanalID', 720, (rowY('can',0)+rowY('fvb',2))/2-4);
+// 5. suc → fvf  (SucursalID: right(suc) → left(fvf) en fila SucursalID=3)
+arrow(rightX('suc'), rowY('suc',0),  leftX('fvf'),  rowY('fvf',3),  P.arrowHL);
+connLabel('SucursalID', 300, (rowY('suc',0)+rowY('fvf',3))/2);
 
-// 6. dim_can → fact_pc  (CanalID) — vertical
-arrowV(midX('can'), botY('can'),  midX('fpc'), topY('fpc'),  P.arrow);
-connLabel('CanalID', midX('can')+4, (botY('can')+topY('fpc'))/2);
+// 6. can → fvf  (CanalID: left(can) → right(fvf) en fila CanalID=2)
+arrow(leftX('can'),  rowY('can',0),  rightX('fvf'), rowY('fvf',2),  P.arrowHL);
+connLabel('CanalID', 724, (rowY('can',0)+rowY('fvf',2))/2 - 4);
 
-// 7. dim_ipc → fact_v  (anio_mes*) — vertical
-arrowV(midX('ipc'), botY('ipc'),  midX('fv'), topY('fv'),  P.note);
-connLabel('anio_mes *', midX('ipc')+4, (botY('ipc')+topY('fv'))/2);
+// 7. tpo → fvf  (fecha: left(tpo) → right(fvf) en fila fecha=5)
+arrow(leftX('tpo'),  rowY('tpo',1),  rightX('fvf'), rowY('fvf',5),  P.arrowHL);
+connLabel('fecha', 724, (rowY('tpo',1)+rowY('fvf',5))/2 + 4);
+
+// 8. fpc → can  (CanalID: left(fpc) → right(can))
+arrow(leftX('fpc'),  rowY('fpc',10), rightX('can'), rowY('can',0),  P.arrow);
+connLabel('CanalID', midX('can')+TW/2+8, (rowY('fpc',10)+rowY('can',0))/2);
+
+// 9. prd → fvf  (product_id: left(prd) → right(fvf))
+arrow(leftX('prd'),  rowY('prd',0),  rightX('fvf'), rowY('fvf',21), P.arrowHL);
+connLabel('product_id', 820, (rowY('prd',0)+rowY('fvf',21))/2);
+
+// 10. cat → prd  (categoria_es: arrowV vertical, cat abajo → prd arriba)
+arrowV(midX('cat'), topY('cat'),  midX('prd'), botY('prd'),  P.arrow);
+connLabel('categoria_es', midX('cat')+4, (topY('cat')+botY('prd'))/2);
+
+// 11. cat → fpc  (categoria: left(cat) → right(fpc))
+arrow(leftX('cat'),  rowY('cat',1),  rightX('fpc'), rowY('fpc',1),  P.arrow);
+connLabel('categoria', (leftX('cat')+rightX('fpc'))/2, (rowY('cat',1)+rowY('fpc',1))/2 - 6);
+
+// 12. ipc → fpc  (PeriodoID: right(ipc) → left(fpc))
+arrow(rightX('ipc'), rowY('ipc',0),  leftX('fpc'),  rowY('fpc',11), P.note);
+connLabel('PeriodoID', (rightX('ipc')+leftX('fpc'))/2, (rowY('ipc',0)+rowY('fpc',11))/2 - 6);
+
+// 13. tpo → fpc  (fecha_relevamiento: right(tpo) → left(fpc))
+arrow(rightX('tpo'), rowY('tpo',1),  leftX('fpc'),  rowY('fpc',4),  P.arrowHL);
+connLabel('fecha_rel.', (rightX('tpo')+leftX('fpc'))/2, (rowY('tpo',1)+rowY('fpc',4))/2 - 6);
 
 // ── TABLAS ───────────────────────────────────────────────────────────────────
 TABLES.forEach(drawTable);
@@ -261,13 +294,12 @@ TABLES.forEach(drawTable);
 const LEG = [
   { c:'#7B1515', l:'Tabla de Hechos' },
   { c:'#1A3A6B', l:'Dimensión (modelo AR)' },
-  { c:'#1A5230', l:'Dimensión (Olist/procesado)' },
+  { c:'#1A5230', l:'Dimensión (IPC/procesado)' },
   { c:'#4A3800', l:'Referencia CACE (sin relación formal)' },
 ];
 const legendItems = [
   { col:'#FFD700', sym:'◆', lbl:'Clave primaria (PK)' },
   { col:'#87CEEB', sym:'◇', lbl:'Clave foránea (FK)' },
-  { col:'#90EE90', sym:'⟳', lbl:'Columna calculada (Power BI)' },
 ];
 
 let lx=20, ly=50;
@@ -309,9 +341,8 @@ const CACE_DATA = [
 const CTW=148, CTH=62, CGAP=10;
 const totalCW = CACE_DATA.length*(CTW+CGAP)-CGAP;
 const CX0 = (W-totalCW)/2;
-const CY0 = 748;
+const CY0 = 920;
 
-// Grupo CACE
 rr(CX0-14, CY0-28, totalCW+28, CTH+52, 8, 'rgba(74,56,0,0.18)', 'rgba(136,100,0,0.4)', 1);
 text('Tablas de Referencia CACE  —  Sin relaciones formales en el modelo. Se usan directamente en visualizaciones para comparar con benchmarks del mercado.', CX0-6, CY0-12, '#886400', 9, false);
 
@@ -325,17 +356,13 @@ CACE_DATA.forEach((c,i)=>{
   ctx.beginPath(); ctx.moveTo(cx,cy+22); ctx.lineTo(cx+CTW,cy+22); ctx.stroke();
   text(c.d, cx+5, cy+33, P.cace.col, 8, false);
   text(c.ref, cx+5, cy+46, 'rgba(200,168,64,0.6)', 7.5, false);
-  // Reference line end
-  text(c.ref.substring(0,24), cx+5, cy+46, 'rgba(200,168,64,0.55)', 7.5, false);
 });
 
-// Nota columna calculada
-text('* anio_mes: columna calculada en Power BI    FORMAT([anio],"0000") & "-" & FORMAT([mes],"00")',
-     20, 838, P.note, 9.5, false);
-
-// Cardinalidad en líneas
-text('Todas las relaciones son N:1  (muchos registros en la tabla de hechos → un registro en la dimensión)',
-     20, 854, '#5A7A9A', 9, false);
+// Notas pie
+text('* dim_tiempo debe marcarse como "Tabla de fechas" en Power BI (columna fecha)  ·  dim_categorias es tabla puente N:N entre dim_productos y fact_precios_comp',
+     20, 904, P.note, 9.5, false);
+text('Todas las relaciones son N:1  ·  SucursalID nulo en ~92% de fact_ventas_final (canales digitales CanalID 2,3,4)  ·  PeriodoID = anio×100+mes',
+     20, 916, '#5A7A9A', 9, false);
 </script>
 </body>
 </html>

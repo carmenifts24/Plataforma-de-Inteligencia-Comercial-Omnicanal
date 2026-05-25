@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validaciones y Cambios EDA/ETL - RetailIQ 360</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --ink: #17212b;
+      --muted: #647282;
+      --line: #d9e1e8;
+      --navy: #19384d;
+      --teal: #2f8f83;
+      --blue: #426f9f;
+      --gold: #b98632;
+      --rose: #ad5966;
+      --green: #5f8d63;
+      --shadow: 0 14px 34px rgba(20, 32, 44, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 286px minmax(0, 1fr);
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      background: #102839;
+      color: #eef5f7;
+      overflow: auto;
+    }
+
+    .brand {
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--teal);
+      color: white;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      margin: 0;
+      color: #b8c8d2;
+      font-size: 0.9rem;
+    }
+
+    .side-section {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .side-section h2 {
+      margin: 0 0 12px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9fb4c0;
+    }
+
+    .legend {
+      display: grid;
+      gap: 9px;
+      font-size: 0.88rem;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #dfe9ee;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .dot.ok { background: var(--green); }
+    .dot.warn { background: var(--gold); }
+    .dot.review { background: var(--rose); }
+    .dot.info { background: var(--blue); }
+
+    main {
+      padding: 28px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--teal);
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 2.3vw, 2.25rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 840px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      min-height: 102px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.9rem;
+      line-height: 1;
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .filters {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1.3fr repeat(4, minmax(145px, 1fr)) auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 9px 10px;
+      font: inherit;
+      color: var(--ink);
+      background: #fbfcfd;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 800;
+      color: white;
+      background: var(--navy);
+      border-color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .table-wrap {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #eef3f6;
+      color: #40505e;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: #f8fbfc;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .pill.eda1 { background: #e5f4ef; color: #236e60; }
+    .pill.eda2 { background: #e7eef7; color: #315f91; }
+    .pill.etl { background: #fff3dc; color: #8a5d15; }
+    .pill.integracion { background: #f7e9ed; color: #8b4653; }
+    .pill.ok { background: #e6f2e7; color: #456f48; }
+    .pill.warn { background: #fff5dc; color: #7c5a14; }
+    .pill.review { background: #f9e7ea; color: #884653; }
+    .pill.info { background: #e6eef7; color: #385f89; }
+
+    .why {
+      color: var(--muted);
+      min-width: 260px;
+    }
+
+    .action {
+      min-width: 250px;
+      font-weight: 650;
+    }
+
+    .source {
+      color: var(--muted);
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 26px;
+      color: var(--muted);
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        height: auto;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 18px;
+      }
+
+      .topbar {
+        display: block;
+      }
+
+      .summary,
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 1120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark">RIQ</div>
+        <h1>Validaciones EDA/ETL</h1>
+        <p>Resumen filtrable de decisiones, controles y transformaciones aplicadas durante la preparación de datos de RetailIQ 360.</p>
+      </div>
+
+      <div class="side-section">
+        <h2>Lectura rápida</h2>
+        <div class="legend">
+          <span><i class="dot ok"></i>Listo para usar</span>
+          <span><i class="dot warn"></i>Requiere criterio documentado</span>
+          <span><i class="dot review"></i>Se revisó por riesgo de sesgo</span>
+          <span><i class="dot info"></i>Cambio de modelado</span>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <h2>Fuentes revisadas</h2>
+        <div class="legend">
+          <span>02_EDA_nivel_1.ipynb</span>
+          <span>03_EDA_nivel_2.ipynb</span>
+          <span>04_ETL.ipynb</span>
+          <span>05_ETL_integracion.ipynb</span>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">RetailIQ 360</p>
+          <h2>Bitácora visual de validaciones y cambios</h2>
+          <p>La tabla resume qué se validó, qué decisión se tomó y por qué. Los filtros permiten ubicar rápidamente una transacción, tabla o etapa del pipeline.</p>
+        </div>
+      </section>
+
+      <section class="summary" aria-label="Indicadores del dashboard">
+        <div class="metric">
+          <strong id="metricTotal">0</strong>
+          <span>validaciones y cambios documentados</span>
+        </div>
+        <div class="metric">
+          <strong id="metricShown">0</strong>
+          <span>visibles con los filtros actuales</span>
+        </div>
+        <div class="metric">
+          <strong id="metricEtl">0</strong>
+          <span>decisiones de ETL e integración</span>
+        </div>
+        <div class="metric">
+          <strong id="metricReview">0</strong>
+          <span>puntos marcados para revisar o justificar</span>
+        </div>
+      </section>
+
+      <section class="filters" aria-label="Filtros de validaciones">
+        <label>
+          Buscar
+          <input id="search" type="search" placeholder="Ej.: delivered, IPC, tipo de cambio, medio_pago">
+        </label>
+        <label>
+          Etapa
+          <select id="stageFilter">
+            <option value="">Todas</option>
+          </select>
+        </label>
+        <label>
+          Transacción / tabla
+          <select id="transactionFilter">
+            <option value="">Todas</option>
+          </select>
+        </label>
+        <label>
+          Tipo de acción
+          <select id="actionFilter">
+            <option value="">Todas</option>
+          </select>
+        </label>
+        <label>
+          Estado
+          <select id="statusFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <button id="clearFilters" type="button">Limpiar</button>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Etapa</th>
+              <th>Transacción / tabla</th>
+              <th>Validación o cambio</th>
+              <th>Decisión aplicada</th>
+              <th>Por qué se hizo</th>
+              <th>Estado</th>
+              <th>Función / fórmula</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div id="empty" class="empty">No hay resultados para los filtros seleccionados.</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const records = [
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Diagnóstico general",
+        tipo: "Validación estructural",
+        cambio: "Se creó una función de diagnóstico común para medir filas, columnas, tipos, nulos, duplicados, claves y estadísticas numéricas.",
+        decision: "Aplicar el mismo criterio de revisión a todos los archivos antes de integrarlos.",
+        porque: "Evita comparar datasets con reglas distintas y deja una base objetiva para decidir qué entra al ETL.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Orders",
+        tipo: "Validación de clave",
+        cambio: "Se revisó que order_id sea único y que order_status permita separar ventas reales de órdenes no finalizadas.",
+        decision: "Usar solo órdenes con estado delivered para construir ventas.",
+        porque: "Las órdenes canceladas, creadas o no entregadas no representan una venta concretada y distorsionan revenue y ticket promedio.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Order items",
+        tipo: "Validación de granularidad",
+        cambio: "Se detectó que order_id se repite en items.",
+        decision: "Aceptar la repetición como comportamiento esperado: la granularidad de ventas será 1 fila = 1 ítem vendido.",
+        porque: "Una orden puede contener varios productos; tratar esa repetición como error eliminaría ventas válidas.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Order items",
+        tipo: "Validación de valores",
+        cambio: "Se revisaron precios nulos, iguales a cero, negativos y valores extremos.",
+        decision: "Mantener los precios válidos y usar la distribución para controlar outliers en análisis posteriores.",
+        porque: "El precio es la base de facturación; valores imposibles afectarían todos los KPIs comerciales.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Pagos",
+        tipo: "Cambio de alcance",
+        cambio: "Se revisó cobertura de pagos Olist y tipos de pago brasileños.",
+        decision: "No usar directamente los medios de pago originales; reemplazarlos por una capa argentina sintética calibrada con CACE.",
+        porque: "El proyecto representa una operación argentina y los medios brasileños no reflejan el comportamiento local buscado.",
+        estado: "Revisar/Justificar",
+        fuente: "02_EDA_nivel_1, 05_ETL_integracion"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Productos",
+        tipo: "Validación de nulos",
+        cambio: "Se identificaron productos con product_category_name faltante y algunas dimensiones físicas nulas.",
+        decision: "No descartar productos por categoría faltante; agruparlos luego como other/Otros.",
+        porque: "La falta de categoría no debe borrar ventas. Agrupar permite conservar facturación y mantener filtros completos.",
+        estado: "Advertencia",
+        fuente: "02_EDA_nivel_1, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Traducción categorías",
+        tipo: "Lookup",
+        cambio: "Se validó product_category_name_translation como tabla auxiliar sin nulos críticos.",
+        decision: "Usar la traducción de categorías de portugués a inglés.",
+        porque: "Permite que el modelo y el dashboard sean más legibles y comparables.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Superstore",
+        tipo: "Validación de referencia",
+        cambio: "Se revisaron Sales, Profit, Discount, márgenes, categorías y subcategorías.",
+        decision: "Usar Superstore como referencia comercial para márgenes y descuentos, no como tabla transaccional principal.",
+        porque: "Aporta calibración de rentabilidad, pero la venta real del modelo se arma con Olist y contexto argentino.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "IPC",
+        tipo: "Limpieza de archivo",
+        cambio: "Se leyó el Excel crudo del INDEC, se ubicó la fila de encabezados, se seleccionaron rubros y se transpuso la tabla.",
+        decision: "Guardar una versión limpia como datos/04_procesados/dim_inflacion_ipc.csv.",
+        porque: "El formato original no era apto para joins; se necesitaba una fila por fecha y columnas de variación IPC.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "IPC",
+        tipo: "Cambio de estructura",
+        cambio: "Se agregaron columnas anio y mes al IPC limpio.",
+        decision: "Preparar claves temporales mensuales para el ETL.",
+        porque: "El IPC se relaciona por mes, no por fecha diaria; anio y mes simplifican joins y filtros.",
+        estado: "OK",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Tipo de cambio",
+        tipo: "Selección de columna",
+        cambio: "Se detectó alto porcentaje de nulos en varias columnas del archivo histórico de dólar.",
+        decision: "Usar dolar_estadounidense como columna de trabajo.",
+        porque: "Es la serie con cobertura útil para el período Olist 2016-2018; otras columnas tienen huecos demasiado grandes.",
+        estado: "Revisar/Justificar",
+        fuente: "02_EDA_nivel_1, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 1",
+        transaccion: "Reviews",
+        tipo: "Validación opcional",
+        cambio: "Se revisaron review_score, nulos en comentarios y duplicados por order_id.",
+        decision: "Considerar reseñas como enriquecimiento opcional, no como requisito de FactVentas.",
+        porque: "Muchos clientes puntúan sin comentar y algunas órdenes tienen más de una reseña; no debe bloquear el modelo principal.",
+        estado: "Advertencia",
+        fuente: "02_EDA_nivel_1"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Orders + Items",
+        tipo: "Integridad referencial",
+        cambio: "Se compararon órdenes delivered contra órdenes presentes en items.",
+        decision: "Usar inner join entre órdenes entregadas e ítems.",
+        porque: "Una venta sin ítem no permite calcular producto, precio ni vendedor; para FactVentas solo sirven ventas con detalle.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Items + Products",
+        tipo: "Integridad referencial",
+        cambio: "Se buscaron product_id vendidos sin ficha en products.",
+        decision: "Usar left join con productos.",
+        porque: "Conviene conservar la venta aunque falte información descriptiva del producto.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Productos + Traducción",
+        tipo: "Join de lookup",
+        cambio: "Se unieron categorías de producto con la tabla de traducción.",
+        decision: "Aplicar left join y completar categorías faltantes como other.",
+        porque: "Se evita perder facturación por una traducción ausente y se mantienen categorías filtrables.",
+        estado: "Advertencia",
+        fuente: "03_EDA_nivel_2, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Ventas mensuales",
+        tipo: "Validación temporal",
+        cambio: "Se agrupó la base por año y mes para detectar meses con más o menos ventas.",
+        decision: "Usar el período real de ventas como base de análisis temporal.",
+        porque: "Permite detectar meses incompletos o comportamientos raros antes de ajustar por inflación o tipo de cambio.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Ticket promedio",
+        tipo: "Validación de distribución",
+        cambio: "Se calculó ticket promedio, mediana, mínimo, máximo y rangos.",
+        decision: "Usar promedio y mediana para interpretar ventas.",
+        porque: "La mediana ayuda a leer el valor típico cuando hay órdenes muy caras que sesgan el promedio.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Cobertura IPC",
+        tipo: "Cobertura temporal",
+        cambio: "Se compararon meses de ventas contra meses disponibles en dim_inflacion_ipc.",
+        decision: "Documentar meses sin IPC y resolverlos en ETL con índice 1.0 y bandera tiene_ipc.",
+        porque: "Cada venta necesita un índice mensual para precios reales; las faltantes deben quedar auditables.",
+        estado: "Revisar/Justificar",
+        fuente: "03_EDA_nivel_2, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Cobertura tipo de cambio",
+        tipo: "Cobertura diaria",
+        cambio: "Se compararon fechas de ventas contra días con cotización.",
+        decision: "Aplicar forward fill en ETL para fines de semana y feriados.",
+        porque: "Olist tiene ventas todos los días, pero el mercado cambiario no publica cotización diaria en días no hábiles.",
+        estado: "Revisar/Justificar",
+        fuente: "03_EDA_nivel_2, 04_ETL"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "Categorías Olist/Superstore",
+        tipo: "Mapeo conceptual",
+        cambio: "Se compararon categorías principales de ambas fuentes.",
+        decision: "Usar equivalencias aproximadas como guía para márgenes y referencias comerciales.",
+        porque: "Las fuentes no comparten taxonomía; se requiere una lectura común para cruzar rentabilidad y categorías.",
+        estado: "Advertencia",
+        fuente: "03_EDA_nivel_2"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "CACE",
+        tipo: "Benchmark",
+        cambio: "Se inspeccionaron archivos CACE disponibles y KPIs macro.",
+        decision: "Usar CACE para calibrar variables argentinas como canal, medios de pago y logística.",
+        porque: "Aporta contexto local para que la simulación omnicanal sea coherente con Argentina.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2, 05_ETL_integracion"
+      },
+      {
+        etapa: "EDA Nivel 2",
+        transaccion: "FactVentas preliminar",
+        tipo: "Prueba funcional",
+        cambio: "Se armó una base preliminar con orders delivered, items, products, traducción y columnas temporales.",
+        decision: "Confirmar que la tabla principal puede construirse antes del ETL formal.",
+        porque: "Reduce el riesgo de llegar al ETL con joins rotos o métricas imposibles de calcular.",
+        estado: "OK",
+        fuente: "03_EDA_nivel_2"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactVentas",
+        tipo: "Filtro transaccional",
+        cambio: "Se filtraron órdenes con order_status = delivered.",
+        decision: "Excluir estados no concretados de la tabla final.",
+        porque: "La tabla de hechos debe representar ventas reales, no intención de compra ni pedidos cancelados.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactVentas",
+        tipo: "Joins",
+        cambio: "Se aplicaron joins en secuencia: orders + items inner, productos left, traducción left.",
+        decision: "Cambiar la granularidad a ítem vendido y conservar ventas aunque falte categoría.",
+        porque: "Permite análisis por producto/vendedor sin perder facturación por datos descriptivos incompletos.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactVentas",
+        tipo: "Normalización temporal",
+        cambio: "Se creó fecha sin hora y columnas anio, mes y trimestre.",
+        decision: "Usar fecha diaria para tipo de cambio y anio/mes para IPC.",
+        porque: "Cada fuente económica tiene una granularidad distinta: dólar diario e IPC mensual.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "Moneda",
+        tipo: "Conversión",
+        cambio: "Se convirtió price_brl y freight_brl a ARS usando ARS/USD y BRL_PER_USD = 3.3.",
+        decision: "Crear price_ars, freight_ars, ars_por_usd y tipo_cambio.",
+        porque: "El modelo argentino necesita valores en pesos; se usó USD como moneda puente por disponibilidad de serie ARS/USD.",
+        estado: "Revisar/Justificar",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "Tipo de cambio",
+        tipo: "Imputación",
+        cambio: "Se generó un rango diario completo y se completaron cotizaciones faltantes con forward fill.",
+        decision: "Usar el último valor conocido para días sin mercado.",
+        porque: "Es una práctica habitual para series financieras cuando faltan fines de semana o feriados.",
+        estado: "Advertencia",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "IPC",
+        tipo: "Índice acumulado",
+        cambio: "Se creó factor_mensual = 1 + ipc_nivel_general/100 e indice_ipc_acum con cumprod.",
+        decision: "Deflactar precios nominales a pesos constantes base diciembre 2016.",
+        porque: "Permite comparar ventas de diferentes meses sin confundir crecimiento real con inflación.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "IPC",
+        tipo: "Imputación",
+        cambio: "Para meses sin IPC se completó indice_ipc_acum = 1.0 e ipc_nivel_general = 0.0.",
+        decision: "Agregar tiene_ipc para identificar filas sin cobertura INDEC.",
+        porque: "El período septiembre-diciembre 2016 no tenía IPC disponible; la bandera permite auditar o filtrar esos casos.",
+        estado: "Revisar/Justificar",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactVentas",
+        tipo: "Validación final",
+        cambio: "Se revisaron nulos en columnas críticas: order_id, product_id, fecha, price_brl, price_ars y price_ars_real.",
+        decision: "Validar antes de guardar fact_ventas.csv.",
+        porque: "Nulos en columnas de identificación o facturación romperían medidas SUM/AVG del dashboard.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactVentas",
+        tipo: "Guardado",
+        cambio: "Se seleccionaron columnas finales y se exportó datos/04_procesados/fact_ventas.csv.",
+        decision: "Materializar la tabla principal con precios BRL, ARS nominal y ARS real.",
+        porque: "Deja un insumo estable para Power BI y para la integración posterior.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "FactVentasFinal",
+        tipo: "Enriquecimiento",
+        cambio: "Se tomó fact_ventas como base y se agregaron CanalID, ClienteID, SucursalID, medio_pago, cuotas y logística.",
+        decision: "Generar fact_ventas_final.csv con contexto argentino sintético.",
+        porque: "La tabla original ya tenía precios reales, pero faltaba contexto omnicanal para responder preguntas de negocio local.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Canales",
+        tipo: "Simulación calibrada",
+        cambio: "Se asignó CanalID con pesos definidos para la operación omnicanal.",
+        decision: "Distribuir ventas entre tienda física, web, marketplace y app.",
+        porque: "Permite analizar facturación por canal sin perder la base económica construida en FactVentas.",
+        estado: "Revisar/Justificar",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Clientes",
+        tipo: "Asignación sintética",
+        cambio: "Se asignó ClienteID a cada venta a partir de DimClientesAr.",
+        decision: "Vincular ventas con clientes argentinos sintéticos.",
+        porque: "Habilita segmentación, geografía y análisis de comportamiento sin datos personales reales.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Sucursales",
+        tipo: "Regla condicional",
+        cambio: "SucursalID se asignó principalmente a ventas de canal físico; otros canales pueden quedar sin sucursal.",
+        decision: "Respetar que no toda venta digital necesita sucursal asociada.",
+        porque: "Evita forzar relaciones falsas y mantiene coherencia operacional por canal.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Medios de pago",
+        tipo: "Simulación calibrada",
+        cambio: "Se generó medio_pago usando distribuciones CACE.",
+        decision: "Usar medios argentinos sintéticos en lugar de pagos Olist.",
+        porque: "Permite estudiar comportamiento local de pagos con una distribución más representativa del mercado argentino.",
+        estado: "Revisar/Justificar",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Cuotas",
+        tipo: "Regla condicional",
+        cambio: "nro_cuotas depende de medio_pago; tarjeta de crédito puede tomar 1, 3, 6, 10 o 15 cuotas.",
+        decision: "Asignar cuotas solo donde corresponde.",
+        porque: "El financiamiento no aplica igual a todos los medios de pago y debe conservar lógica comercial.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Logística",
+        tipo: "Simulación calibrada",
+        cambio: "Se generaron tipo_entrega y plazo_entrega con distribuciones de benchmarks CACE.",
+        decision: "Incorporar logística local a la tabla final.",
+        porque: "Habilita cruces entre canal, entrega, plazo, venta y precio real.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Cantidad",
+        tipo: "Definición de hecho",
+        cambio: "Se asignó cantidad = 1.",
+        decision: "Mantener una fila por ítem vendido.",
+        porque: "La granularidad ya representa cada ítem; sumar cantidad cuenta unidades vendidas.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "PeriodoID",
+        tipo: "Clave relacional",
+        cambio: "Se creó PeriodoID = anio * 100 + mes en FactVentasFinal.",
+        decision: "Usar PeriodoID para relacionar ventas con DimInflacionIpc en Power BI.",
+        porque: "Power BI trabaja mejor con una clave compartida explícita que con una relación compuesta anio + mes.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "DimClientesAr",
+        tipo: "Merge cascado",
+        cambio: "Se agregó GeografiaID con match por provincia+ciudad y fallback por provincia.",
+        decision: "Completar la relación geográfica de clientes.",
+        porque: "Permite mapas y filtros por provincia incluso cuando no existe coincidencia exacta de ciudad.",
+        estado: "Advertencia",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "DimClientesAr",
+        tipo: "Validación de cobertura",
+        cambio: "Se contaron clientes con y sin GeografiaID luego del merge.",
+        decision: "Reportar provincias sin match si existieran.",
+        porque: "La dimensión geográfica es crítica para visualizaciones por ubicación; los faltantes deben ser visibles.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "DimInflacionIpc",
+        tipo: "Clave relacional",
+        cambio: "Se agregó PeriodoID también a dim_inflacion_ipc.csv.",
+        decision: "Alinear la dimensión IPC con FactVentasFinal.",
+        porque: "Ambas tablas necesitan la misma clave para crear una relación estándar en Power BI.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "DimInflacionIpc",
+        tipo: "Validación de cobertura",
+        cambio: "Se verificó que todos los PeriodoID de FactVentasFinal estén cubiertos por DimInflacionIpc.",
+        decision: "Avisar períodos sin IPC si aparecen.",
+        porque: "Una relación temporal incompleta dejaría ventas sin contexto inflacionario en el modelo.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Power BI",
+        tipo: "Modelado",
+        cambio: "Se documentaron relaciones finales: FactVentasFinal con DimCanal, DimClientesAr, DimSucursalesAr y DimInflacionIpc.",
+        decision: "Preparar el modelo para análisis omnicanal y económico.",
+        porque: "Las relaciones claras reducen ambigüedad y evitan medidas inconsistentes en el dashboard.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      },
+      {
+        etapa: "ETL Integración",
+        transaccion: "Archivos finales",
+        tipo: "Guardado",
+        cambio: "Se exportaron fact_ventas_final.csv, dim_clientes_ar.csv y dim_inflacion_ipc.csv en datos/04_procesados.",
+        decision: "Centralizar los archivos listos para consumo analítico.",
+        porque: "Facilita Power BI y evita depender de notebooks ejecutados en memoria.",
+        estado: "OK",
+        fuente: "05_ETL_integracion"
+      }
+    ];
+
+    const stageClass = {
+      "EDA Nivel 1": "eda1",
+      "EDA Nivel 2": "eda2",
+      "ETL": "etl",
+      "ETL Integración": "integracion"
+    };
+
+    const statusClass = {
+      "OK": "ok",
+      "Advertencia": "warn",
+      "Revisar/Justificar": "review"
+    };
+
+    function formulaFor(record) {
+      const key = `${record.etapa}|${record.transaccion}|${record.tipo}`;
+      const formulas = {
+        "EDA Nivel 1|Diagnóstico general|Validación estructural": "diagnostico(df, col_clave): shape, dtypes, isna().sum(), duplicated().sum(), describe()",
+        "EDA Nivel 1|Orders|Validación de clave": "df_orders['order_id'].is_unique; value_counts('order_status')",
+        "EDA Nivel 1|Order items|Validación de granularidad": "df_items.duplicated('order_id').sum(); granularidad = 1 fila por item",
+        "EDA Nivel 1|Order items|Validación de valores": "price.isna(); price <= 0; price.describe(); price.quantile()",
+        "EDA Nivel 1|Pagos|Cambio de alcance": "value_counts('payment_type'); cobertura por order_id; reemplazo con rng.choice() en integración",
+        "EDA Nivel 1|Productos|Validación de nulos": "df_products.isna().sum(); fillna('other') en category_en",
+        "EDA Nivel 1|Traducción categorías|Lookup": "merge(df_translation, on='product_category_name', how='left')",
+        "EDA Nivel 1|Superstore|Validación de referencia": "margen = Profit / Sales; describe(['Sales','Profit','Discount'])",
+        "EDA Nivel 1|IPC|Limpieza de archivo": "read_excel(); pd.to_datetime(errors='coerce'); transpose(); dropna(subset=['ipc_nivel_general'])",
+        "EDA Nivel 1|IPC|Cambio de estructura": "anio = fecha.dt.year; mes = fecha.dt.month",
+        "EDA Nivel 1|Tipo de cambio|Selección de columna": "df_tc[col].notna().sum(); columna elegida = dolar_estadounidense",
+        "EDA Nivel 1|Reviews|Validación opcional": "review_score.value_counts(); isna().sum(); duplicated('order_id').sum()",
+        "EDA Nivel 2|Orders + Items|Integridad referencial": "orders_del.merge(items, on='order_id', how='inner')",
+        "EDA Nivel 2|Items + Products|Integridad referencial": "items.merge(products, on='product_id', how='left')",
+        "EDA Nivel 2|Productos + Traducción|Join de lookup": "base.merge(translation, on='product_category_name', how='left').fillna('other')",
+        "EDA Nivel 2|Ventas mensuales|Validación temporal": "groupby(['anio','mes']).size(); fecha.dt.to_period('M')",
+        "EDA Nivel 2|Ticket promedio|Validación de distribución": "ticket = groupby('order_id')['price'].sum(); mean(), median(), min(), max()",
+        "EDA Nivel 2|Cobertura IPC|Cobertura temporal": "set(meses_ventas) - set(meses_ipc)",
+        "EDA Nivel 2|Cobertura tipo de cambio|Cobertura diaria": "set(fechas_ventas) - set(fechas_tc); ffill() en ETL",
+        "EDA Nivel 2|Categorías Olist/Superstore|Mapeo conceptual": "value_counts() por categoría; mapeo manual de equivalencias comerciales",
+        "EDA Nivel 2|CACE|Benchmark": "lectura de CSV CACE; distribuciones usadas como probabilidades p en rng.choice()",
+        "EDA Nivel 2|FactVentas preliminar|Prueba funcional": "orders_del -> merge(items inner) -> merge(products left) -> merge(translation left)",
+        "ETL|FactVentas|Filtro transaccional": "orders_del = df_orders[df_orders['order_status'] == 'delivered']",
+        "ETL|FactVentas|Joins": "merge(items, how='inner'); merge(products, how='left'); merge(translation, how='left')",
+        "ETL|FactVentas|Normalización temporal": "fecha = order_purchase_timestamp.dt.normalize(); anio/mes/trimestre = .dt.year/.dt.month/.dt.quarter",
+        "ETL|Moneda|Conversión": "tipo_cambio = ars_por_usd / 3.3; price_ars = price_brl * tipo_cambio; freight_ars = freight_brl * tipo_cambio",
+        "ETL|Tipo de cambio|Imputación": "pd.date_range(); merge(how='left'); ars_por_usd = ars_por_usd.ffill()",
+        "ETL|IPC|Índice acumulado": "factor_mensual = 1 + ipc_nivel_general / 100; indice_ipc_acum = factor_mensual.cumprod(); price_ars_real = price_ars / indice_ipc_acum",
+        "ETL|IPC|Imputación": "tiene_ipc = indice_ipc_acum.notna(); fillna({'indice_ipc_acum': 1.0, 'ipc_nivel_general': 0.0})",
+        "ETL|FactVentas|Validación final": "for col in cols_criticas: fact_ventas[col].isna().sum()",
+        "ETL|FactVentas|Guardado": "fact_ventas[columnas_finales].to_csv('fact_ventas.csv', encoding='utf-8-sig')",
+        "ETL Integración|FactVentasFinal|Enriquecimiento": "base = fact_ventas.copy(); agregar ids y variables sintéticas; seleccionar cols_final",
+        "ETL Integración|Canales|Simulación calibrada": "CanalID = rng.choice([1,2,3,4], p=[0.08,0.25,0.20,0.47])",
+        "ETL Integración|Clientes|Asignación sintética": "ClienteID = rng.choice(dim_clientes['ClienteID'].values, size=n)",
+        "ETL Integración|Sucursales|Regla condicional": "mask_fisica = CanalID == 1; SucursalID solo para ventas físicas",
+        "ETL Integración|Medios de pago|Simulación calibrada": "medio_pago = rng.choice(medios, p=p_medio)",
+        "ETL Integración|Cuotas|Regla condicional": "nro_cuotas = 1; si medio_pago == 'tarjeta_credito': rng.choice([1,3,6,10,15], p=p_cuotas)",
+        "ETL Integración|Logística|Simulación calibrada": "tipo_entrega = rng.choice(tipos_entrega, p=p_entrega); plazo_entrega = rng.choice(plazos, p=p_plazos)",
+        "ETL Integración|Cantidad|Definición de hecho": "cantidad = 1",
+        "ETL Integración|PeriodoID|Clave relacional": "PeriodoID = anio * 100 + mes",
+        "ETL Integración|DimClientesAr|Merge cascado": "merge por ['provincia','ciudad']; merge por 'provincia'; GeografiaID.fillna(GeografiaID_prov).astype('Int64')",
+        "ETL Integración|DimClientesAr|Validación de cobertura": "con_geo = GeografiaID.notna().sum(); sin_geo = GeografiaID.isna().sum()",
+        "ETL Integración|DimInflacionIpc|Clave relacional": "dim_inflacion['PeriodoID'] = dim_inflacion['anio'] * 100 + dim_inflacion['mes']",
+        "ETL Integración|DimInflacionIpc|Validación de cobertura": "sin_cobertura = set(fact_ventas_final['PeriodoID']) - set(dim_inflacion['PeriodoID'])",
+        "ETL Integración|Power BI|Modelado": "Relaciones por claves: CanalID, ClienteID, SucursalID, PeriodoID, GeografiaID",
+        "ETL Integración|Archivos finales|Guardado": "to_csv(): fact_ventas_final.csv, dim_clientes_ar.csv, dim_inflacion_ipc.csv"
+      };
+      return formulas[key] || record.fuente;
+    }
+
+    const filters = {
+      search: document.querySelector("#search"),
+      etapa: document.querySelector("#stageFilter"),
+      transaccion: document.querySelector("#transactionFilter"),
+      tipo: document.querySelector("#actionFilter"),
+      estado: document.querySelector("#statusFilter")
+    };
+
+    const rows = document.querySelector("#rows");
+    const empty = document.querySelector("#empty");
+
+    function uniqueValues(key) {
+      return [...new Set(records.map((record) => record[key]))].sort((a, b) => a.localeCompare(b, "es"));
+    }
+
+    function fillSelect(select, values) {
+      values.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
+    fillSelect(filters.etapa, uniqueValues("etapa"));
+    fillSelect(filters.transaccion, uniqueValues("transaccion"));
+    fillSelect(filters.tipo, uniqueValues("tipo"));
+    fillSelect(filters.estado, uniqueValues("estado"));
+
+    function matches(record) {
+      const query = filters.search.value.trim().toLowerCase();
+      const haystack = Object.values(record).join(" ").toLowerCase();
+      return (!query || haystack.includes(query)) &&
+        (!filters.etapa.value || record.etapa === filters.etapa.value) &&
+        (!filters.transaccion.value || record.transaccion === filters.transaccion.value) &&
+        (!filters.tipo.value || record.tipo === filters.tipo.value) &&
+        (!filters.estado.value || record.estado === filters.estado.value);
+    }
+
+    function render() {
+      const visible = records.filter(matches);
+      rows.innerHTML = "";
+      visible.forEach((record) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="pill ${stageClass[record.etapa]}">${record.etapa}</span></td>
+          <td><strong>${record.transaccion}</strong><br><span class="source">${record.tipo}</span></td>
+          <td>${record.cambio}</td>
+          <td class="action">${record.decision}</td>
+          <td class="why">${record.porque}</td>
+          <td><span class="pill ${statusClass[record.estado]}">${record.estado}</span></td>
+          <td class="source">${formulaFor(record)}</td>
+        `;
+        rows.appendChild(tr);
+      });
+
+      document.querySelector("#metricTotal").textContent = records.length;
+      document.querySelector("#metricShown").textContent = visible.length;
+      document.querySelector("#metricEtl").textContent = records.filter((record) => record.etapa.includes("ETL")).length;
+      document.querySelector("#metricReview").textContent = records.filter((record) => record.estado !== "OK").length;
+      empty.style.display = visible.length ? "none" : "block";
+    }
+
+    Object.values(filters).forEach((control) => control.addEventListener("input", render));
+
+    document.querySelector("#clearFilters").addEventListener("click", () => {
+      filters.search.value = "";
+      filters.etapa.value = "";
+      filters.transaccion.value = "";
+      filters.tipo.value = "";
+      filters.estado.value = "";
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,15 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1180" viewBox="0 0 1920 1180" role="img" aria-labelledby="title desc">
-  <title id="title">RetailIQ360 - Modelo de relaciones: esquema estrella y galaxia</title>
-  <desc id="desc">Diagrama de tablas y relaciones del modelo RetailIQ360. Muestra tablas de hechos, dimensiones, relaciones formales N:1 y tablas CACE de referencia sin relaciones formales.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200" role="img" aria-labelledby="title desc">
+  <title id="title">RetailIQ360 - Modelo de relaciones: esquema galaxia</title>
+  <desc id="desc">Diagrama de tablas y relaciones del modelo RetailIQ360. Muestra dos tablas de hechos (fact_ventas_final y fact_precios_comp) compartiendo dimensiones comunes (dim_tiempo, dim_canal_ar), con dim_categorias como tabla puente entre dim_productos y fact_precios_comp.</desc>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
       <path d="M1 1 L9 5 L1 9 Z" fill="#49a6ff"/>
     </marker>
     <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
       <path d="M1 1 L9 5 L1 9 Z" fill="#52d273"/>
-    </marker>
-    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M1 1 L9 5 L1 9 Z" fill="#f5a623"/>
     </marker>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.32"/>
@@ -19,8 +16,7 @@
       .grid { stroke: #172038; stroke-width: 1; opacity: .65; }
       .title { fill: #eef6ff; font: 700 31px Segoe UI, Arial, sans-serif; }
       .subtitle { fill: #9fb2cc; font: 400 15px Segoe UI, Arial, sans-serif; }
-      .zone-ar { fill: #101a31; stroke: #2d6cdf; stroke-width: 2; opacity: .96; }
-      .zone-olist { fill: #10221a; stroke: #25a55f; stroke-width: 2; opacity: .96; }
+      .zone-main { fill: #0e1728; stroke: #2d6cdf; stroke-width: 2; opacity: .96; }
       .zone-cace { fill: #261c08; stroke: #c4871c; stroke-width: 2; opacity: .96; }
       .zone-title { font: 700 18px Segoe UI, Arial, sans-serif; }
       .zone-note { font: 400 13px Segoe UI, Arial, sans-serif; }
@@ -37,13 +33,12 @@
       .col { fill: #c9d7ea; font: 400 13px Consolas, Segoe UI, monospace; }
       .pk { fill: #ffd966; font: 700 13px Consolas, Segoe UI, monospace; }
       .fk { fill: #8fd3ff; font: 700 13px Consolas, Segoe UI, monospace; }
-      .calc { fill: #a7f3b7; font: 700 13px Consolas, Segoe UI, monospace; }
       .line-blue { fill: none; stroke: #49a6ff; stroke-width: 3; marker-end: url(#arrow-blue); }
       .line-green { fill: none; stroke: #52d273; stroke-width: 3; marker-end: url(#arrow-green); }
       .rel-label { fill: #d8e8ff; font: 700 12px Segoe UI, Arial, sans-serif; }
       .rel-bg { fill: #0b1020; stroke: #23324f; stroke-width: 1; }
       .legend-text { fill: #c8d6eb; font: 400 14px Segoe UI, Arial, sans-serif; }
-      .note { fill: #b4c4dc; font: 400 14px Segoe UI, Arial, sans-serif; }
+      .note { fill: #b4c4dc; font: 400 13px Segoe UI, Arial, sans-serif; }
     </style>
   </defs>
 
@@ -54,219 +49,304 @@
   </g>
 
   <text x="960" y="46" text-anchor="middle" class="title">RetailIQ360 - Modelo de relaciones de tablas</text>
-  <text x="960" y="72" text-anchor="middle" class="subtitle">Lectura rapida: una galaxia combina varias tablas de hechos; cada hecho conserva su propia estrella de dimensiones.</text>
+  <text x="960" y="72" text-anchor="middle" class="subtitle">Esquema galaxia: dos tablas de hechos (fact_ventas_final y fact_precios_comp) con dimensiones compartidas y dim_categorias como tabla puente.</text>
 
+  <!-- Main schema zone -->
   <g transform="translate(40 90)">
-    <rect width="1080" height="770" rx="18" class="zone-ar"/>
-    <text x="22" y="34" class="zone-title" fill="#8dc1ff">Constelacion AR sintetica</text>
-    <text x="22" y="56" class="zone-note" fill="#b7c9e6">Estrella principal alrededor de fact_ventas_base_ar, con fact_precios_comp compartiendo dim_canal_ar.</text>
-  </g>
-  <g transform="translate(1140 90)">
-    <rect width="740" height="770" rx="18" class="zone-olist"/>
-    <text x="22" y="34" class="zone-title" fill="#8df0aa">Constelacion Olist procesada</text>
-    <text x="22" y="56" class="zone-note" fill="#b9dfc5">Hecho de ventas historicas relacionado por periodo con la dimension de inflacion.</text>
+    <rect width="1840" height="790" rx="18" class="zone-main"/>
+    <text x="22" y="34" class="zone-title" fill="#8dc1ff">Esquema Galaxia — RetailIQ360</text>
+    <text x="22" y="56" class="zone-note" fill="#b7c9e6">Dos tablas de hechos: fact_ventas_final (ventas Olist en ARS con contexto argentino) y fact_precios_comp (benchmarks de precios 2022-2024). Dimensiones compartidas: dim_tiempo y dim_canal_ar.</text>
   </g>
 
-  <!-- Formal relationships behind tables -->
-  <path class="line-blue" d="M276 310 C350 258 430 245 510 278"/>
-  <rect x="365" y="242" width="84" height="22" rx="5" class="rel-bg"/>
-  <text x="407" y="258" text-anchor="middle" class="rel-label">ClienteID</text>
+  <!-- ══ RELATIONSHIPS (drawn before tables so they render below) ══ -->
 
-  <path class="line-blue" d="M276 655 C356 620 430 520 510 408"/>
-  <rect x="357" y="537" width="92" height="22" rx="5" class="rel-bg"/>
-  <text x="403" y="553" text-anchor="middle" class="rel-label">SucursalID</text>
+  <!-- dim_tiempo → fact_ventas_final via fecha (vertical top) -->
+  <path class="line-blue" d="M810 258 C810 268 780 272 780 282"/>
+  <rect x="764" y="246" width="56" height="22" rx="5" class="rel-bg"/>
+  <text x="792" y="262" text-anchor="middle" class="rel-label">fecha</text>
 
-  <path class="line-blue" d="M850 286 C785 270 720 278 666 302"/>
-  <rect x="738" y="255" width="72" height="22" rx="5" class="rel-bg"/>
-  <text x="774" y="271" text-anchor="middle" class="rel-label">CanalID</text>
+  <!-- dim_clientes_ar → fact_ventas_final via ClienteID -->
+  <path class="line-blue" d="M312 310 C450 310 590 350 660 370"/>
+  <rect x="425" y="295" width="84" height="22" rx="5" class="rel-bg"/>
+  <text x="467" y="311" text-anchor="middle" class="rel-label">ClienteID</text>
 
-  <path class="line-blue" d="M164 464 C210 496 250 554 276 613"/>
-  <rect x="189" y="532" width="98" height="22" rx="5" class="rel-bg"/>
-  <text x="238" y="548" text-anchor="middle" class="rel-label">GeografiaID</text>
+  <!-- dim_canal_ar → fact_ventas_final via CanalID (right) -->
+  <path class="line-blue" d="M1400 290 C1280 290 1060 330 960 350"/>
+  <rect x="1178" y="275" width="72" height="22" rx="5" class="rel-bg"/>
+  <text x="1214" y="291" text-anchor="middle" class="rel-label">CanalID</text>
 
-  <path class="line-blue" d="M922 380 C922 430 922 478 922 525"/>
-  <rect x="888" y="449" width="72" height="22" rx="5" class="rel-bg"/>
-  <text x="924" y="465" text-anchor="middle" class="rel-label">CanalID</text>
+  <!-- dim_sucursales_ar → fact_ventas_final via SucursalID (right-bottom) -->
+  <path class="line-blue" d="M1400 508 C1280 490 1060 430 960 410"/>
+  <rect x="1172" y="450" width="98" height="22" rx="5" class="rel-bg"/>
+  <text x="1221" y="466" text-anchor="middle" class="rel-label">SucursalID</text>
 
-  <path class="line-green" d="M1478 329 C1478 405 1478 482 1478 558"/>
-  <rect x="1435" y="442" width="88" height="22" rx="5" class="rel-bg"/>
-  <text x="1479" y="458" text-anchor="middle" class="rel-label">anio_mes</text>
+  <!-- dim_inflacion_ipc → fact_ventas_final via PeriodoID (bottom-left) -->
+  <path class="line-green" d="M582 580 C640 540 690 480 720 430"/>
+  <rect x="604" y="497" width="84" height="22" rx="5" class="rel-bg"/>
+  <text x="646" y="513" text-anchor="middle" class="rel-label">PeriodoID</text>
 
-  <!-- Table helper groups -->
-  <g class="dim-blue" transform="translate(70 390)" filter="url(#shadow)">
-    <rect class="body" width="190" height="112" rx="10"/>
-    <rect class="head" width="190" height="38" rx="10"/>
-    <path d="M0 30H190V44H0Z" fill="#174b93"/>
+  <!-- dim_geografia_ar → dim_clientes_ar via GeografiaID -->
+  <path class="line-blue" d="M206 530 C200 480 210 430 218 398"/>
+  <rect x="155" y="460" width="98" height="22" rx="5" class="rel-bg"/>
+  <text x="204" y="476" text-anchor="middle" class="rel-label">GeografiaID</text>
+
+  <!-- dim_geografia_ar → dim_sucursales_ar via GeografiaID -->
+  <path class="line-blue" d="M310 610 C680 640 1180 590 1400 556"/>
+  <rect x="792" y="624" width="98" height="22" rx="5" class="rel-bg"/>
+  <text x="841" y="640" text-anchor="middle" class="rel-label">GeografiaID</text>
+
+  <!-- fact_precios_comp → dim_canal_ar via CanalID -->
+  <path class="line-blue" d="M1626 454 C1620 400 1620 360 1610 336"/>
+  <rect x="1583" y="398" width="72" height="22" rx="5" class="rel-bg"/>
+  <text x="1619" y="414" text-anchor="middle" class="rel-label">CanalID</text>
+
+  <!-- dim_productos → fact_ventas_final via product_id -->
+  <path class="line-blue" d="M1140 184 C1050 184 1010 566 960 566"/>
+  <rect x="1010" y="356" width="88" height="22" rx="5" class="rel-bg"/>
+  <text x="1054" y="372" text-anchor="middle" class="rel-label">product_id</text>
+
+  <!-- dim_categorias → dim_productos via categoria_es (vertical) -->
+  <path class="line-blue" d="M1260 490 C1260 430 1260 350 1260 285"/>
+  <rect x="1200" y="376" width="104" height="22" rx="5" class="rel-bg"/>
+  <text x="1252" y="392" text-anchor="middle" class="rel-label">categoria_es</text>
+
+  <!-- dim_categorias → fact_precios_comp via categoria -->
+  <path class="line-blue" d="M1380 550 C1500 550 1570 414 1626 414"/>
+  <rect x="1472" y="484" width="72" height="22" rx="5" class="rel-bg"/>
+  <text x="1508" y="500" text-anchor="middle" class="rel-label">categoria</text>
+
+  <!-- dim_inflacion_ipc → fact_precios_comp via PeriodoID -->
+  <path class="line-green" d="M622 566 C950 566 1500 474 1626 474"/>
+  <rect x="1078" y="513" width="84" height="22" rx="5" class="rel-bg"/>
+  <text x="1120" y="529" text-anchor="middle" class="rel-label">PeriodoID</text>
+
+  <!-- dim_tiempo → fact_precios_comp via fecha_relevamiento -->
+  <path class="line-blue" d="M920 206 C1200 206 1560 434 1626 434"/>
+  <rect x="1186" y="267" width="136" height="22" rx="5" class="rel-bg"/>
+  <text x="1254" y="283" text-anchor="middle" class="rel-label">fecha_relevamiento</text>
+
+  <!-- ══ TABLES ══ -->
+
+  <!-- dim_tiempo — top center -->
+  <g class="dim-blue" transform="translate(700 110)" filter="url(#shadow)">
+    <rect class="body" width="220" height="148" rx="10"/>
+    <rect class="head" width="220" height="38" rx="10"/>
+    <path d="M0 30H220V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_tiempo</text>
+    <text x="12" y="55" class="box-sub">3.288 filas  ·  04_procesados  ·  2016-2024  ·  Date Table</text>
+    <text x="12" y="76" class="pk">PK TiempoID (YYYYMMDD)</text>
+    <text x="12" y="96" class="pk">DT fecha</text>
+    <text x="12" y="116" class="col">anio, semestre, trimestre, mes</text>
+    <text x="12" y="136" class="col">nombre_mes, PeriodoID</text>
+  </g>
+
+  <!-- dim_clientes_ar — left -->
+  <g class="dim-blue" transform="translate(100 220)" filter="url(#shadow)">
+    <rect class="body" width="212" height="178" rx="10"/>
+    <rect class="head" width="212" height="38" rx="10"/>
+    <path d="M0 30H212V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_clientes_ar</text>
+    <text x="12" y="55" class="box-sub">10.000 filas  ·  04_procesados</text>
+    <text x="12" y="76" class="pk">PK ClienteID</text>
+    <text x="12" y="96" class="fk">FK GeografiaID</text>
+    <text x="12" y="116" class="col">nombre, email, telefono</text>
+    <text x="12" y="136" class="col">provincia, ciudad, region</text>
+    <text x="12" y="156" class="col">nse, rango_edad, genero</text>
+  </g>
+
+  <!-- dim_geografia_ar — left bottom -->
+  <g class="dim-blue" transform="translate(100 530)" filter="url(#shadow)">
+    <rect class="body" width="210" height="132" rx="10"/>
+    <rect class="head" width="210" height="38" rx="10"/>
+    <path d="M0 30H210V44H0Z" fill="#174b93"/>
     <text x="12" y="24" class="box-title">dim_geografia_ar</text>
-    <text x="12" y="55" class="box-sub">67 filas - dimension</text>
+    <text x="12" y="55" class="box-sub">67 filas  ·  03_sinteticos</text>
     <text x="12" y="76" class="pk">PK GeografiaID</text>
     <text x="12" y="96" class="col">region, provincia, ciudad</text>
+    <text x="12" y="116" class="col">zona, peso_facturacion</text>
   </g>
 
-  <g class="dim-blue" transform="translate(70 220)" filter="url(#shadow)">
-    <rect class="body" width="206" height="142" rx="10"/>
-    <rect class="head" width="206" height="38" rx="10"/>
-    <path d="M0 30H206V44H0Z" fill="#174b93"/>
-    <text x="12" y="24" class="box-title">dim_clientes_ar</text>
-    <text x="12" y="55" class="box-sub">10.000 filas - dimension</text>
-    <text x="12" y="76" class="pk">PK ClienteID</text>
-    <text x="12" y="96" class="col">provincia, ciudad, region</text>
-    <text x="12" y="116" class="col">nse, edad, genero, RFM</text>
-  </g>
-
-  <g class="dim-blue" transform="translate(70 610)" filter="url(#shadow)">
-    <rect class="body" width="206" height="142" rx="10"/>
-    <rect class="head" width="206" height="38" rx="10"/>
-    <path d="M0 30H206V44H0Z" fill="#174b93"/>
-    <text x="12" y="24" class="box-title">dim_sucursales_ar</text>
-    <text x="12" y="55" class="box-sub">50 filas - dimension</text>
-    <text x="12" y="76" class="pk">PK SucursalID</text>
-    <text x="12" y="96" class="fk">FK GeografiaID</text>
-    <text x="12" y="116" class="col">tipo, m2_ventas, empleados</text>
-  </g>
-
-  <g class="fact" transform="translate(510 250)" filter="url(#shadow)">
-    <rect class="body" width="230" height="214" rx="12"/>
-    <rect class="head" width="230" height="44" rx="12"/>
-    <path d="M0 34H230V50H0Z" fill="#9a1837"/>
-    <text x="14" y="27" class="box-title">fact_ventas_base_ar</text>
-    <text x="14" y="62" class="box-sub">150.000 filas - hecho AR</text>
+  <!-- fact_ventas_final — center -->
+  <g class="fact" transform="translate(660 282)" filter="url(#shadow)">
+    <rect class="body" width="300" height="298" rx="12"/>
+    <rect class="head" width="300" height="44" rx="12"/>
+    <path d="M0 34H300V50H0Z" fill="#9a1837"/>
+    <text x="14" y="27" class="box-title">fact_ventas_final</text>
+    <text x="14" y="62" class="box-sub">110.197 filas  ·  28 columnas  ·  04_procesados</text>
     <text x="14" y="84" class="pk">PK VentaID</text>
     <text x="14" y="104" class="fk">FK ClienteID</text>
     <text x="14" y="124" class="fk">FK CanalID</text>
-    <text x="14" y="144" class="fk">FK SucursalID</text>
-    <text x="14" y="164" class="col">fecha, medio_pago, cuotas</text>
-    <text x="14" y="184" class="col">tipo_entrega, plazo_entrega</text>
-    <text x="14" y="204" class="col">precio, costo, cantidad</text>
+    <text x="14" y="144" class="fk">FK SucursalID  (nulo si canal digital)</text>
+    <text x="14" y="164" class="fk">FK PeriodoID  →  dim_inflacion_ipc</text>
+    <text x="14" y="184" class="fk">FK fecha  →  dim_tiempo</text>
+    <text x="14" y="204" class="fk">FK product_id  →  dim_productos</text>
+    <text x="14" y="224" class="col">category_en, medio_pago, nro_cuotas</text>
+    <text x="14" y="244" class="col">tipo_entrega, plazo_entrega, cantidad</text>
+    <text x="14" y="264" class="col">precio_venta_brl  →  precio_venta_ars</text>
+    <text x="14" y="284" class="col">precio_venta_ars_real, tiene_ipc</text>
   </g>
 
-  <g class="dim-blue" transform="translate(850 230)" filter="url(#shadow)">
-    <rect class="body" width="206" height="150" rx="10"/>
-    <rect class="head" width="206" height="38" rx="10"/>
-    <path d="M0 30H206V44H0Z" fill="#174b93"/>
+  <!-- dim_canal_ar — right top -->
+  <g class="dim-blue" transform="translate(1400 200)" filter="url(#shadow)">
+    <rect class="body" width="210" height="148" rx="10"/>
+    <rect class="head" width="210" height="38" rx="10"/>
+    <path d="M0 30H210V44H0Z" fill="#174b93"/>
     <text x="12" y="24" class="box-title">dim_canal_ar</text>
-    <text x="12" y="55" class="box-sub">4 filas - dimension compartida</text>
+    <text x="12" y="55" class="box-sub">4 filas  ·  03_sinteticos</text>
     <text x="12" y="76" class="pk">PK CanalID</text>
-    <text x="12" y="96" class="col">Fisico / Online / Market</text>
+    <text x="12" y="96" class="col">Físico / Web / App / Marketplace</text>
     <text x="12" y="116" class="col">plataforma, flag_online</text>
-    <text x="12" y="136" class="col">peso_facturacion</text>
+    <text x="12" y="136" class="col">peso_facturacion (CACE)</text>
   </g>
 
-  <g class="fact" transform="translate(810 525)" filter="url(#shadow)">
-    <rect class="body" width="230" height="166" rx="12"/>
-    <rect class="head" width="230" height="44" rx="12"/>
-    <path d="M0 34H230V50H0Z" fill="#9a1837"/>
+  <!-- dim_sucursales_ar — right bottom -->
+  <g class="dim-blue" transform="translate(1400 438)" filter="url(#shadow)">
+    <rect class="body" width="210" height="162" rx="10"/>
+    <rect class="head" width="210" height="38" rx="10"/>
+    <path d="M0 30H210V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_sucursales_ar</text>
+    <text x="12" y="55" class="box-sub">50 filas  ·  03_sinteticos</text>
+    <text x="12" y="76" class="pk">PK SucursalID</text>
+    <text x="12" y="96" class="fk">FK GeografiaID</text>
+    <text x="12" y="116" class="col">nombre, tipo</text>
+    <text x="12" y="136" class="col">provincia, ciudad, region</text>
+    <text x="12" y="156" class="col">m2_ventas, empleados</text>
+  </g>
+
+  <!-- fact_precios_comp — far right -->
+  <g class="fact" transform="translate(1626 310)" filter="url(#shadow)">
+    <rect class="body" width="220" height="218" rx="12"/>
+    <rect class="head" width="220" height="44" rx="12"/>
+    <path d="M0 34H220V50H0Z" fill="#9a1837"/>
     <text x="14" y="27" class="box-title">fact_precios_comp</text>
-    <text x="14" y="62" class="box-sub">360 filas - hecho precios</text>
+    <text x="14" y="62" class="box-sub">360 filas  ·  04_procesados</text>
     <text x="14" y="84" class="pk">PK PrecioID</text>
-    <text x="14" y="104" class="fk">FK CanalID</text>
-    <text x="14" y="124" class="col">categoria, anio, mes</text>
-    <text x="14" y="144" class="col">precio_web, competencia</text>
+    <text x="14" y="104" class="fk">FK categoria  →  dim_categorias</text>
+    <text x="14" y="124" class="fk">FK fecha_relevamiento  →  dim_tiempo</text>
+    <text x="14" y="144" class="fk">FK CanalID  →  dim_canal_ar</text>
+    <text x="14" y="164" class="fk">FK PeriodoID  →  dim_inflacion_ipc</text>
+    <text x="14" y="184" class="col">precio_lista_ars, precio_web_ars</text>
+    <text x="14" y="204" class="col">precio_competencia, price_index</text>
   </g>
 
-  <g class="dim-green" transform="translate(1365 190)" filter="url(#shadow)">
-    <rect class="body" width="226" height="140" rx="10"/>
-    <rect class="head" width="226" height="38" rx="10"/>
-    <path d="M0 30H226V44H0Z" fill="#176b3a"/>
+  <!-- dim_inflacion_ipc — bottom center-left -->
+  <g class="dim-green" transform="translate(380 490)" filter="url(#shadow)">
+    <rect class="body" width="242" height="178" rx="10"/>
+    <rect class="head" width="242" height="38" rx="10"/>
+    <path d="M0 30H242V44H0Z" fill="#176b3a"/>
     <text x="12" y="24" class="box-title">dim_inflacion_ipc</text>
-    <text x="12" y="55" class="box-sub">111 filas - dimension tiempo IPC</text>
-    <text x="12" y="76" class="calc">anio + mes = anio_mes</text>
-    <text x="12" y="96" class="col">fecha, ipc_nivel_general</text>
-    <text x="12" y="116" class="col">ipc por rubro</text>
+    <text x="12" y="55" class="box-sub">111 filas  ·  04_procesados</text>
+    <text x="12" y="76" class="pk">PK PeriodoID  (anio×100+mes)</text>
+    <text x="12" y="96" class="col">fecha, anio, mes</text>
+    <text x="12" y="116" class="col">ipc_nivel_general</text>
+    <text x="12" y="136" class="col">ipc por rubro (5 rubros)</text>
+    <text x="12" y="156" class="col">indice_ipc_acum  (base dic-2016)</text>
   </g>
 
-  <g class="fact" transform="translate(1365 558)" filter="url(#shadow)">
-    <rect class="body" width="250" height="210" rx="12"/>
-    <rect class="head" width="250" height="44" rx="12"/>
-    <path d="M0 34H250V50H0Z" fill="#9a1837"/>
-    <text x="14" y="27" class="box-title">fact_ventas</text>
-    <text x="14" y="62" class="box-sub">110.197 filas - hecho Olist</text>
-    <text x="14" y="84" class="col">order_id, product_id, seller_id</text>
-    <text x="14" y="104" class="col">fecha, anio, mes, trimestre</text>
-    <text x="14" y="124" class="calc">anio_mes calculada</text>
-    <text x="14" y="144" class="col">category_en</text>
-    <text x="14" y="164" class="col">price_brl, price_ars</text>
-    <text x="14" y="184" class="col">ipc, price_ars_real</text>
+  <!-- dim_productos — center right -->
+  <g class="dim-blue" transform="translate(1140 100)" filter="url(#shadow)">
+    <rect class="body" width="240" height="185" rx="10"/>
+    <rect class="head" width="240" height="38" rx="10"/>
+    <path d="M0 30H240V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_productos</text>
+    <text x="12" y="55" class="box-sub">32.951 filas  ·  04_procesados</text>
+    <text x="12" y="76" class="pk">PK product_id</text>
+    <text x="12" y="96" class="fk">FK categoria_es → dim_categorias</text>
+    <text x="12" y="116" class="col">product_category_name</text>
+    <text x="12" y="136" class="col">category_en  (72 categorías Olist)</text>
+    <text x="12" y="156" class="col">peso, largo, alto, ancho</text>
+    <text x="12" y="176" class="col">volumen_cm3</text>
+  </g>
+
+  <!-- dim_categorias — bridge table, center right -->
+  <g class="dim-blue" transform="translate(1140 490)" filter="url(#shadow)">
+    <rect class="body" width="240" height="110" rx="10"/>
+    <rect class="head" width="240" height="38" rx="10"/>
+    <path d="M0 30H240V44H0Z" fill="#174b93"/>
+    <text x="12" y="24" class="box-title">dim_categorias  ·  tabla puente</text>
+    <text x="12" y="55" class="box-sub">10 filas  ·  04_procesados</text>
+    <text x="12" y="76" class="pk">PK CategoriaID</text>
+    <text x="12" y="96" class="col">categoria_es  (10 categorías CACE)</text>
   </g>
 
   <!-- CACE reference band -->
-  <g transform="translate(40 895)">
-    <rect width="1840" height="210" rx="18" class="zone-cace"/>
+  <g transform="translate(40 920)">
+    <rect width="1840" height="190" rx="18" class="zone-cace"/>
     <text x="22" y="34" class="zone-title" fill="#ffd083">Benchmarks CACE - tablas de referencia</text>
-    <text x="22" y="56" class="zone-note" fill="#e9c98c">No tienen relaciones formales en Power BI. Se comparan en visualizaciones por categoria, canal, region, medios de pago, logistica y perfil.</text>
+    <text x="22" y="56" class="zone-note" fill="#e9c98c">No tienen relaciones formales en Power BI. Se comparan en visualizaciones por categoría, canal, región, medios de pago, logística y perfil.</text>
   </g>
 
-  <g class="ref" transform="translate(70 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(70 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_01</text>
     <text x="10" y="47" class="col">kpis_macro</text>
     <text x="10" y="66" class="box-sub">KPI mercado</text>
   </g>
-  <g class="ref" transform="translate(235 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(235 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_02</text>
     <text x="10" y="47" class="col">categorias</text>
     <text x="10" y="66" class="box-sub">rubros y mix</text>
   </g>
-  <g class="ref" transform="translate(400 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(400 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_03a</text>
     <text x="10" y="47" class="col">conversion</text>
     <text x="10" y="66" class="box-sub">por categoria</text>
   </g>
-  <g class="ref" transform="translate(565 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(565 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_03b</text>
     <text x="10" y="47" class="col">ranking</text>
     <text x="10" y="66" class="box-sub">demanda</text>
   </g>
-  <g class="ref" transform="translate(730 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(730 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_04a</text>
     <text x="10" y="47" class="col">medios_pago</text>
     <text x="10" y="66" class="box-sub">oferta</text>
   </g>
-  <g class="ref" transform="translate(895 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(895 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_04b</text>
     <text x="10" y="47" class="col">cuotas</text>
     <text x="10" y="66" class="box-sub">financiacion</text>
   </g>
-  <g class="ref" transform="translate(1060 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(1060 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_05a</text>
     <text x="10" y="47" class="col">tipo_entrega</text>
     <text x="10" y="66" class="box-sub">logistica</text>
   </g>
-  <g class="ref" transform="translate(1225 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(1225 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_05b</text>
     <text x="10" y="47" class="col">plazos</text>
     <text x="10" y="66" class="box-sub">entrega</text>
   </g>
-  <g class="ref" transform="translate(1390 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(1390 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_06a</text>
     <text x="10" y="47" class="col">regional</text>
     <text x="10" y="66" class="box-sub">region/zona</text>
   </g>
-  <g class="ref" transform="translate(1555 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(1555 1000)" filter="url(#shadow)">
     <rect class="body" width="150" height="82" rx="8"/>
     <rect class="head" width="150" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_06b</text>
     <text x="10" y="47" class="col">perfil</text>
     <text x="10" y="66" class="box-sub">genero/nse/edad</text>
   </g>
-  <g class="ref" transform="translate(1720 975)" filter="url(#shadow)">
+  <g class="ref" transform="translate(1720 1000)" filter="url(#shadow)">
     <rect class="body" width="130" height="82" rx="8"/>
     <rect class="head" width="130" height="28" rx="8"/>
     <text x="10" y="19" class="box-title" font-size="13">cace_07</text>
@@ -274,22 +354,22 @@
     <text x="10" y="66" class="box-sub">por categoria</text>
   </g>
 
-  <!-- Legend and conceptual key -->
-  <g transform="translate(40 1128)">
+  <!-- Legend -->
+  <g transform="translate(40 1152)">
     <rect x="0" y="-28" width="1840" height="42" rx="9" fill="#111a2b" stroke="#253a5b"/>
     <rect x="18" y="-17" width="18" height="18" rx="4" fill="#9a1837" stroke="#ef4b6d"/>
     <text x="44" y="-3" class="legend-text">Tabla de hechos</text>
-    <rect x="188" y="-17" width="18" height="18" rx="4" fill="#174b93" stroke="#2f80ed"/>
-    <text x="214" y="-3" class="legend-text">Dimension AR</text>
-    <rect x="338" y="-17" width="18" height="18" rx="4" fill="#176b3a" stroke="#27ae60"/>
-    <text x="364" y="-3" class="legend-text">Dimension Olist/IPC</text>
-    <rect x="548" y="-17" width="18" height="18" rx="4" fill="#7d570e" stroke="#d99a25"/>
-    <text x="574" y="-3" class="legend-text">Referencia CACE</text>
-    <text x="750" y="-3" class="legend-text">PK = clave primaria</text>
-    <text x="910" y="-3" class="legend-text">FK = clave foranea</text>
-    <text x="1080" y="-3" class="legend-text">Lineas solidas = relaciones formales N:1</text>
-    <text x="1395" y="-3" class="legend-text">Tablas CACE y hechos independientes se comparan en visuales</text>
+    <rect x="200" y="-17" width="18" height="18" rx="4" fill="#174b93" stroke="#2f80ed"/>
+    <text x="226" y="-3" class="legend-text">Dimension principal</text>
+    <rect x="420" y="-17" width="18" height="18" rx="4" fill="#176b3a" stroke="#27ae60"/>
+    <text x="446" y="-3" class="legend-text">Dimension IPC/procesado</text>
+    <rect x="660" y="-17" width="18" height="18" rx="4" fill="#7d570e" stroke="#d99a25"/>
+    <text x="686" y="-3" class="legend-text">Referencia CACE</text>
+    <text x="850" y="-3" class="legend-text">PK = clave primaria</text>
+    <text x="1020" y="-3" class="legend-text">FK = clave foranea</text>
+    <text x="1200" y="-3" class="legend-text">DT = columna Date Table</text>
+    <text x="1420" y="-3" class="legend-text">Lineas solidas = relaciones formales N:1</text>
   </g>
 
-  <text x="960" y="850" text-anchor="middle" class="note">Interpretacion: el modelo completo se lee como una galaxia porque contiene mas de una tabla de hechos. Cada hecho tiene su propia estrella de dimensiones, y algunas dimensiones pueden compartirse.</text>
+  <text x="960" y="898" text-anchor="middle" class="note">Esquema galaxia: fact_ventas_final y fact_precios_comp comparten dim_tiempo y dim_canal_ar. dim_categorias resuelve la relacion N:N entre dim_productos y fact_precios_comp actuando como tabla puente.</text>
 </svg>

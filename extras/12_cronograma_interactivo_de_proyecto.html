@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Proyecto Data & BI</title>
+    <!-- Tailwind CSS para diseño rápido y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración personalizada de Tailwind para colores institucionales -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fase1: '#704ba0',
+                        fase2: '#315fba',
+                        fase3: '#cfab3c',
+                        fase4: '#8f4f1f',
+                        fase5: '#92352b',
+                        fase6: '#3c6e4c',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons para vectores limpios -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800 antialiased">
+
+    <div class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
+        
+        <!-- ENCABEZADO -->
+        <header class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    Plan de Trabajo Oficial
+                </span>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mt-2">
+                    Planificación del Proyecto Data & BI
+                </h1>
+                <p class="text-slate-500 mt-1.5 flex items-center gap-2 text-sm">
+                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                    <span class="font-medium text-slate-700">21 de Abril - 15 de Junio, 2026</span>
+                    <span class="text-slate-300">•</span>
+                    <span class="font-bold text-indigo-600">Duración: 8 Semanas</span>
+                </p>
+            </div>
+            
+            <!-- ACCIONES / BOTONES -->
+            <div class="flex flex-wrap gap-2">
+                <button onclick="switchView('gantt')" id="btn-gantt" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-white text-slate-900 border border-slate-200 shadow-sm transition-all hover:bg-slate-50">
+                    <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
+                    Vista Gantt
+                </button>
+                <button onclick="switchView('list')" id="btn-list" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-white text-slate-600 hover:text-slate-900 transition-all">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                    Lista de Tareas
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="space-y-6">
+            
+            <!-- SECCIÓN VISTA GANTT -->
+            <div id="view-gantt" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="p-6 overflow-x-auto">
+                    <div class="min-w-[950px]">
+                        
+                        <!-- Cabecera Temporal Superior -->
+                        <div class="grid grid-cols-12 gap-4 border-b border-slate-200 pb-5 mb-4 text-xs font-bold text-slate-400 uppercase tracking-widest relative h-12">
+                          <div class="col-span-4 font-extrabold text-slate-500 flex items-center">Etapa / Fase</div>
+                          <div class="col-span-8 relative h-full" id="timeline-header">
+                            <!-- Los marcadores temporales se inyectan dinámicamente -->
+                          </div>
+                        </div>
+
+                        <!-- Carriles de Gantt -->
+                        <div class="space-y-4 relative" id="gantt-rows">
+                            <!-- Inyectado dinámicamente -->
+                        </div>
+
+                        <!-- Leyendas inferiores de colores -->
+                        <div class="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs text-slate-500 border-t border-slate-150 pt-6">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase1 border border-purple-800 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Fase 1: ETL & Datos</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase2 border border-blue-800 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Fase 2: Ventas & DAX</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase3 border border-yellow-700 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Fase 3: Pricing Analytics</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase4 border border-amber-950 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Fase 4: RFM Analytics</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase5 border border-red-950 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Documentación</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 bg-fase6 border border-emerald-900 rounded-md"></span>
+                                <span class="font-medium text-slate-600">Informe Final</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN VISTA LISTA DE TAREAS -->
+            <div id="view-list" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Lista de selección izquierda -->
+                <div class="lg:col-span-1 space-y-3" id="phase-buttons-container">
+                    <!-- Inyectado dinámicamente -->
+                </div>
+
+                <!-- Detalle de la fase derecha -->
+                <div class="lg:col-span-2" id="phase-detail-container">
+                    <!-- Inyectado dinámicamente -->
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="text-center text-slate-400 text-xs py-8 border-t border-slate-200 flex flex-col gap-1.5">
+            <p class="font-semibold text-slate-500">Planificador de Proyectos Data Analytics & BI.</p>
+        </footer>
+
+    </div>
+
+    <!-- DATOS Y SCRIPT DE COMPORTAMIENTO -->
+    <script>
+        const projectData = [
+          {
+            id: 1,
+            faseTitle: "Datos, ETL y Modelo Relacional",
+            faseLabel: "Fase 1",
+            semanas: "Semanas 1 - 2",
+            colorClass: "bg-fase1 hover:bg-[#835cb5] border-[#4f3175]",
+            textColor: "text-white",
+            startDate: "2026-04-21",
+            endDate: "2026-05-05",
+            tasks: [
+              "Descargar Olist + Superstore de Kaggle y explorar estructura",
+              "Script Python: limpieza, merge, localización argentina (Faker)",
+              "Exportar 9 CSVs limpios listos para Power BI",
+              "Cargar en Power Query y definir tipos de datos",
+              "Construir el modelo estrella/galaxia en Power BI Desktop",
+              "Documentar el diccionario de datos (Excel o Notion)"
+            ],
+            entregable: "Modelo de datos validado, sin errores de relaciones, documentado"
+          },
+          {
+            id: 2,
+            faseTitle: "Medidas DAX y Módulo de Ventas",
+            faseLabel: "Fase 2",
+            semanas: "Semanas 3 - 4",
+            colorClass: "bg-fase2 hover:bg-[#4272cd] border-[#1c3e80]",
+            textColor: "text-white",
+            startDate: "2026-05-06",
+            endDate: "2026-05-14",
+            tasks: [
+              "Medidas DAX base y módulo de ventas",
+              "Tabla de medidas separada (best practice Power BI)",
+              "Medidas base: ventas totales, unidades, ticket promedio, margen",
+              "Inteligencia de tiempo: YTD, MTD, LY, variación %",
+              "Dashboard M1: ventas por canal, región, categoría, tiempo",
+              "Formato condicional en matrices, KPI cards, tooltips"
+            ],
+            entregable: "Página 1 del dashboard publicable — ventas omnicanal completo"
+          },
+          {
+            id: 3,
+            faseTitle: "Módulo de Pricing e Inteligencia de Precios",
+            faseLabel: "Fase 3",
+            semanas: "Semanas 5 - 6",
+            colorClass: "bg-fase3 hover:bg-[#dec24d] border-[#9e8023]",
+            textColor: "text-amber-950",
+            startDate: "2026-05-15",
+            endDate: "2026-05-21",
+            tasks: [
+              "Módulo de pricing e inteligencia de precios",
+              "Activar FactPreciosComp con USERELATIONSHIP en DAX",
+              "Medidas: price index, descuento promedio, sell-through rate",
+              "Parámetro What-If: simulador de descuento vs margen",
+              "Scatter plot precio vs margen por SKU (visual de análisis)",
+              "Dashboard M2: posicionamiento de precios, alertas de margen"
+            ],
+            entregable: "Página 2 — inteligencia de precios con simulador interactivo"
+          },
+          {
+            id: 4,
+            faseTitle: "Cross-selling, RFM y Segmentación de Clientes",
+            faseLabel: "Fase 4",
+            semanas: "Semanas 7 - 8",
+            colorClass: "bg-fase4 hover:bg-[#a65d28] border-[#633411]",
+            textColor: "text-white",
+            startDate: "2026-05-22",
+            endDate: "2026-05-31",
+            tasks: [
+              "Cross-selling, RFM y segmentación de clientes",
+              "Python: market basket analysis con mlxtend (apriori + lift)",
+              "Exportar reglas de asociación como tabla a Power BI",
+              "DAX: RFM scoring (RANKX + CALCULATE + VAR/RETURN)",
+              "Segmentación en 4 grupos: campeones, leales, en riesgo, perdidos",
+              "CLV estimado por segmento · tasa de recompra · churn",
+              "Dashboard M3+M4: canasta de compra + mapa de clientes por provincia"
+            ],
+            entregable: "Páginas 3 y 4 — cross-selling y segmentación RFM completos"
+          },
+          {
+            id: 5,
+            faseTitle: "Pulido, Narrativa de Negocio y Presentación",
+            faseLabel: "Documentación",
+            semanas: "Semana 9",
+            colorClass: "bg-fase5 hover:bg-[#aa4237] border-[#6e231b]",
+            textColor: "text-white",
+            startDate: "2026-06-01",
+            endDate: "2026-06-07",
+            tasks: [
+              "Pulido, narrativa de negocio y presentación",
+              "Executive summary page: 6 KPIs clave en una sola vista",
+              "Bookmarks para storytelling (modo presentación)",
+              "Optimización de medidas DAX con DAX Studio (VertiPaq analyzer)",
+              "Capa IPC INDEC opcional: precio real vs nominal",
+              "README del proyecto + notebook Python documentado",
+              "Video walkthrough de 5 min para el portfolio (Loom)"
+            ],
+            entregable: "Proyecto completo publicado en GitHub + Power BI Service"
+          },
+          {
+            id: 6,
+            faseTitle: "Elaboración de Informe Final y Presentación",
+            faseLabel: "Informe Final",
+            semanas: "Semana 10",
+            colorClass: "bg-fase6 hover:bg-[#467e58] border-[#294c34]",
+            textColor: "text-white",
+            startDate: "2026-06-08",
+            endDate: "2026-06-15",
+            tasks: [
+              "Elaboración de informe final y presentación"
+            ],
+            entregable: "Proyecto completo"
+          }
+        ];
+
+        const timelineMarkers = [
+          { date: "2026-04-21", label: "21 Abr", sub: "Inicio" },
+          { date: "2026-04-28", label: "28 Abr", sub: "S2" },
+          { date: "2026-05-05", label: "05 May", sub: "S3" },
+          { date: "2026-05-12", label: "12 May", sub: "S4" },
+          { date: "2026-05-19", label: "19 May", sub: "S5" },
+          { date: "2026-05-26", label: "26 May", sub: "S6" },
+          { date: "2026-06-02", label: "02 Jun", sub: "S7" },
+          { date: "2026-06-09", label: "09 Jun", sub: "S8" },
+          { date: "2026-06-15", label: "15 Jun", sub: "Fin" }
+        ];
+
+        const projectStart = new Date("2026-04-21");
+        const projectEnd = new Date("2026-06-15");
+        const totalDays = Math.ceil(Math.abs(projectEnd - projectStart) / (1000 * 60 * 60 * 24)) + 1;
+
+        let activePhaseId = 1;
+
+        // Calcula el posicionamiento porcentual
+        function getPosition(dateStr, isEnd = false) {
+            const date = new Date(dateStr);
+            const diffTime = date - projectStart;
+            const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+            const offset = isEnd ? 1 : 0;
+            return ((diffDays + offset) / totalDays) * 100;
+        }
+
+        // Renderizado inicial
+        window.onload = function() {
+            lucide.createIcons();
+            renderTimelineHeader();
+            renderGanttRows();
+            renderPhaseSelectionList();
+            renderActivePhaseDetail();
+        };
+
+        // Renderiza el eje de fechas superior
+        function renderTimelineHeader() {
+            const container = document.getElementById('timeline-header');
+            container.innerHTML = '';
+            timelineMarkers.forEach((marker, idx) => {
+                const isLast = idx === timelineMarkers.length - 1;
+                const pct = isLast ? 100 : getPosition(marker.date);
+                container.innerHTML += `
+                    <div class="absolute flex flex-col items-center transform -translate-x-1/2" style="left: ${pct}%">
+                        <span class="text-slate-800 font-extrabold text-[11px] whitespace-nowrap">${marker.label}</span>
+                        <span class="text-[9px] text-slate-400 font-medium mt-0.5">${marker.sub}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // Renderiza las barras del Gantt
+        function renderGanttRows() {
+            const container = document.getElementById('gantt-rows');
+            container.innerHTML = '';
+
+            // Grid lines de fondo
+            let linesHtml = `<div class="absolute inset-y-0 left-[33.333%] right-0 pointer-events-none">`;
+            timelineMarkers.forEach((marker, idx) => {
+                const isLast = idx === timelineMarkers.length - 1;
+                const pct = isLast ? 100 : getPosition(marker.date);
+                linesHtml += `<div class="absolute h-full border-l border-dashed border-slate-200/60" style="left: ${pct}%"></div>`;
+            });
+            linesHtml += `</div>`;
+            container.innerHTML += linesHtml;
+
+            // Filas
+            projectData.forEach(phase => {
+                const leftPct = getPosition(phase.startDate);
+                const widthPct = Math.max(8, getPosition(phase.endDate, true) - leftPct);
+
+                container.innerHTML += `
+                    <div class="grid grid-cols-12 gap-4 items-center group relative z-10 py-1">
+                        <div class="col-span-4 pr-4">
+                            <div onclick="selectPhaseAndNavigate(${phase.id})" class="text-xs sm:text-[14px] font-extrabold text-slate-800 leading-snug whitespace-normal hover:text-indigo-600 cursor-pointer transition-colors">
+                                ${phase.faseTitle}
+                            </div>
+                            <div class="text-[10px] sm:text-[11px] text-slate-400 font-bold tracking-wide mt-0.5">
+                                ${phase.faseLabel}
+                            </div>
+                        </div>
+                        <div class="col-span-8 relative h-11 bg-slate-50/50 rounded-xl overflow-hidden border border-slate-200/40 flex items-center shadow-inner">
+                            <div 
+                                onclick="selectPhaseAndNavigate(${phase.id})"
+                                class="absolute h-8 ${phase.colorClass} border-l-4 transition-all duration-300 shadow-sm rounded-lg group-hover:scale-[1.01] cursor-pointer"
+                                style="left: ${leftPct}%; width: ${widthPct}%"
+                                title="Ver detalles de la ${phase.faseLabel}"
+                            ></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Renderiza los botones de fase a la izquierda en la vista de lista
+        function renderPhaseSelectionList() {
+            const container = document.getElementById('phase-buttons-container');
+            container.innerHTML = '';
+            projectData.forEach(phase => {
+                const isActive = phase.id === activePhaseId;
+                container.innerHTML += `
+                    <button
+                        onclick="setActivePhase(${phase.id})"
+                        class="w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center justify-between ${isActive ? 'border-indigo-500 bg-indigo-50 shadow-sm ring-2 ring-indigo-200' : 'border-slate-200 bg-white hover:border-slate-300 shadow-sm'}"
+                    >
+                        <div class="pr-2">
+                            <div class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1">
+                                ${phase.faseLabel} (${phase.semanas})
+                            </div>
+                            <div class="font-extrabold text-sm text-slate-800 line-clamp-2 leading-snug">
+                                ${phase.faseTitle}
+                            </div>
+                        </div>
+                        <i data-lucide="${isActive ? 'chevron-down' : 'chevron-right'}" class="w-5 h-5 ${isActive ? 'text-indigo-500' : 'text-slate-400'} shrink-0"></i>
+                    </button>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // Renderiza el detalle de la fase seleccionada
+        function renderActivePhaseDetail() {
+            const container = document.getElementById('phase-detail-container');
+            const phase = projectData.find(p => p.id === activePhaseId);
+            if (!phase) return;
+
+            // Formateador simple de fecha
+            const formatDateLabel = (str) => {
+                const date = new Date(str);
+                const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul"];
+                return `${date.getUTCDate()} de ${months[date.getUTCMonth()]}`;
+            };
+
+            let tasksHtml = '';
+            phase.tasks.forEach((task, idx) => {
+                tasksHtml += `
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100/50">
+                        <div class="mt-0.5 w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-xs font-bold text-indigo-700">
+                            ${idx + 1}
+                        </div>
+                        <span class="text-slate-700 text-sm font-medium leading-relaxed">${task}</span>
+                    </li>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div class="${phase.colorClass} p-6 border-b border-slate-200/50">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-widest bg-white/30 px-2 py-0.5 rounded-md ${phase.textColor}">
+                                    ${phase.faseLabel}
+                                </span>
+                                <h2 class="text-xl md:text-2xl font-extrabold tracking-tight mt-1.5 ${phase.textColor}">
+                                    ${phase.faseTitle}
+                                </h2>
+                            </div>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white/20 backdrop-blur-md self-start sm:self-center ${phase.textColor}">
+                                ${phase.semanas}
+                            </span>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-semibold ${phase.textColor} opacity-90">
+                            <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> Inicio: ${formatDateLabel(phase.startDate)}</span>
+                            <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Fin: ${formatDateLabel(phase.endDate)}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6 space-y-6">
+                        <section>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-400"></i> Tareas Técnicas a Ejecutar
+                            </h3>
+                            <ul class="space-y-3">
+                                ${tasksHtml}
+                            </ul>
+                        </section>
+
+                        <section class="pt-6 border-t border-slate-100">
+                            <div class="bg-slate-900 rounded-xl p-5 text-white shadow-md relative overflow-hidden">
+                                <div class="absolute top-0 right-0 p-4 opacity-10 text-white">
+                                    <i data-lucide="check-circle-2" class="w-20 h-20"></i>
+                                </div>
+                                <h4 class="text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">
+                                   Entregable Milestone Obligatorio
+                                </h4>
+                                <p class="font-extrabold text-base md:text-lg leading-snug">
+                                  ${phase.entregable}
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Cambiar fase activa y actualizar UI
+        function setActivePhase(id) {
+            activePhaseId = id;
+            renderPhaseSelectionList();
+            renderActivePhaseDetail();
+        }
+
+        // Navegar a los detalles de una fase desde la barra de Gantt
+        function selectPhaseAndNavigate(id) {
+            activePhaseId = id;
+            switchView('list');
+            setActivePhase(id);
+        }
+
+        // Alternar vistas
+        function switchView(view) {
+            const btnGantt = document.getElementById('btn-gantt');
+            const btnList = document.getElementById('btn-list');
+            const viewGantt = document.getElementById('view-gantt');
+            const viewList = document.getElementById('view-list');
+
+            if (view === 'gantt') {
+                btnGantt.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-white text-slate-900 border border-slate-200 shadow-sm transition-all hover:bg-slate-50";
+                btnList.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-600 hover:text-slate-900 transition-all";
+                viewGantt.classList.remove('hidden');
+                viewList.classList.add('hidden');
+            } else {
+                btnGantt.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 text-slate-600 hover:text-slate-900 transition-all";
+                btnList.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-white text-slate-900 border border-slate-200 shadow-sm transition-all hover:bg-slate-50";
+                viewGantt.classList.add('hidden');
+                viewList.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
