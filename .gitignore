@@ -48,6 +48,9 @@ desktop.ini
 *.swp
 *.swo
 
+# Claude Code
+.claude/
+
 # Archivos temporales de Office
 ~$*.docx
 ~$*.xlsx

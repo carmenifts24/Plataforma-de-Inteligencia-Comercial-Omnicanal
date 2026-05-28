@@ -266,7 +266,7 @@
 
     .pipeline {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -279,8 +279,7 @@
     .stage:nth-child(2) { border-top-color: var(--blue); }
     .stage:nth-child(3) { border-top-color: var(--gold); }
     .stage:nth-child(4) { border-top-color: var(--rose); }
-    .stage:nth-child(5) { border-top-color: var(--green); }
-    .stage:nth-child(6) { border-top-color: var(--navy); }
+    .stage:nth-child(5) { border-top-color: var(--navy); }
 
     .stage__num {
       width: 34px;
@@ -445,7 +444,8 @@
     .schema-node--canal { left: 6%; top: 43%; }
     .schema-node--geo { right: 6%; top: 43%; }
     .schema-node--inflacion { left: 6%; bottom: 7%; }
-    .schema-node--vendedor { right: 6%; bottom: 7%; }
+    .schema-node--sucursales { right: 6%; bottom: 7%; }
+    .schema-node--categorias { left: 62%; top: 19%; }
 
     .legend {
       display: grid;
@@ -472,6 +472,7 @@
 
     .legend__swatch--gold { background: var(--gold); }
     .legend__swatch--line { background: var(--blue); }
+    .legend__swatch--green { background: var(--green); }
 
     .kpi {
       padding: 16px;
@@ -660,7 +661,8 @@
       .schema-node--canal,
       .schema-node--geo,
       .schema-node--inflacion,
-      .schema-node--vendedor {
+      .schema-node--sucursales,
+      .schema-node--categorias {
         position: static;
         width: 100%;
         min-height: auto;
@@ -700,7 +702,7 @@
           </p>
           <div class="hero__metrics" aria-label="Indicadores de alcance">
             <div class="metric">
-              <strong>6</strong>
+              <strong>5</strong>
               <span>notebooks documentados y conectados</span>
             </div>
             <div class="metric">
@@ -816,24 +818,12 @@
           <article class="card stage">
             <div class="card__body">
               <div class="stage__num">5</div>
-              <h3>ETL de Olist</h3>
-              <p>Se genera la tabla de ventas con precios reales en ARS.</p>
+              <h3>ETL completo</h3>
+              <p>Pipeline unificado que genera los 7 archivos CSV listos para Power BI.</p>
               <ul>
-                <li>Join Olist limpio.</li>
-                <li>Conversión BRL a ARS.</li>
-                <li>Ajuste por inflación.</li>
-              </ul>
-            </div>
-          </article>
-          <article class="card stage">
-            <div class="card__body">
-              <div class="stage__num">6</div>
-              <h3>ETL de integración</h3>
-              <p>Se unifican los dos universos de datos para el modelo de Power BI.</p>
-              <ul>
-                <li>Contexto argentino en FactVentasFinal.</li>
-                <li>GeografiaID en DimClientesAr.</li>
-                <li>PeriodoID en DimInflacionIpc.</li>
+                <li>Joins Olist, conversión BRL→ARS, ajuste IPC.</li>
+                <li>Contexto argentino (canal, cliente, logística).</li>
+                <li>DimProductos, DimCategorias y FactPreciosComp.</li>
               </ul>
             </div>
           </article>
@@ -940,52 +930,60 @@
           <div class="card schema-map" aria-label="Esquema galaxia de datos del proyecto">
             <div class="schema-map__body">
               <svg class="schema-lines" viewBox="0 0 760 520" preserveAspectRatio="none" aria-hidden="true">
+                <!-- fact_ventas_final → 6 dimensiones (líneas azules punteadas) -->
                 <line x1="380" y1="260" x2="115" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
                 <line x1="380" y1="260" x2="380" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
                 <line x1="380" y1="260" x2="642" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
                 <line x1="380" y1="260" x2="115" y2="260" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="642" y2="260" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
                 <line x1="380" y1="260" x2="115" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
                 <line x1="380" y1="260" x2="642" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="406" x2="380" y2="82" stroke="#c8943f" stroke-width="2"/>
-                <line x1="380" y1="406" x2="642" y2="260" stroke="#c8943f" stroke-width="2"/>
+                <!-- fact_precios_comp → dim_tiempo, dim_canal, dim_categorias (líneas doradas sólidas) -->
+                <line x1="380" y1="406" x2="115" y2="78" stroke="#c8943f" stroke-width="2"/>
+                <line x1="380" y1="406" x2="115" y2="260" stroke="#c8943f" stroke-width="2"/>
+                <line x1="380" y1="406" x2="563" y2="128" stroke="#c8943f" stroke-width="2"/>
+                <!-- dim_categorias → dim_productos (tabla puente, línea verde punteada) -->
+                <line x1="563" y1="128" x2="380" y2="78" stroke="#5d8b61" stroke-width="1.5" stroke-dasharray="5 5"/>
               </svg>
 
               <div class="schema-node schema-node--tiempo">
-                <strong>DimTiempo</strong>
-                <span>Año, mes, trimestre y fecha para analizar evolución temporal.</span>
+                <strong>dim_tiempo</strong>
+                <span>3.288 días (2016–2024), 14 cols. Date Table con TiempoID, PeriodoID y jerarquía temporal completa.</span>
               </div>
               <div class="schema-node schema-node--producto">
-                <strong>DimProducto</strong>
-                <span>Producto, categoría y traducción para comparar familias comerciales.</span>
+                <strong>dim_productos</strong>
+                <span>32.951 SKUs de Olist, 9 cols. product_id, categoría CACE en español y dimensiones físicas.</span>
               </div>
               <div class="schema-node schema-node--cliente">
-                <strong>DimCliente</strong>
-                <span>Perfil, región y segmento para entender quién compra.</span>
+                <strong>dim_clientes_ar</strong>
+                <span>10.000 clientes sintéticos, 15 cols. NSE, rango etario, GeografiaID y canal preferido.</span>
               </div>
               <div class="schema-node schema-node--canal">
-                <strong>DimCanal</strong>
-                <span>Tienda física, web, app y marketplace para análisis omnicanal.</span>
+                <strong>dim_canal_ar</strong>
+                <span>4 canales CACE: Físico, Web, App móvil y Marketplace con pesos de facturación calibrados.</span>
               </div>
               <div class="schema-node schema-node--geo">
-                <strong>DimGeografía</strong>
-                <span>Provincia, ciudad, región y zona para lectura territorial.</span>
+                <strong>dim_geografia_ar</strong>
+                <span>67 nodos, 6 cols. Provincias, ciudades y regiones de Argentina con peso de facturación.</span>
               </div>
               <div class="schema-node schema-node--inflacion">
-                <strong>DimInflación</strong>
-                <span>IPC mensual e índice acumulado para precios reales.</span>
+                <strong>dim_inflacion_ipc</strong>
+                <span>111 períodos IPC del INDEC (2017–2026), 11 cols. PeriodoID e índice acumulado base dic-2016.</span>
               </div>
-              <div class="schema-node schema-node--vendedor">
-                <strong>DimVendedor</strong>
-                <span>Seller o sucursal para analizar origen operativo de la venta.</span>
+              <div class="schema-node schema-node--sucursales">
+                <strong>dim_sucursales_ar</strong>
+                <span>50 sucursales, 11 cols. Tipo, m² de venta, empleados y GeografiaID por provincia y ciudad.</span>
+              </div>
+              <div class="schema-node schema-node--categorias">
+                <strong>dim_categorias</strong>
+                <span>10 categorías CACE, 2 cols. Tabla puente entre dim_productos y fact_precios_comp.</span>
               </div>
               <div class="schema-node schema-node--fact schema-node--ventas">
-                <strong>FactVentas</strong>
-                <span>Ítems vendidos, precio BRL, precio ARS, flete, IPC y precio real.</span>
+                <strong>fact_ventas_final</strong>
+                <span>110.197 ventas, 28 cols. Precio BRL, ARS nominal, ARS real deflactado, IPC, canal, cliente y logística.</span>
               </div>
               <div class="schema-node schema-node--fact schema-node--pricing schema-node--precios">
-                <strong>FactPreciosComp</strong>
-                <span>Precio propio, precio web, competencia, descuento y price index.</span>
+                <strong>fact_precios_comp</strong>
+                <span>360 registros (10 cat. × 12 meses × 3 años). Precio propio, competencia, descuento y price index.</span>
               </div>
             </div>
           </div>
@@ -995,28 +993,34 @@
               <span class="tag tag--teal">Cómo leerlo</span>
               <h3>Esquema galaxia</h3>
               <p>
-                En el centro están las tablas que miden hechos del negocio. Alrededor
-                están las tablas que permiten explicar esos hechos por fecha, producto,
-                cliente, canal, geografía, inflación y vendedor.
+                Dos tablas de hechos comparten dimensiones: <strong>fact_ventas_final</strong>
+                conecta a 6 dimensiones directas, y <strong>fact_precios_comp</strong> accede
+                a productos vía <strong>dim_categorias</strong>, tabla puente de 10 filas que
+                evita una relación N:N directa.
               </p>
               <div class="legend">
                 <div class="legend__item">
                   <span class="legend__swatch"></span>
-                  <span><strong>FactVentas</strong> registra lo vendido y concentra la mayor parte del análisis comercial.</span>
+                  <span><strong>fact_ventas_final</strong> registra lo vendido (110.197 filas). Tabla central del análisis comercial.</span>
                 </div>
                 <div class="legend__item">
                   <span class="legend__swatch legend__swatch--gold"></span>
-                  <span><strong>FactPreciosComp</strong> permite comparar precios propios contra competencia.</span>
+                  <span><strong>fact_precios_comp</strong> compara precios propios vs. competencia por categoría y mes.</span>
                 </div>
                 <div class="legend__item">
                   <span class="legend__swatch legend__swatch--line"></span>
                   <span><strong>Dimensiones</strong> funcionan como filtros y contexto para responder preguntas de negocio.</span>
                 </div>
+                <div class="legend__item">
+                  <span class="legend__swatch legend__swatch--green"></span>
+                  <span><strong>dim_categorias</strong> es tabla puente: 10 categorías CACE que conectan dim_productos con fact_precios_comp.</span>
+                </div>
               </div>
               <ul class="compact-list">
-                <li>Si se pregunta cuánto se vendió, se mira una tabla de hechos.</li>
-                <li>Si se pregunta dónde, cuándo, por qué canal o qué categoría, se usan dimensiones.</li>
-                <li>Si se comparan períodos, el IPC ayuda a evitar conclusiones distorsionadas por inflación.</li>
+                <li>Si se pregunta cuánto se vendió, se consulta fact_ventas_final.</li>
+                <li>Si se pregunta dónde, cuándo, por qué canal o qué producto, se cruzan las dimensiones.</li>
+                <li>dim_inflacion_ipc permite comparar períodos sin que la inflación distorsione los valores.</li>
+                <li>dim_categorias actúa como puente: sin ella, dim_productos y fact_precios_comp tendrían una relación N:N inválida en Power BI.</li>
               </ul>
             </div>
           </div>
@@ -1027,8 +1031,8 @@
         <div class="section__head">
           <h2>Modelo Analítico</h2>
           <p>
-            El diseño apunta a separar eventos medibles, como ventas o precios, de
-            descripciones del negocio, como cliente, producto, tiempo, canal y geografía.
+            Esquema galaxia con 2 tablas de hechos y 8 dimensiones (7 descriptivas + 1 puente).
+            Separa eventos medibles de descripciones del negocio para habilitar análisis multidimensional en Power BI.
           </p>
         </div>
 
@@ -1038,20 +1042,20 @@
           </div>
           <div class="kpi-list">
             <article class="card kpi">
-              <strong>FactVentas</strong>
-              <span>Tabla central para medir ventas, ticket, cantidad, canal, cliente y fecha.</span>
+              <strong>fact_ventas_final</strong>
+              <span>110.197 filas · 28 cols. Precio BRL, ARS nominal y ARS real (deflactado base dic-2016). Conecta a 6 dimensiones: tiempo, cliente, canal, sucursal, inflación y producto.</span>
             </article>
             <article class="card kpi">
-              <strong>FactPreciosComp</strong>
-              <span>Tabla para comparar precios propios contra competencia y analizar pricing.</span>
+              <strong>fact_precios_comp</strong>
+              <span>360 filas · 12 cols. Cubre 2022–2024 (10 categorías × 12 meses × 3 años). Precio propio, precio web, competencia, descuento y price_index. Conecta a dim_categorias como puente hacia dim_productos.</span>
             </article>
             <article class="card kpi">
-              <strong>Dimensiones</strong>
-              <span>Clientes, productos, tiempo, canal, geografía y sucursales explican el contexto de cada hecho.</span>
+              <strong>Dimensiones descriptivas</strong>
+              <span>7 tablas: dim_tiempo (3.288 días), dim_clientes_ar (10.000), dim_canal_ar (4), dim_geografia_ar (67), dim_sucursales_ar (50), dim_inflacion_ipc (111 períodos) y dim_productos (32.951 SKUs).</span>
             </article>
             <article class="card kpi">
-              <strong>Contexto económico</strong>
-              <span>IPC y tipo de cambio permiten interpretar ventas nominales con más cuidado.</span>
+              <strong>dim_categorias — tabla puente</strong>
+              <span>10 filas · 2 cols. Las 10 categorías CACE (Electrónica, Indumentaria, Alimentos, etc.). Habilita 2 relaciones 1:N limpias en lugar de una relación N:N directa entre dim_productos y fact_precios_comp.</span>
             </article>
           </div>
         </div>
@@ -1072,7 +1076,6 @@
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-02" id="btn-02">02 EDA 1</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-03" id="btn-03">03 EDA 2</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-04" id="btn-04">04 ETL</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-05" id="btn-05">05 Integración</button>
         </div>
 
         <div class="card">
@@ -1123,23 +1126,12 @@
 
             <div class="tab-panel" role="tabpanel" id="tab-04" aria-labelledby="btn-04">
               <span class="tag tag--green">Producción analítica</span>
-              <h3>ETL de FactVentas (Olist)</h3>
-              <p>Materializa la tabla de ventas con precios reales. Une órdenes entregadas, ítems, productos y categorías; convierte precios de BRL a ARS; ajusta valores por inflación y guarda <code>fact_ventas.csv</code> como tabla intermedia.</p>
+              <h3>ETL completo para Power BI</h3>
+              <p>Pipeline unificado de 10 bloques que parte desde los archivos raw y las dimensiones sintéticas argentinas hasta generar los 7 archivos CSV listos para Power BI. Incorpora toda la lógica de transformación en un único flujo reproducible.</p>
               <ul class="compact-list">
-                <li>Aplica joins controlados: inner join para ventas con ítems y left join para no perder ventas por categorías faltantes.</li>
-                <li>Usa el dólar como moneda puente para convertir reales brasileños a pesos argentinos.</li>
-                <li>Calcula precios reales con IPC acumulado y valida nulos críticos antes de guardar.</li>
-              </ul>
-            </div>
-
-            <div class="tab-panel" role="tabpanel" id="tab-05" aria-labelledby="btn-05">
-              <span class="tag tag--navy">Integración</span>
-              <h3>ETL de integración para Power BI</h3>
-              <p>Resuelve los problemas estructurales del modelo antes de construir medidas DAX: los dos universos de datos (Olist y Faker) estaban desconectados y las dimensiones clave carecían de claves relacionales.</p>
-              <ul class="compact-list">
-                <li>Enriquece <code>fact_ventas</code> con contexto argentino (CanalID, ClienteID, SucursalID, medio de pago, cuotas, logística) muestreado con distribuciones CACE 2025, generando <code>fact_ventas_final.csv</code>.</li>
-                <li>Agrega <code>GeografiaID</code> a DimClientesAr mediante merge por provincia y ciudad, habilitando el análisis geográfico de clientes.</li>
-                <li>Agrega <code>PeriodoID = anio × 100 + mes</code> a DimInflacionIpc para crear una relación estándar con la tabla de hechos en Power BI.</li>
+                <li>Une órdenes Olist, convierte BRL a ARS vía dólar como moneda puente y ajusta por IPC acumulado (base dic-2016) generando <code>fact_ventas_final.csv</code>.</li>
+                <li>Enriquece FactVentasFinal con contexto argentino: CanalID, ClienteID, SucursalID, medio de pago, cuotas y logística muestreados con distribuciones CACE 2025.</li>
+                <li>Genera DimTiempo (2016–2024), DimProductos con categorías CACE, DimCategorias como tabla puente y FactPreciosComp con PeriodoID.</li>
               </ul>
             </div>
           </div>
@@ -1209,7 +1201,7 @@
             <div class="check__icon">✓</div>
             <div>
               <strong>Modelo orientado a preguntas</strong>
-              <span>La estructura permite responder preguntas de ventas, canales, pricing y contexto económico desde una sola tabla de hechos.</span>
+              <span>La estructura permite responder preguntas de ventas, canales, pricing y contexto económico con dos tablas de hechos que comparten dimensiones (esquema galaxia).</span>
             </div>
           </div>
           <div class="check">

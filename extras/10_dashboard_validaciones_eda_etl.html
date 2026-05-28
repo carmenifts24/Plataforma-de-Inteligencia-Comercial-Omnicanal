@@ -905,21 +905,61 @@
         etapa: "ETL Integración",
         transaccion: "Power BI",
         tipo: "Modelado",
-        cambio: "Se documentaron relaciones finales: FactVentasFinal con DimCanal, DimClientesAr, DimSucursalesAr y DimInflacionIpc.",
-        decision: "Preparar el modelo para análisis omnicanal y económico.",
-        porque: "Las relaciones claras reducen ambigüedad y evitan medidas inconsistentes en el dashboard.",
+        cambio: "Se documentaron relaciones del modelo galaxia: FactVentasFinal y FactPreciosComp con DimTiempo (Date Table), DimCanal, DimInflacionIpc; DimClientesAr y DimSucursalesAr con DimGeografia; DimProductos con DimCategorias como tabla puente hacia FactPreciosComp.",
+        decision: "Preparar el modelo galaxia para análisis omnicanal, económico y de posicionamiento de precios.",
+        porque: "Las relaciones claras reducen ambigüedad; DimCategorias resuelve la relación N:N entre DimProductos y FactPreciosComp.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
         transaccion: "Archivos finales",
         tipo: "Guardado",
-        cambio: "Se exportaron fact_ventas_final.csv, dim_clientes_ar.csv y dim_inflacion_ipc.csv en datos/04_procesados.",
-        decision: "Centralizar los archivos listos para consumo analítico.",
-        porque: "Facilita Power BI y evita depender de notebooks ejecutados en memoria.",
+        cambio: "Se exportaron los siete archivos del modelo a datos/04_procesados/: fact_ventas_final.csv, dim_clientes_ar.csv, dim_inflacion_ipc.csv, dim_tiempo.csv, dim_productos.csv, dim_categorias.csv y fact_precios_comp.csv.",
+        decision: "Centralizar los siete archivos listos para consumo analítico.",
+        porque: "Facilita Power BI y evita depender de notebooks ejecutados en memoria; encoding utf-8-sig para compatibilidad con tildes.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "DimTiempo",
+        tipo: "Extensión de rango",
+        cambio: "Se amplió DimTiempo de 2016-2018 a 2016-2024, calculando el año máximo entre fact_ventas_final y fact_precios_comp.",
+        decision: "Rango dinámico: fecha_fin = max(año máx FactVentas, año máx FactPreciosComp).",
+        porque: "FactPreciosComp cubre 2022-2024; sin esa extensión, fecha_relevamiento no tendría correspondencia en DimTiempo.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "DimProductos",
+        tipo: "Dimensión nueva",
+        cambio: "Se construyó dim_productos a partir de fichas de producto Olist (32.951 filas) con categoria_es: mapeo de 72 categorías inglés a 10 CACE usando MAP_CAT_ES.",
+        decision: "Incluir categoria_es como FK hacia dim_categorias; imputar nulos físicos con la mediana.",
+        porque: "Sin dim_productos no era posible analizar ventas por producto individual ni vincular precios de competencia por categoría.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "DimCategorias",
+        tipo: "Tabla puente",
+        cambio: "Se creó dim_categorias con 10 filas (una por categoría CACE) para evitar una relación N:N directa entre dim_productos y fact_precios_comp.",
+        decision: "Usar DimCategorias como tabla puente con dos relaciones 1:N: una hacia DimProductos y otra hacia FactPreciosComp.",
+        porque: "dim_productos tiene miles de filas por categoría; una relación directa con fact_precios_comp sería N:N y generaría resultados incorrectos en Power BI.",
+        estado: "OK",
+        fuente: "04_ETL"
+      },
+      {
+        etapa: "ETL",
+        transaccion: "FactPreciosComp",
+        tipo: "Clave relacional",
+        cambio: "Se agregó PeriodoID = anio × 100 + mes a fact_precios_comp y se verificó cobertura de fecha_relevamiento en DimTiempo.",
+        decision: "Procesar el archivo fuente (03_sinteticos) y guardar en 04_procesados con PeriodoID.",
+        porque: "La relación con DimInflacionIpc requiere PeriodoID; la relación temporal usa fecha_relevamiento (día 15 de cada mes, 2022-2024).",
+        estado: "OK",
+        fuente: "04_ETL"
       }
     ];
 
@@ -984,7 +1024,11 @@
         "ETL Integración|DimInflacionIpc|Clave relacional": "dim_inflacion['PeriodoID'] = dim_inflacion['anio'] * 100 + dim_inflacion['mes']",
         "ETL Integración|DimInflacionIpc|Validación de cobertura": "sin_cobertura = set(fact_ventas_final['PeriodoID']) - set(dim_inflacion['PeriodoID'])",
         "ETL Integración|Power BI|Modelado": "Relaciones por claves: CanalID, ClienteID, SucursalID, PeriodoID, GeografiaID",
-        "ETL Integración|Archivos finales|Guardado": "to_csv(): fact_ventas_final.csv, dim_clientes_ar.csv, dim_inflacion_ipc.csv"
+        "ETL Integración|Archivos finales|Guardado": "to_csv(): fact_ventas_final.csv, dim_clientes_ar.csv, dim_inflacion_ipc.csv, dim_tiempo.csv, dim_productos.csv, dim_categorias.csv, fact_precios_comp.csv",
+        "ETL|DimTiempo|Extensión de rango": "anio_max = max(fact_ventas_final['fecha'].dt.year.max(), df_precios_comp['fecha_relevamiento'].dt.year.max()); pd.date_range(f'{anio_min}-01-01', f'{anio_max}-12-31', freq='D')",
+        "ETL|DimProductos|Dimensión nueva": "dim_productos['categoria_es'] = dim_productos['category_en'].map(MAP_CAT_ES).fillna('Hogar y Deco')",
+        "ETL|DimCategorias|Tabla puente": "categorias_unicas = sorted(dim_productos['categoria_es'].unique()); dim_categorias = pd.DataFrame({'CategoriaID': range(1,11), 'categoria_es': categorias_unicas})",
+        "ETL|FactPreciosComp|Clave relacional": "PeriodoID = (anio*100 + mes).astype(int); set(fecha_relevamiento.dt.normalize()) <= set(dim_tiempo['fecha'])"
       };
       return formulas[key] || record.fuente;
     }
