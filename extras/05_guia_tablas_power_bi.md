@@ -8,11 +8,12 @@ Descripción de cada tabla, sus relaciones y las verificaciones principales a re
 
 1. [Dimensiones](#1-dimensiones)
 2. [Tablas de hechos](#2-tablas-de-hechos)
-3. [Benchmarks CACE](#3-benchmarks-cace)
-4. [Orden de carga y relaciones](#4-orden-de-carga-y-relaciones)
-5. [Verificaciones generales](#5-verificaciones-generales)
+3. [Analítica derivada](#3-analitica-derivada)
+4. [Benchmarks CACE](#4-benchmarks-cace)
+5. [Orden de carga y relaciones](#5-orden-de-carga-y-relaciones)
+6. [Verificaciones generales](#6-verificaciones-generales)
 
-> **Última actualización:** modelo ampliado a esquema galaxia. Se agregaron `dim_productos`, `dim_categorias` y `fact_precios_comp` (ahora en `04_procesados/`). `dim_tiempo` se extendió a 2016–2024. Ver sección 4 para el orden de carga y relaciones actualizados.
+> **Última actualización:** modelo ampliado a esquema galaxia, esquema SQL v2 disponible en `sql/retailiq360_schema.sql` y nueva etapa `05_market_basket.ipynb`. Se agregaron las salidas `market_basket_reglas.csv`, `market_basket_reglas_enriquecidas.csv`, `market_basket_heatmap.png` y `market_basket_top10.png` en `datos/04_procesados/`. Ver sección 5 para el orden de carga y relaciones actualizados.
 
 ---
 
@@ -390,7 +391,71 @@ Precios relevados por categoría y mes, incluyendo precio propio y precio de com
 
 ---
 
-## 3. Benchmarks CACE
+## 3. Analítica derivada
+
+Estas tablas no forman parte del modelo relacional principal. Se generan a partir de `notebooks/05_market_basket.ipynb` y se cargan como apoyo visual para explicar patrones de compra conjunta, venta cruzada y recomendaciones.
+
+---
+
+### market_basket_reglas
+**Carpeta:** `04_procesados/market_basket_reglas.csv`
+**Filas:** 4 | **Columnas:** 9
+
+Reglas de asociación exportadas por el notebook 05 usando Apriori y `mlxtend`. Actualmente las reglas se calculan sobre órdenes multi-ítem y combinan nivel categoría/producto según los resultados disponibles.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `nivel` | Texto | Granularidad de la regla: categoría o producto |
+| `antecedentes` | Texto | Elemento o conjunto de partida de la regla |
+| `consecuentes` | Texto | Elemento o conjunto recomendado cuando aparece el antecedente |
+| `support` | Decimal | Proporción de órdenes donde aparece la combinación |
+| `confidence` | Decimal | Probabilidad condicional de comprar el consecuente dado el antecedente |
+| `lift` | Decimal | Fuerza de asociación frente al azar; > 1 indica asociación positiva |
+| `leverage` | Decimal | Diferencia entre frecuencia observada y esperada bajo independencia |
+| `conviction` | Decimal | Métrica de dependencia direccional de la regla |
+| `zhangs_metric` | Decimal | Métrica adicional de asociación generada por `mlxtend` |
+
+**Relaciones:**
+- No crear relaciones formales. Es una tabla analítica derivada para visualizaciones de reglas.
+
+**Verificaciones:**
+- [ ] 4 filas actuales después de ejecutar `05_market_basket.ipynb`
+- [ ] `support`, `confidence`, `lift`, `leverage` y `conviction` son numéricas
+- [ ] `lift` > 1 para las reglas significativas
+- [ ] La tabla se actualiza si cambian los parámetros `MIN_SUPPORT`, `MIN_CONFIANZA`, `MIN_LIFT` o el subconjunto analizado
+
+---
+
+### market_basket_reglas_enriquecidas
+**Carpeta:** `04_procesados/market_basket_reglas_enriquecidas.csv`
+**Filas:** 4 | **Columnas:** 11
+
+Versión legible de las reglas de asociación, preparada para etiquetas de dashboard y explicaciones ejecutivas.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `regla` | Texto | Etiqueta corta de la regla |
+| `regla_detalle` | Texto | Explicación legible para el dashboard |
+| `categoria_antecedente` | Texto | Categoría CACE del antecedente |
+| `categoria_consecuente` | Texto | Categoría CACE del consecuente |
+| `antecedentes` | Texto | Antecedente original exportado por el notebook |
+| `consecuentes` | Texto | Consecuente original exportado por el notebook |
+| `support` | Decimal | Soporte de la regla |
+| `confidence` | Decimal | Confianza de la regla |
+| `lift` | Decimal | Lift de la regla |
+| `leverage` | Decimal | Leverage de la regla |
+| `conviction` | Decimal | Conviction de la regla |
+
+**Relaciones:**
+- No crear relaciones formales. Usar como tabla de etiquetas y narrativa para visuales de Market Basket.
+
+**Archivos visuales generados por el notebook 05:**
+- `market_basket_heatmap.png`: heatmap de lift entre categorías.
+- `market_basket_top10.png`: gráfico de reglas principales por lift.
+
+---
+
+## 4. Benchmarks CACE
 
 Las tablas CACE son **tablas de referencia**, no se conectan mediante relaciones formales en el modelo. Se usan directamente en visualizaciones para trazar líneas de benchmark.
 
@@ -575,7 +640,7 @@ Porcentaje del canal online sobre el total de ventas, por categoría, para H1 20
 
 ---
 
-## 4. Orden de carga y relaciones
+## 5. Orden de carga y relaciones
 
 ### Configuración previa en Power BI
 
@@ -597,17 +662,19 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 | 8 | `dim_categorias.csv` | 04_procesados | Dimensión puente | Carga nueva |
 | 9 | `fact_ventas_final.csv` | 04_procesados | Tabla de hechos principal | Sin cambio |
 | 10 | `fact_precios_comp.csv` | 04_procesados | Tabla de hechos secundaria | Carga nueva |
-| 11 | `cace_01_kpis_macro.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 12 | `cace_02_categorias_rubros.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 13 | `cace_03a_conversion_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 14 | `cace_03b_ranking_demanda.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 15 | `cace_04a_medios_pago_oferta.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 16 | `cace_04b_financiamiento_cuotas.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 17 | `cace_05a_logistica_tipo_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 18 | `cace_05b_plazos_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 19 | `cace_06a_distribucion_regional.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 20 | `cace_06b_perfil_comprador.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 21 | `cace_07_canal_online_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 11 | `market_basket_reglas.csv` | 04_procesados | Analítica derivada | Carga nueva |
+| 12 | `market_basket_reglas_enriquecidas.csv` | 04_procesados | Analítica derivada | Carga nueva opcional |
+| 13 | `cace_01_kpis_macro.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 14 | `cace_02_categorias_rubros.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 15 | `cace_03a_conversion_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 16 | `cace_03b_ranking_demanda.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 17 | `cace_04a_medios_pago_oferta.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 18 | `cace_04b_financiamiento_cuotas.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 19 | `cace_05a_logistica_tipo_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 20 | `cace_05b_plazos_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 21 | `cace_06a_distribucion_regional.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 22 | `cace_06b_perfil_comprador.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 23 | `cace_07_canal_online_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
 
 ### Relaciones formales a configurar en Model View
 
@@ -641,7 +708,7 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 
 > **Nota:** las dos relaciones marcadas como **Manual** deben crearse explícitamente en Administrar relaciones porque las columnas de join tienen nombres distintos en cada tabla. Power BI no puede detectarlas automáticamente.
 
-> Las tablas CACE **no tienen relaciones formales** en el modelo. Se usan directamente en visualizaciones de comparación.
+> Las tablas CACE y las tablas de Market Basket **no tienen relaciones formales** en el modelo. Se usan directamente en visualizaciones de comparación, recomendaciones y narrativa analítica.
 
 ### Pasos post-carga en Power BI
 
@@ -656,10 +723,12 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 7. Convertir `dim_inflacion_ipc.fecha` y `fact_precios_comp.fecha_relevamiento` a tipo Fecha en Power Query.
 8. Verificar en Model View que `dim_clientes_ar → fact_ventas_final` esté activa (línea sólida, no punteada).
 9. Verificar que `fact_ventas_final → dim_productos` use la columna `product_id` y no `category_en` (eliminar y recrear si Power BI la detectó incorrectamente como N:N).
+10. Cargar `market_basket_reglas.csv` y `market_basket_reglas_enriquecidas.csv` solo como tablas analíticas derivadas. No conectarlas automáticamente con `dim_categorias` ni con `dim_productos` salvo que se diseñe una vista específica de recomendaciones.
+11. Si se usa SQL Server, tomar `sql/retailiq360_schema.sql` como referencia de nombres físicos (`DimTiempo`, `FactVentas`, `FactPreciosComp`, etc.), tipos de dato y 13 claves foráneas esperadas.
 
 ---
 
-## 5. Verificaciones generales
+## 6. Verificaciones generales
 
 Antes de publicar el informe, realizar las siguientes comprobaciones en Power BI:
 
@@ -671,6 +740,8 @@ Antes de publicar el informe, realizar las siguientes comprobaciones en Power BI
 - [ ] `dim_productos`: 32.951 filas, 9 columnas
 - [ ] `dim_categorias`: 10 filas, 2 columnas
 - [ ] `dim_inflacion_ipc`: 111 filas
+- [ ] `market_basket_reglas`: 4 filas, 9 columnas
+- [ ] `market_basket_reglas_enriquecidas`: 4 filas, 11 columnas
 
 **Modelo y relaciones**
 - [ ] En Model View no hay relaciones cruzadas no intencionadas (Power BI puede auto-detectar relaciones incorrectas)
@@ -679,6 +750,7 @@ Antes de publicar el informe, realizar las siguientes comprobaciones en Power BI
 - [ ] La relación `dim_clientes_ar → fact_ventas_final` es **activa** (línea sólida, no punteada)
 - [ ] La relación `fact_ventas_final → dim_productos` usa `product_id` (no `category_en`) y es 1:N
 - [ ] Las relaciones con columnas de nombre distinto existen: `fecha_relevamiento → fecha` y `categoria → categoria_es`
+- [ ] Las tablas de Market Basket no crean relaciones automáticas con `dim_categorias`, `dim_productos` ni `fact_ventas_final`
 
 **Lógica de datos**
 - [ ] Al filtrar `fact_ventas_final` por `CanalID = 1` (Físico), todos los registros tienen `SucursalID` no nulo

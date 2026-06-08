@@ -4,9 +4,9 @@ Genera el diccionario de datos en Excel para RetailIQ 360.
 Salida:
     extras/diccionario_datos_RetailIQ360.xlsx
 
-Version actualizada segun notebooks/04_ETL.ipynb y el archivo vigente de
-Power BI. El script toma la estructura real de los CSV del proyecto para no
-depender de conteos escritos a mano.
+Version actualizada segun notebooks/04_ETL.ipynb, notebooks/05_market_basket.ipynb,
+el esquema SQL v2 y el archivo vigente de Power BI. El script toma la estructura
+real de los CSV del proyecto para no depender de conteos escritos a mano.
 """
 
 from __future__ import annotations
@@ -201,6 +201,24 @@ TABLES = [
         "descripcion": "Precios propios y de competencia con PeriodoID agregado por el ETL.",
         "uso_powerbi": "Modulo de pricing: price index, descuento, comparacion con competencia y evolucion temporal.",
     },
+    {
+        "nombre": "market_basket_reglas",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Market Basket",
+        "archivo": "market_basket_reglas.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Reglas de asociacion generadas por notebooks/05_market_basket.ipynb con soporte, confianza, lift y metricas auxiliares.",
+        "uso_powerbi": "Tabla analitica para visualizar venta cruzada y recomendaciones. No requiere relaciones formales con el modelo transaccional.",
+    },
+    {
+        "nombre": "market_basket_reglas_enriquecidas",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Market Basket",
+        "archivo": "market_basket_reglas_enriquecidas.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Version enriquecida y legible de las reglas de asociacion, preparada para etiquetas de dashboard.",
+        "uso_powerbi": "Tabla de apoyo visual para mostrar reglas, categorias antecedente/consecuente y detalle narrativo en Power BI.",
+    },
 ]
 
 
@@ -313,6 +331,9 @@ VERIFICACIONES = [
     ("Power BI", "Modelo", "Crear manualmente: fact_precios_comp[categoria] > dim_categorias[categoria_es] (columnas con nombres distintos)."),
     ("Power BI", "Modelo", "Eliminar relaciones automaticas incorrectas, especialmente por category_en u otras columnas de texto."),
     ("Power BI", "Modelo", "Verificar que fact_ventas_final > dim_productos use product_id, no category_en."),
+    ("market_basket_reglas", "Integridad", "4 reglas exportadas actualmente desde notebooks/05_market_basket.ipynb. Verificar que support, confidence y lift sean numericos."),
+    ("market_basket_reglas", "Modelo", "Cargar como tabla analitica derivada sin relaciones formales. Usar para visuales de recomendaciones y venta cruzada."),
+    ("SQL", "Modelo", "sql/retailiq360_schema.sql documenta el esquema relacional v2 con nombres SQL Dim*/Fact*, PK/FK y tipos compatibles con importacion CSV."),
     ("Benchmarks CACE", "Modelo", "No crear relaciones formales con tablas CACE. Usarlas directamente en visualizaciones de comparacion."),
 ]
 
@@ -354,6 +375,23 @@ CLAVES = {
         "fecha_relevamiento": ("FK", "dim_tiempo", "fecha"),
         "categoria": ("FK", "dim_categorias", "categoria_es"),
         "price_index": ("CALC", None, None),
+    },
+    "market_basket_reglas": {
+        "nivel": ("CALC", None, None),
+        "antecedentes": ("CALC", None, None),
+        "consecuentes": ("CALC", None, None),
+        "support": ("CALC", None, None),
+        "confidence": ("CALC", None, None),
+        "lift": ("CALC", None, None),
+    },
+    "market_basket_reglas_enriquecidas": {
+        "regla": ("CALC", None, None),
+        "regla_detalle": ("CALC", None, None),
+        "categoria_antecedente": ("CALC", None, None),
+        "categoria_consecuente": ("CALC", None, None),
+        "support": ("CALC", None, None),
+        "confidence": ("CALC", None, None),
+        "lift": ("CALC", None, None),
     },
 }
 
@@ -448,6 +486,20 @@ DESCRIPCIONES_COLUMNAS = {
     "precio_competencia": "Precio promedio de competencia en ARS.",
     "descuento_pct": "Porcentaje de descuento aplicado (entre 0 y 1).",
     "price_index": "Indice precio propio / precio competencia. Menor que 1 = precio propio mas barato.",
+    # --- market_basket_reglas ---
+    "nivel": "Granularidad de la regla: categoria o producto.",
+    "antecedentes": "Item, categoria o conjunto que aparece primero en la regla de asociacion.",
+    "consecuentes": "Item, categoria o conjunto recomendado cuando aparece el antecedente.",
+    "support": "Soporte de la regla: proporcion de ordenes donde aparece la combinacion.",
+    "confidence": "Confianza de la regla: probabilidad condicional de comprar el consecuente dado el antecedente.",
+    "lift": "Fuerza de asociacion frente al azar. Valores mayores que 1 indican asociacion positiva.",
+    "leverage": "Diferencia entre frecuencia observada y esperada si antecedente y consecuente fueran independientes.",
+    "conviction": "Metrica de dependencia de la regla; valores mayores sugieren mayor direccion entre antecedente y consecuente.",
+    "zhangs_metric": "Metrica adicional de asociacion de Zhang generada por mlxtend.",
+    "regla": "Etiqueta corta de la regla para usar en tarjetas o graficos.",
+    "regla_detalle": "Descripcion legible de la regla de venta cruzada.",
+    "categoria_antecedente": "Categoria CACE principal del antecedente.",
+    "categoria_consecuente": "Categoria CACE principal del consecuente.",
 }
 
 
@@ -523,6 +575,8 @@ def category_colors(categoria: str) -> tuple[str, str]:
         return C_FACT, C_LIGHT_FACT
     if categoria == "Benchmark CACE":
         return C_CACE, C_LIGHT_CACE
+    if categoria == "Analitica derivada":
+        return C_INFO, C_LIGHT_INFO
     return C_INFO, C_LIGHT_INFO
 
 
@@ -537,7 +591,7 @@ def build_indice(wb, tables: list[dict]):
     subtitle(
         ws,
         "A2:J2",
-        "Modelo actualizado desde notebooks/04_ETL.ipynb: FactVentasFinal, FactPreciosComp, DimProductos, DimCategorias y Date Table.",
+        "Modelo actualizado desde notebooks/04_ETL.ipynb y 05_market_basket.ipynb: modelo galaxia, reglas de asociacion y esquema SQL v2.",
     )
 
     headers = ["#", "Tabla", "Categoria", "Subcategoria", "Archivo", "Carpeta", "Existe", "Filas", "Columnas", "Descripcion"]
@@ -640,7 +694,7 @@ def build_relaciones(wb):
     ws = wb.create_sheet("Relaciones modelo")
     ws.sheet_view.showGridLines = False
     title(ws, "A1:H1", "RetailIQ 360 - Relaciones del Modelo", C_REL)
-    subtitle(ws, "A2:H2", "Esquema galaxia actualizado para Power BI. Las tablas CACE quedan como benchmarks sin relaciones formales.", C_REL)
+    subtitle(ws, "A2:H2", "Esquema galaxia actualizado para Power BI. CACE y Market Basket quedan como tablas de referencia/analitica sin relaciones formales.", C_REL)
 
     headers = ["#", "Tabla origen", "Columna origen", "Tabla destino", "Columna destino", "Cardinalidad", "Tipo", "Notas"]
     for i, h in enumerate(headers, 1):
@@ -713,6 +767,8 @@ def build_orden_carga(wb, tables: list[dict]):
         "dim_productos",
         "fact_ventas_final",
         "fact_precios_comp",
+        "market_basket_reglas",
+        "market_basket_reglas_enriquecidas",
     ]
     table_map = {t["nombre"]: t for t in tables}
     ordered = [table_map[name] for name in order if name in table_map]
@@ -732,6 +788,8 @@ def build_orden_carga(wb, tables: list[dict]):
         "dim_productos": "Relacionar con fact_ventas_final por product_id y con dim_categorias por categoria_es.",
         "fact_ventas_final": "Tabla de hechos principal. No cargar fact_ventas_base_ar como sustituto.",
         "fact_precios_comp": "Usar version procesada con PeriodoID.",
+        "market_basket_reglas": "Cargar despues de ejecutar el notebook 05. Tabla analitica derivada sin relaciones formales.",
+        "market_basket_reglas_enriquecidas": "Opcional para visuales mas legibles de venta cruzada. No reemplaza la tabla base de reglas.",
     }
 
     for idx, table in enumerate(ordered, 1):
@@ -786,7 +844,7 @@ def build_powerbi(wb):
     note = ws.cell(
         row=note_row,
         column=1,
-        value="Checklist de modelo: usar los CSV procesados de datos/04_procesados, marcar dim_tiempo como Date Table y revisar relaciones manuales de FactPreciosComp.",
+        value="Checklist de modelo: usar los CSV procesados de datos/04_procesados, marcar dim_tiempo como Date Table, revisar relaciones manuales de FactPreciosComp y cargar Market Basket como analitica derivada sin relaciones.",
     )
     style_cell(note, C_WARN, italic=True)
     ws.row_dimensions[note_row].height = 36

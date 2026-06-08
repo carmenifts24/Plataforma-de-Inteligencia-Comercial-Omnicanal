@@ -212,7 +212,7 @@ git restore --staged README.md
 Cuando ya verificaste que está todo correcto, creá el commit:
 
 ```powershell
-git commit -m "Correción de errores en ETL y de Power Bi. Actualización Metodología y Finanzas en Proy. Actualización de información en carpeta extras."
+git commit -m "Actualización dashboard y diccionario d datos"
 ```
 
 El mensaje debe resumir qué cambio estás subiendo.

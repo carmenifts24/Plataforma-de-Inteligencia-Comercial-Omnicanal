@@ -23,6 +23,7 @@ const P = {
   fact:     { hdr: '#7B1515', body: '#1A0E0E', border: '#A02020', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#D8B8B8' },
   dim:      { hdr: '#1A3A6B', body: '#0E1520', border: '#2A60B0', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#B0CCE8' },
   dimGreen: { hdr: '#1A5230', body: '#0E1810', border: '#2A8248', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#A8E0B8' },
+  analytic: { hdr: '#34495E', body: '#111820', border: '#6E8AA8', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#C7D2DF' },
   cace:     { hdr: '#4A3800', body: '#140F00', border: '#886400', title: '#FFD878', sub: 'rgba(255,210,100,0.5)', col: '#C8A840' },
   arrow:  '#3A7ABF',
   arrowHL:'#5AA0EF',
@@ -100,6 +101,10 @@ const TABLES = [
     name:'dim_categorias', sub:'10 filas  ·  04_procesados  ·  tabla puente',
     cols:['CategoriaID','categoria_es'],
     pk:[0], fk:[], cal:[] },
+  { id:'mba', x:1548, y:700, type:'analytic',
+    name:'market_basket_reglas', sub:'4 reglas  ·  analitica derivada',
+    cols:['nivel','antecedentes','consecuentes','support','confidence','lift'],
+    pk:[], fk:[], cal:[3,4,5] },
 ];
 
 // Calcular bounds
@@ -230,7 +235,7 @@ for(let gx=0;gx<W;gx+=50){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx
 for(let gy=0;gy<H;gy+=50){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
 
 // ── ZONA PRINCIPAL ────────────────────────────────────────────────────────────
-rr(8, 82, 1530, 820, 8, P.zone1.fill, P.zone1.border, 1);
+rr(8, 82, 1784, 820, 8, P.zone1.fill, P.zone1.border, 1);
 text('Esquema Galaxia — RetailIQ360', 18, 98, P.zone1.text, 11, true);
 
 // ── CONEXIONES (antes de las tablas para quedar detrás) ───────────────────────
@@ -295,6 +300,7 @@ const LEG = [
   { c:'#7B1515', l:'Tabla de Hechos' },
   { c:'#1A3A6B', l:'Dimensión (modelo AR)' },
   { c:'#1A5230', l:'Dimensión (IPC/procesado)' },
+  { c:'#34495E', l:'Analitica derivada (sin relacion)' },
   { c:'#4A3800', l:'Referencia CACE (sin relación formal)' },
 ];
 const legendItems = [
@@ -361,7 +367,7 @@ CACE_DATA.forEach((c,i)=>{
 // Notas pie
 text('* dim_tiempo debe marcarse como "Tabla de fechas" en Power BI (columna fecha)  ·  dim_categorias es tabla puente N:N entre dim_productos y fact_precios_comp',
      20, 904, P.note, 9.5, false);
-text('Todas las relaciones son N:1  ·  SucursalID nulo en ~92% de fact_ventas_final (canales digitales CanalID 2,3,4)  ·  PeriodoID = anio×100+mes',
+text('Todas las relaciones son N:1  ·  SucursalID nulo en ~92% de fact_ventas_final  ·  Market Basket se carga sin relaciones formales  ·  PeriodoID = anio×100+mes',
      20, 916, '#5A7A9A', 9, false);
 </script>
 </body>

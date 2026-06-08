@@ -827,6 +827,18 @@
               </ul>
             </div>
           </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">6</div>
+              <h3>Market Basket</h3>
+              <p>Detecta reglas de compra conjunta para explicar venta cruzada y recomendaciones.</p>
+              <ul>
+                <li>Apriori con mlxtend.</li>
+                <li>Reglas por soporte, confianza y lift.</li>
+                <li>CSV y visuales listos para Power BI.</li>
+              </ul>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -887,6 +899,16 @@
               <td><strong>Modelo estrella/galaxia</strong></td>
               <td>Organizar hechos y dimensiones para análisis en dashboards.</td>
               <td>Facilita KPIs claros, filtros consistentes y consultas eficientes.</td>
+            </tr>
+            <tr>
+              <td><strong>Reglas de asociación</strong></td>
+              <td>Aplicar Apriori sobre órdenes multi-ítem para encontrar combinaciones de categorías o productos.</td>
+              <td>Agrega una capa de venta cruzada al dashboard mediante soporte, confianza y lift.</td>
+            </tr>
+            <tr>
+              <td><strong>Esquema SQL v2</strong></td>
+              <td>Documentar tablas Dim*/Fact*, claves primarias, claves foráneas y tipos compatibles con importación CSV.</td>
+              <td>Permite llevar el modelo de Power BI a SQL Server sin perder trazabilidad de relaciones.</td>
             </tr>
             <tr>
               <td><strong>Forward fill en tipo de cambio</strong></td>
@@ -1021,6 +1043,7 @@
                 <li>Si se pregunta dónde, cuándo, por qué canal o qué producto, se cruzan las dimensiones.</li>
                 <li>dim_inflacion_ipc permite comparar períodos sin que la inflación distorsione los valores.</li>
                 <li>dim_categorias actúa como puente: sin ella, dim_productos y fact_precios_comp tendrían una relación N:N inválida en Power BI.</li>
+                <li>Las reglas de Market Basket se cargan como analítica derivada sin relaciones formales.</li>
               </ul>
             </div>
           </div>
@@ -1057,6 +1080,14 @@
               <strong>dim_categorias — tabla puente</strong>
               <span>10 filas · 2 cols. Las 10 categorías CACE (Electrónica, Indumentaria, Alimentos, etc.). Habilita 2 relaciones 1:N limpias en lugar de una relación N:N directa entre dim_productos y fact_precios_comp.</span>
             </article>
+            <article class="card kpi">
+              <strong>Market Basket</strong>
+              <span>4 reglas exportadas actualmente en market_basket_reglas.csv y market_basket_reglas_enriquecidas.csv. Se usan como analítica derivada para venta cruzada, sin relaciones formales en el modelo.</span>
+            </article>
+            <article class="card kpi">
+              <strong>SQL v2</strong>
+              <span>sql/retailiq360_schema.sql define el esquema relacional con tablas Dim*/Fact*, 13 claves foráneas y tipos aptos para importar los CSV desde SQL Server.</span>
+            </article>
           </div>
         </div>
       </section>
@@ -1076,6 +1107,7 @@
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-02" id="btn-02">02 EDA 1</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-03" id="btn-03">03 EDA 2</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-04" id="btn-04">04 ETL</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-05" id="btn-05">05 Basket</button>
         </div>
 
         <div class="card">
@@ -1132,6 +1164,17 @@
                 <li>Une órdenes Olist, convierte BRL a ARS vía dólar como moneda puente y ajusta por IPC acumulado (base dic-2016) generando <code>fact_ventas_final.csv</code>.</li>
                 <li>Enriquece FactVentasFinal con contexto argentino: CanalID, ClienteID, SucursalID, medio de pago, cuotas y logística muestreados con distribuciones CACE 2025.</li>
                 <li>Genera DimTiempo (2016–2024), DimProductos con categorías CACE, DimCategorias como tabla puente y FactPreciosComp con PeriodoID.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-05" aria-labelledby="btn-05">
+              <span class="tag tag--teal">Venta cruzada</span>
+              <h3>Market Basket Analysis</h3>
+              <p>Analiza órdenes multi-ítem para descubrir combinaciones de compra conjunta. Contribuye incorporando reglas de asociación al tablero, útiles para promociones, recomendaciones y surtido.</p>
+              <ul class="compact-list">
+                <li>Lee <code>fact_ventas_final.csv</code> y <code>dim_productos.csv</code>, une categorías CACE por <code>product_id</code> y filtra órdenes con 2 o más ítems.</li>
+                <li>Aplica Apriori con <code>mlxtend</code> usando soporte, confianza y lift, con fallback de soporte cuando el dataset es muy disperso.</li>
+                <li>Exporta <code>market_basket_reglas.csv</code>, <code>market_basket_reglas_enriquecidas.csv</code>, <code>market_basket_heatmap.png</code> y <code>market_basket_top10.png</code>.</li>
               </ul>
             </div>
           </div>
@@ -1202,6 +1245,20 @@
             <div>
               <strong>Modelo orientado a preguntas</strong>
               <span>La estructura permite responder preguntas de ventas, canales, pricing y contexto económico con dos tablas de hechos que comparten dimensiones (esquema galaxia).</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Market Basket generado</strong>
+              <span>El notebook 05 produce reglas de asociación y dos imágenes explicativas listas para sumar al informe de Power BI como analítica derivada.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Esquema SQL documentado</strong>
+              <span>El script SQL v2 conserva la estructura del modelo con PK/FK, tipos de datos y comentarios para importación desde CSV.</span>
             </div>
           </div>
           <div class="check">
