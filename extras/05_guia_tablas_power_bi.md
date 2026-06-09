@@ -13,7 +13,7 @@ Descripción de cada tabla, sus relaciones y las verificaciones principales a re
 5. [Orden de carga y relaciones](#5-orden-de-carga-y-relaciones)
 6. [Verificaciones generales](#6-verificaciones-generales)
 
-> **Última actualización:** modelo ampliado a esquema galaxia, esquema SQL v2 disponible en `sql/retailiq360_schema.sql` y nueva etapa `05_market_basket.ipynb`. Se agregaron las salidas `market_basket_reglas.csv`, `market_basket_reglas_enriquecidas.csv`, `market_basket_heatmap.png` y `market_basket_top10.png` en `datos/04_procesados/`. Ver sección 5 para el orden de carga y relaciones actualizados.
+> **Última actualización:** modelo ampliado a esquema galaxia, esquema SQL v2 disponible en `sql/retailiq360_schema.sql` y nuevas etapas `05_market_basket.ipynb` y `06_clustering_clientes.ipynb`. Se agregaron salidas de reglas de asociación, clustering K-Means y cohortes de retención en `datos/04_procesados/`. Ver sección 5 para el orden de carga y relaciones actualizados.
 
 ---
 
@@ -393,7 +393,7 @@ Precios relevados por categoría y mes, incluyendo precio propio y precio de com
 
 ## 3. Analítica derivada
 
-Estas tablas no forman parte del modelo relacional principal. Se generan a partir de `notebooks/05_market_basket.ipynb` y se cargan como apoyo visual para explicar patrones de compra conjunta, venta cruzada y recomendaciones.
+Estas tablas no forman parte del modelo relacional principal. Se generan a partir de `notebooks/05_market_basket.ipynb` y `notebooks/06_clustering_clientes.ipynb`, y se cargan como apoyo visual para explicar patrones de compra conjunta, segmentación de clientes y retención.
 
 ---
 
@@ -452,6 +452,89 @@ Versión legible de las reglas de asociación, preparada para etiquetas de dashb
 **Archivos visuales generados por el notebook 05:**
 - `market_basket_heatmap.png`: heatmap de lift entre categorías.
 - `market_basket_top10.png`: gráfico de reglas principales por lift.
+
+---
+
+### clustering_clientes
+**Carpeta:** `04_procesados/clustering_clientes.csv`
+**Filas:** 9.999 | **Columnas:** 7
+
+Segmentación no supervisada de clientes generada por `06_clustering_clientes.ipynb` usando K-Means sobre variables RFM. El notebook calcula `recencia`, `frecuencia`, `monto_total` y `ticket_promedio`, escala las variables con `StandardScaler`, entrena K-Means con `k = 4` y asigna nombres interpretables a los clusters.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `ClienteID` | Entero | Cliente segmentado; referencia a `dim_clientes_ar.ClienteID` |
+| `cluster_id` | Entero | ID numérico del cluster K-Means |
+| `cluster_nombre` | Texto | Nombre interpretable: Alto valor, Frecuente, Ocasional o Inactivo |
+| `recencia` | Decimal | Días desde última compra hasta 2018-08-31 |
+| `frecuencia` | Entero | Cantidad de órdenes únicas del cliente |
+| `monto_total` | Decimal | Monto total en ARS reales con cobertura IPC |
+| `ticket_promedio` | Decimal | `monto_total / frecuencia` |
+
+**Relaciones:**
+- Opción recomendada para filtrar ventas por cluster: integrar `cluster_id` y `cluster_nombre` en `dim_clientes_ar` desde Power Query mediante `ClienteID`.
+- Opción de perfilado: crear relación manual `clustering_clientes.ClienteID → dim_clientes_ar.ClienteID`. Evitar relacionarla directamente con `fact_ventas_final` si `dim_clientes_ar` ya está relacionada, para no generar rutas ambiguas.
+
+**Verificaciones:**
+- [ ] 9.999 filas y 7 columnas
+- [ ] `ClienteID` sin duplicados
+- [ ] `cluster_nombre` contiene 4 segmentos: Alto valor, Frecuente, Ocasional, Inactivo
+- [ ] `recencia`, `frecuencia`, `monto_total` y `ticket_promedio` son numéricos y no tienen nulos
+
+**Archivos visuales generados por el notebook 06:**
+- `clustering_elbow_silhouette.png`: selección de `k`.
+- `clustering_distribucion_clusters.png`: tamaño relativo de clusters.
+- `clustering_heatmap_centroides.png`: perfil normalizado de centroides.
+- `clustering_scatter_frecuencia_monto.png`: dispersión frecuencia vs. monto.
+- `clustering_scatter_recencia_monto.png`: dispersión recencia vs. monto.
+- `clustering_demo_por_cluster.png`: distribución demográfica por cluster.
+
+---
+
+### cohortes_retencion
+**Carpeta:** `04_procesados/cohortes_retencion.csv`
+**Filas:** 216 | **Columnas:** 5
+
+Tabla larga de retención de clientes. Cada cohorte agrupa clientes por mes de primera compra y mide cuántos siguen activos en cada `mes_vida`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `cohorte` | Texto | Mes de primera compra en formato YYYY-MM |
+| `mes_vida` | Entero | Mes transcurrido desde la primera compra; 0 = adquisición |
+| `clientes_activos` | Entero | Clientes de la cohorte activos en ese mes de vida |
+| `tasa_retencion` | Decimal | `clientes_activos / clientes_iniciales` |
+| `clientes_iniciales` | Entero | Clientes iniciales de la cohorte |
+
+**Relaciones:**
+- No crear relaciones formales. Usar como tabla de análisis longitudinal independiente.
+
+---
+
+### cohortes_resumen
+**Carpeta:** `04_procesados/cohortes_resumen.csv`
+**Filas:** 16 | **Columnas:** 6
+
+Resumen ejecutivo por cohorte para tarjetas y tablas compactas.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `cohorte` | Texto | Mes de primera compra |
+| `clientes_iniciales` | Entero | Clientes iniciales de la cohorte |
+| `retencion_mes_1` | Decimal | Retención al mes 1 |
+| `retencion_mes_3` | Decimal | Retención al mes 3 |
+| `retencion_mes_6` | Decimal | Retención al mes 6 |
+| `vida_promedio` | Decimal | Promedio de meses únicos activos por cliente |
+
+---
+
+### cohortes_matriz_ancha
+**Carpeta:** `04_procesados/cohortes_matriz_ancha.csv`
+**Filas:** 14 | **Columnas:** 14
+
+Matriz ancha de retención lista para Power BI, con una columna por mes de vida (`mes_0` a `mes_12`). Es útil para una matriz con formato condicional similar al heatmap del notebook.
+
+**Archivos visuales generados por el notebook 06:**
+- `cohortes_heatmap.png`: mapa de calor de retención por cohorte y mes de vida.
 
 ---
 
@@ -664,17 +747,21 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 | 10 | `fact_precios_comp.csv` | 04_procesados | Tabla de hechos secundaria | Carga nueva |
 | 11 | `market_basket_reglas.csv` | 04_procesados | Analítica derivada | Carga nueva |
 | 12 | `market_basket_reglas_enriquecidas.csv` | 04_procesados | Analítica derivada | Carga nueva opcional |
-| 13 | `cace_01_kpis_macro.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 14 | `cace_02_categorias_rubros.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 15 | `cace_03a_conversion_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 16 | `cace_03b_ranking_demanda.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 17 | `cace_04a_medios_pago_oferta.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 18 | `cace_04b_financiamiento_cuotas.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 19 | `cace_05a_logistica_tipo_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 20 | `cace_05b_plazos_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 21 | `cace_06a_distribucion_regional.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 22 | `cace_06b_perfil_comprador.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
-| 23 | `cace_07_canal_online_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 13 | `clustering_clientes.csv` | 04_procesados | Analítica derivada | Carga nueva |
+| 14 | `cohortes_retencion.csv` | 04_procesados | Analítica derivada | Carga nueva |
+| 15 | `cohortes_resumen.csv` | 04_procesados | Analítica derivada | Carga nueva |
+| 16 | `cohortes_matriz_ancha.csv` | 04_procesados | Analítica derivada | Carga nueva opcional |
+| 17 | `cace_01_kpis_macro.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 18 | `cace_02_categorias_rubros.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 19 | `cace_03a_conversion_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 20 | `cace_03b_ranking_demanda.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 21 | `cace_04a_medios_pago_oferta.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 22 | `cace_04b_financiamiento_cuotas.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 23 | `cace_05a_logistica_tipo_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 24 | `cace_05b_plazos_entrega.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 25 | `cace_06a_distribucion_regional.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 26 | `cace_06b_perfil_comprador.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
+| 27 | `cace_07_canal_online_por_categoria.csv` | 02_cace_benchmarks | Referencia | Sin cambio |
 
 ### Relaciones formales a configurar en Model View
 
@@ -708,7 +795,7 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 
 > **Nota:** las dos relaciones marcadas como **Manual** deben crearse explícitamente en Administrar relaciones porque las columnas de join tienen nombres distintos en cada tabla. Power BI no puede detectarlas automáticamente.
 
-> Las tablas CACE y las tablas de Market Basket **no tienen relaciones formales** en el modelo. Se usan directamente en visualizaciones de comparación, recomendaciones y narrativa analítica.
+> Las tablas CACE, Market Basket y cohortes **no tienen relaciones formales** en el modelo. `clustering_clientes` puede integrarse con `dim_clientes_ar` por `ClienteID` si se necesita segmentar ventas por cluster.
 
 ### Pasos post-carga en Power BI
 
@@ -724,7 +811,9 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 8. Verificar en Model View que `dim_clientes_ar → fact_ventas_final` esté activa (línea sólida, no punteada).
 9. Verificar que `fact_ventas_final → dim_productos` use la columna `product_id` y no `category_en` (eliminar y recrear si Power BI la detectó incorrectamente como N:N).
 10. Cargar `market_basket_reglas.csv` y `market_basket_reglas_enriquecidas.csv` solo como tablas analíticas derivadas. No conectarlas automáticamente con `dim_categorias` ni con `dim_productos` salvo que se diseñe una vista específica de recomendaciones.
-11. Si se usa SQL Server, tomar `sql/retailiq360_schema.sql` como referencia de nombres físicos (`DimTiempo`, `FactVentas`, `FactPreciosComp`, etc.), tipos de dato y 13 claves foráneas esperadas.
+11. Cargar `clustering_clientes.csv`. Para filtrar ventas por cluster, hacer merge de `cluster_nombre` en `dim_clientes_ar` dentro de Power Query. Para análisis descriptivo, puede quedar como tabla separada relacionada por `ClienteID`.
+12. Cargar `cohortes_retencion.csv`, `cohortes_resumen.csv` y, si se usará matriz/heatmap en Power BI, `cohortes_matriz_ancha.csv` como tablas independientes.
+13. Si se usa SQL Server, tomar `sql/retailiq360_schema.sql` como referencia de nombres físicos (`DimTiempo`, `FactVentas`, `FactPreciosComp`, etc.), tipos de dato y 13 claves foráneas esperadas.
 
 ---
 
@@ -742,6 +831,10 @@ Antes de publicar el informe, realizar las siguientes comprobaciones en Power BI
 - [ ] `dim_inflacion_ipc`: 111 filas
 - [ ] `market_basket_reglas`: 4 filas, 9 columnas
 - [ ] `market_basket_reglas_enriquecidas`: 4 filas, 11 columnas
+- [ ] `clustering_clientes`: 9.999 filas, 7 columnas
+- [ ] `cohortes_retencion`: 216 filas, 5 columnas
+- [ ] `cohortes_resumen`: 16 filas, 6 columnas
+- [ ] `cohortes_matriz_ancha`: 14 filas, 14 columnas
 
 **Modelo y relaciones**
 - [ ] En Model View no hay relaciones cruzadas no intencionadas (Power BI puede auto-detectar relaciones incorrectas)
@@ -751,6 +844,8 @@ Antes de publicar el informe, realizar las siguientes comprobaciones en Power BI
 - [ ] La relación `fact_ventas_final → dim_productos` usa `product_id` (no `category_en`) y es 1:N
 - [ ] Las relaciones con columnas de nombre distinto existen: `fecha_relevamiento → fecha` y `categoria → categoria_es`
 - [ ] Las tablas de Market Basket no crean relaciones automáticas con `dim_categorias`, `dim_productos` ni `fact_ventas_final`
+- [ ] `clustering_clientes` no genera una ruta ambigua entre `dim_clientes_ar` y `fact_ventas_final`
+- [ ] Las tablas de cohortes quedan sin relaciones formales salvo que se cree una dimensión calendario específica para cohortes
 
 **Lógica de datos**
 - [ ] Al filtrar `fact_ventas_final` por `CanalID = 1` (Físico), todos los registros tienen `SucursalID` no nulo

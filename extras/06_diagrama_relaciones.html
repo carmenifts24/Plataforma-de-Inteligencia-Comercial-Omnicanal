@@ -101,6 +101,18 @@ const TABLES = [
     name:'dim_categorias', sub:'10 filas  ·  04_procesados  ·  tabla puente',
     cols:['CategoriaID','categoria_es'],
     pk:[0], fk:[], cal:[] },
+
+  { id:'clu', x:1548, y:300, type:'analytic',
+    name:'clustering_clientes', sub:'9.999 filas  ·  analitica derivada',
+    cols:['ClienteID','cluster_id','cluster_nombre','recencia',
+          'frecuencia','monto_total','ticket_promedio'],
+    pk:[], fk:[0], cal:[1,2,3,4,5,6] },
+
+  { id:'coh', x:1548, y:500, type:'analytic',
+    name:'cohortes_retencion', sub:'216 filas  ·  analitica derivada',
+    cols:['cohorte','mes_vida','clientes_activos','tasa_retencion','clientes_iniciales'],
+    pk:[], fk:[], cal:[0,1,2,3,4] },
+
   { id:'mba', x:1548, y:700, type:'analytic',
     name:'market_basket_reglas', sub:'4 reglas  ·  analitica derivada',
     cols:['nivel','antecedentes','consecuentes','support','confidence','lift'],
@@ -367,7 +379,7 @@ CACE_DATA.forEach((c,i)=>{
 // Notas pie
 text('* dim_tiempo debe marcarse como "Tabla de fechas" en Power BI (columna fecha)  ·  dim_categorias es tabla puente N:N entre dim_productos y fact_precios_comp',
      20, 904, P.note, 9.5, false);
-text('Todas las relaciones son N:1  ·  SucursalID nulo en ~92% de fact_ventas_final  ·  Market Basket se carga sin relaciones formales  ·  PeriodoID = anio×100+mes',
+text('Todas las relaciones centrales son N:1  ·  Analitica derivada: Market Basket, clustering y cohortes  ·  PeriodoID = anio×100+mes',
      20, 916, '#5A7A9A', 9, false);
 </script>
 </body>

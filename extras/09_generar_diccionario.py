@@ -5,8 +5,9 @@ Salida:
     extras/diccionario_datos_RetailIQ360.xlsx
 
 Version actualizada segun notebooks/04_ETL.ipynb, notebooks/05_market_basket.ipynb,
-el esquema SQL v2 y el archivo vigente de Power BI. El script toma la estructura
-real de los CSV del proyecto para no depender de conteos escritos a mano.
+notebooks/06_clustering_clientes.ipynb, el esquema SQL v2 y el archivo vigente
+de Power BI. El script toma la estructura real de los CSV del proyecto para no
+depender de conteos escritos a mano.
 """
 
 from __future__ import annotations
@@ -219,6 +220,42 @@ TABLES = [
         "descripcion": "Version enriquecida y legible de las reglas de asociacion, preparada para etiquetas de dashboard.",
         "uso_powerbi": "Tabla de apoyo visual para mostrar reglas, categorias antecedente/consecuente y detalle narrativo en Power BI.",
     },
+    {
+        "nombre": "clustering_clientes",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Segmentacion K-Means",
+        "archivo": "clustering_clientes.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Segmentacion no supervisada de clientes con K-Means sobre features RFM: recencia, frecuencia, monto_total y ticket_promedio.",
+        "uso_powerbi": "Permite analizar clientes por cluster. Relacionar o integrar por ClienteID con dim_clientes_ar; no relacionar directo con FactVentas para evitar ambiguedad.",
+    },
+    {
+        "nombre": "cohortes_retencion",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Retencion",
+        "archivo": "cohortes_retencion.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Tabla larga de retencion por cohorte de primera compra y mes de vida.",
+        "uso_powerbi": "Graficos de linea y tablas de retencion longitudinal por cohorte.",
+    },
+    {
+        "nombre": "cohortes_resumen",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Retencion",
+        "archivo": "cohortes_resumen.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Resumen de cohortes con clientes iniciales, retencion a meses 1, 3 y 6, y vida promedio.",
+        "uso_powerbi": "Tarjetas y tablas ejecutivas de retencion por cohorte.",
+    },
+    {
+        "nombre": "cohortes_matriz_ancha",
+        "categoria": "Analitica derivada",
+        "subcategoria": "Retencion",
+        "archivo": "cohortes_matriz_ancha.csv",
+        "carpeta": "datos/04_procesados",
+        "descripcion": "Matriz ancha de retencion con columnas mes_0 a mes_12 para formato condicional en Power BI.",
+        "uso_powerbi": "Matriz de retencion tipo heatmap usando formato condicional.",
+    },
 ]
 
 
@@ -333,6 +370,10 @@ VERIFICACIONES = [
     ("Power BI", "Modelo", "Verificar que fact_ventas_final > dim_productos use product_id, no category_en."),
     ("market_basket_reglas", "Integridad", "4 reglas exportadas actualmente desde notebooks/05_market_basket.ipynb. Verificar que support, confidence y lift sean numericos."),
     ("market_basket_reglas", "Modelo", "Cargar como tabla analitica derivada sin relaciones formales. Usar para visuales de recomendaciones y venta cruzada."),
+    ("clustering_clientes", "Integridad", "9.999 filas y 7 columnas. ClienteID sin duplicados; 4 clusters esperados: Alto valor, Frecuente, Ocasional e Inactivo."),
+    ("clustering_clientes", "Modelo", "Relacionar con dim_clientes_ar por ClienteID solo si se necesita perfilado; para filtrar ventas por cluster, integrar cluster_nombre en dim_clientes_ar en Power Query."),
+    ("cohortes_retencion", "Integridad", "216 filas en formato largo. tasa_retencion entre 0 y 1, mes_vida no negativo y clientes_iniciales mayor que 0."),
+    ("cohortes_matriz_ancha", "Formato", "14 filas y 14 columnas. Usar mes_0 a mes_12 para matriz con formato condicional en Power BI."),
     ("SQL", "Modelo", "sql/retailiq360_schema.sql documenta el esquema relacional v2 con nombres SQL Dim*/Fact*, PK/FK y tipos compatibles con importacion CSV."),
     ("Benchmarks CACE", "Modelo", "No crear relaciones formales con tablas CACE. Usarlas directamente en visualizaciones de comparacion."),
 ]
@@ -392,6 +433,33 @@ CLAVES = {
         "support": ("CALC", None, None),
         "confidence": ("CALC", None, None),
         "lift": ("CALC", None, None),
+    },
+    "clustering_clientes": {
+        "ClienteID": ("FK", "dim_clientes_ar", "ClienteID"),
+        "cluster_id": ("CALC", None, None),
+        "cluster_nombre": ("CALC", None, None),
+        "recencia": ("CALC", None, None),
+        "frecuencia": ("CALC", None, None),
+        "monto_total": ("CALC", None, None),
+        "ticket_promedio": ("CALC", None, None),
+    },
+    "cohortes_retencion": {
+        "cohorte": ("CALC", None, None),
+        "mes_vida": ("CALC", None, None),
+        "clientes_activos": ("CALC", None, None),
+        "tasa_retencion": ("CALC", None, None),
+        "clientes_iniciales": ("CALC", None, None),
+    },
+    "cohortes_resumen": {
+        "cohorte": ("CALC", None, None),
+        "clientes_iniciales": ("CALC", None, None),
+        "retencion_mes_1": ("CALC", None, None),
+        "retencion_mes_3": ("CALC", None, None),
+        "retencion_mes_6": ("CALC", None, None),
+        "vida_promedio": ("CALC", None, None),
+    },
+    "cohortes_matriz_ancha": {
+        "cohorte": ("CALC", None, None),
     },
 }
 
@@ -500,6 +568,23 @@ DESCRIPCIONES_COLUMNAS = {
     "regla_detalle": "Descripcion legible de la regla de venta cruzada.",
     "categoria_antecedente": "Categoria CACE principal del antecedente.",
     "categoria_consecuente": "Categoria CACE principal del consecuente.",
+    # --- clustering_clientes ---
+    "cluster_id": "Identificador numerico del cluster K-Means asignado al cliente.",
+    "cluster_nombre": "Nombre interpretable del cluster: Alto valor, Frecuente, Ocasional o Inactivo.",
+    "recencia": "Dias desde la ultima compra hasta la fecha de corte 2018-08-31. Menor valor implica cliente mas reciente.",
+    "frecuencia": "Cantidad de ordenes unicas del cliente.",
+    "monto_total": "Suma de precio_venta_ars_real para compras con cobertura IPC.",
+    "ticket_promedio": "Monto promedio por orden: monto_total / frecuencia.",
+    # --- cohortes ---
+    "cohorte": "Mes de primera compra del cliente en formato YYYY-MM.",
+    "mes_vida": "Mes transcurrido desde la primera compra: 0 = mes de adquisicion.",
+    "clientes_activos": "Cantidad de clientes de la cohorte que compraron en ese mes de vida.",
+    "tasa_retencion": "clientes_activos / clientes_iniciales, expresado como decimal entre 0 y 1.",
+    "clientes_iniciales": "Cantidad de clientes de la cohorte en el mes 0.",
+    "retencion_mes_1": "Tasa de retencion al primer mes posterior a la adquisicion.",
+    "retencion_mes_3": "Tasa de retencion al tercer mes posterior a la adquisicion.",
+    "retencion_mes_6": "Tasa de retencion al sexto mes posterior a la adquisicion.",
+    "vida_promedio": "Promedio de meses unicos activos por cliente dentro de la cohorte.",
 }
 
 
@@ -591,7 +676,7 @@ def build_indice(wb, tables: list[dict]):
     subtitle(
         ws,
         "A2:J2",
-        "Modelo actualizado desde notebooks/04_ETL.ipynb y 05_market_basket.ipynb: modelo galaxia, reglas de asociacion y esquema SQL v2.",
+        "Modelo actualizado desde notebooks/04_ETL.ipynb, 05_market_basket.ipynb y 06_clustering_clientes.ipynb: galaxia, segmentacion, cohortes y SQL v2.",
     )
 
     headers = ["#", "Tabla", "Categoria", "Subcategoria", "Archivo", "Carpeta", "Existe", "Filas", "Columnas", "Descripcion"]
@@ -694,7 +779,7 @@ def build_relaciones(wb):
     ws = wb.create_sheet("Relaciones modelo")
     ws.sheet_view.showGridLines = False
     title(ws, "A1:H1", "RetailIQ 360 - Relaciones del Modelo", C_REL)
-    subtitle(ws, "A2:H2", "Esquema galaxia actualizado para Power BI. CACE y Market Basket quedan como tablas de referencia/analitica sin relaciones formales.", C_REL)
+    subtitle(ws, "A2:H2", "Esquema galaxia actualizado para Power BI. CACE, Market Basket y cohortes quedan como referencia/analitica; clustering puede integrarse por ClienteID.", C_REL)
 
     headers = ["#", "Tabla origen", "Columna origen", "Tabla destino", "Columna destino", "Cardinalidad", "Tipo", "Notas"]
     for i, h in enumerate(headers, 1):
@@ -769,6 +854,10 @@ def build_orden_carga(wb, tables: list[dict]):
         "fact_precios_comp",
         "market_basket_reglas",
         "market_basket_reglas_enriquecidas",
+        "clustering_clientes",
+        "cohortes_retencion",
+        "cohortes_resumen",
+        "cohortes_matriz_ancha",
     ]
     table_map = {t["nombre"]: t for t in tables}
     ordered = [table_map[name] for name in order if name in table_map]
@@ -790,6 +879,10 @@ def build_orden_carga(wb, tables: list[dict]):
         "fact_precios_comp": "Usar version procesada con PeriodoID.",
         "market_basket_reglas": "Cargar despues de ejecutar el notebook 05. Tabla analitica derivada sin relaciones formales.",
         "market_basket_reglas_enriquecidas": "Opcional para visuales mas legibles de venta cruzada. No reemplaza la tabla base de reglas.",
+        "clustering_clientes": "Cargar despues de ejecutar el notebook 06. Integrar cluster_nombre a dim_clientes_ar si se desea filtrar ventas por cluster.",
+        "cohortes_retencion": "Formato largo para graficos de linea de retencion. Sin relaciones formales con el modelo galaxia.",
+        "cohortes_resumen": "Resumen ejecutivo por cohorte. Sin relaciones formales.",
+        "cohortes_matriz_ancha": "Formato ancho para matriz/heatmap de retencion con formato condicional.",
     }
 
     for idx, table in enumerate(ordered, 1):
@@ -844,7 +937,7 @@ def build_powerbi(wb):
     note = ws.cell(
         row=note_row,
         column=1,
-        value="Checklist de modelo: usar los CSV procesados de datos/04_procesados, marcar dim_tiempo como Date Table, revisar relaciones manuales de FactPreciosComp y cargar Market Basket como analitica derivada sin relaciones.",
+        value="Checklist de modelo: usar los CSV procesados de datos/04_procesados, marcar dim_tiempo como Date Table, revisar relaciones manuales de FactPreciosComp y cargar Market Basket, clustering y cohortes como analitica derivada.",
     )
     style_cell(note, C_WARN, italic=True)
     ws.row_dimensions[note_row].height = 36

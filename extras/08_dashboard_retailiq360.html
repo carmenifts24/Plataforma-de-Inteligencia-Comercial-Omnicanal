@@ -839,6 +839,18 @@
               </ul>
             </div>
           </article>
+          <article class="card stage">
+            <div class="card__body">
+              <div class="stage__num">7</div>
+              <h3>Clustering y cohortes</h3>
+              <p>Segmenta clientes con K-Means y mide retención por mes de adquisición.</p>
+              <ul>
+                <li>Features RFM por cliente.</li>
+                <li>Clusters Alto valor, Frecuente, Ocasional e Inactivo.</li>
+                <li>Cohortes en formato largo, resumen y matriz.</li>
+              </ul>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -904,6 +916,16 @@
               <td><strong>Reglas de asociación</strong></td>
               <td>Aplicar Apriori sobre órdenes multi-ítem para encontrar combinaciones de categorías o productos.</td>
               <td>Agrega una capa de venta cruzada al dashboard mediante soporte, confianza y lift.</td>
+            </tr>
+            <tr>
+              <td><strong>K-Means</strong></td>
+              <td>Segmentar clientes con recencia, frecuencia, monto total y ticket promedio.</td>
+              <td>Permite agrupar clientes por comportamiento real de compra y comparar perfiles comerciales.</td>
+            </tr>
+            <tr>
+              <td><strong>Análisis de cohortes</strong></td>
+              <td>Agrupar clientes por mes de primera compra y medir retención por mes de vida.</td>
+              <td>Agrega una mirada longitudinal sobre fidelización y repetición de compra.</td>
             </tr>
             <tr>
               <td><strong>Esquema SQL v2</strong></td>
@@ -1044,6 +1066,7 @@
                 <li>dim_inflacion_ipc permite comparar períodos sin que la inflación distorsione los valores.</li>
                 <li>dim_categorias actúa como puente: sin ella, dim_productos y fact_precios_comp tendrían una relación N:N inválida en Power BI.</li>
                 <li>Las reglas de Market Basket se cargan como analítica derivada sin relaciones formales.</li>
+                <li>Clustering y cohortes agregan segmentación y retención sin cambiar el esquema galaxia central.</li>
               </ul>
             </div>
           </div>
@@ -1085,6 +1108,14 @@
               <span>4 reglas exportadas actualmente en market_basket_reglas.csv y market_basket_reglas_enriquecidas.csv. Se usan como analítica derivada para venta cruzada, sin relaciones formales en el modelo.</span>
             </article>
             <article class="card kpi">
+              <strong>Clustering de clientes</strong>
+              <span>9.999 clientes segmentados con K-Means en clustering_clientes.csv. Usa recencia, frecuencia, monto total y ticket promedio para crear clusters interpretables.</span>
+            </article>
+            <article class="card kpi">
+              <strong>Cohortes de retención</strong>
+              <span>cohortes_retencion.csv (216 filas), cohortes_resumen.csv (16 filas) y cohortes_matriz_ancha.csv (14 filas) permiten analizar retención por mes de primera compra.</span>
+            </article>
+            <article class="card kpi">
               <strong>SQL v2</strong>
               <span>sql/retailiq360_schema.sql define el esquema relacional con tablas Dim*/Fact*, 13 claves foráneas y tipos aptos para importar los CSV desde SQL Server.</span>
             </article>
@@ -1108,6 +1139,7 @@
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-03" id="btn-03">03 EDA 2</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-04" id="btn-04">04 ETL</button>
           <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-05" id="btn-05">05 Basket</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-06" id="btn-06">06 Clusters</button>
         </div>
 
         <div class="card">
@@ -1175,6 +1207,17 @@
                 <li>Lee <code>fact_ventas_final.csv</code> y <code>dim_productos.csv</code>, une categorías CACE por <code>product_id</code> y filtra órdenes con 2 o más ítems.</li>
                 <li>Aplica Apriori con <code>mlxtend</code> usando soporte, confianza y lift, con fallback de soporte cuando el dataset es muy disperso.</li>
                 <li>Exporta <code>market_basket_reglas.csv</code>, <code>market_basket_reglas_enriquecidas.csv</code>, <code>market_basket_heatmap.png</code> y <code>market_basket_top10.png</code>.</li>
+              </ul>
+            </div>
+
+            <div class="tab-panel" role="tabpanel" id="tab-06" aria-labelledby="btn-06">
+              <span class="tag tag--gold">Segmentación</span>
+              <h3>Clustering de clientes y cohortes</h3>
+              <p>Construye una capa de inteligencia de clientes: primero segmenta por comportamiento RFM con K-Means y después analiza retención por cohorte de primera compra.</p>
+              <ul class="compact-list">
+                <li>Calcula <code>recencia</code>, <code>frecuencia</code>, <code>monto_total</code> y <code>ticket_promedio</code> por <code>ClienteID</code>, escala las variables y entrena K-Means con <code>k = 4</code>.</li>
+                <li>Exporta <code>clustering_clientes.csv</code> y gráficos de elbow/silhouette, centroides, distribución, dispersión y perfil demográfico por cluster.</li>
+                <li>Genera <code>cohortes_retencion.csv</code>, <code>cohortes_resumen.csv</code>, <code>cohortes_matriz_ancha.csv</code> y <code>cohortes_heatmap.png</code> para medir retención longitudinal.</li>
               </ul>
             </div>
           </div>
@@ -1252,6 +1295,20 @@
             <div>
               <strong>Market Basket generado</strong>
               <span>El notebook 05 produce reglas de asociación y dos imágenes explicativas listas para sumar al informe de Power BI como analítica derivada.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Segmentación de clientes generada</strong>
+              <span>El notebook 06 exporta 9.999 clientes segmentados con K-Means y gráficos de interpretación para Power BI.</span>
+            </div>
+          </div>
+          <div class="check">
+            <div class="check__icon">✓</div>
+            <div>
+              <strong>Cohortes de retención listas</strong>
+              <span>Las salidas de cohortes incluyen formato largo, resumen ejecutivo, matriz ancha y heatmap para analizar fidelización.</span>
             </div>
           </div>
           <div class="check">

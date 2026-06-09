@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200" role="img" aria-labelledby="title desc">
   <title id="title">RetailIQ360 - Modelo de relaciones: esquema galaxia</title>
-  <desc id="desc">Diagrama de tablas y relaciones del modelo RetailIQ360. Muestra dos tablas de hechos (fact_ventas_final y fact_precios_comp) compartiendo dimensiones comunes, dim_categorias como tabla puente y Market Basket como analitica derivada sin relaciones formales.</desc>
+  <desc id="desc">Diagrama de tablas y relaciones del modelo RetailIQ360. Muestra dos tablas de hechos, dimensiones comunes, dim_categorias como tabla puente y analitica derivada de Market Basket, clustering y cohortes.</desc>
   <defs>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
       <path d="M1 1 L9 5 L1 9 Z" fill="#49a6ff"/>
@@ -51,7 +51,7 @@
   </g>
 
   <text x="960" y="46" text-anchor="middle" class="title">RetailIQ360 - Modelo de relaciones de tablas</text>
-  <text x="960" y="72" text-anchor="middle" class="subtitle">Esquema galaxia: dos tablas de hechos, dimensiones compartidas, dim_categorias como puente y Market Basket como analitica derivada.</text>
+  <text x="960" y="72" text-anchor="middle" class="subtitle">Esquema galaxia: hechos, dimensiones compartidas, dim_categorias como puente y analitica derivada de notebooks 05 y 06.</text>
 
   <!-- Main schema zone -->
   <g transform="translate(40 90)">
@@ -244,6 +244,31 @@
     <text x="14" y="138" class="box-sub">Sin relaciones formales</text>
   </g>
 
+  <!-- clustering_clientes — analytic output from notebook 06 -->
+  <g class="analytic" transform="translate(1110 700)" filter="url(#shadow)">
+    <rect class="body" width="220" height="150" rx="12"/>
+    <rect class="head" width="220" height="38" rx="12"/>
+    <path d="M0 30H220V44H0Z" fill="#34495e"/>
+    <text x="14" y="25" class="box-title">clustering_clientes</text>
+    <text x="14" y="56" class="box-sub">9.999 filas · 04_procesados</text>
+    <text x="14" y="78" class="fk">FK ClienteID → dim_clientes_ar</text>
+    <text x="14" y="98" class="col">cluster_id, cluster_nombre</text>
+    <text x="14" y="118" class="col">recencia, frecuencia</text>
+    <text x="14" y="138" class="col">monto_total, ticket_promedio</text>
+  </g>
+
+  <!-- cohortes_retencion — analytic output from notebook 06 -->
+  <g class="analytic" transform="translate(1370 700)" filter="url(#shadow)">
+    <rect class="body" width="220" height="130" rx="12"/>
+    <rect class="head" width="220" height="38" rx="12"/>
+    <path d="M0 30H220V44H0Z" fill="#34495e"/>
+    <text x="14" y="25" class="box-title">cohortes_retencion</text>
+    <text x="14" y="56" class="box-sub">216 filas · formato largo</text>
+    <text x="14" y="78" class="col">cohorte, mes_vida</text>
+    <text x="14" y="98" class="col">clientes_activos</text>
+    <text x="14" y="118" class="col">tasa_retencion</text>
+  </g>
+
   <!-- dim_inflacion_ipc — bottom center-left -->
   <g class="dim-green" transform="translate(380 490)" filter="url(#shadow)">
     <rect class="body" width="242" height="178" rx="10"/>
@@ -388,5 +413,5 @@
     <text x="1600" y="-3" class="legend-text">Lineas solidas = relaciones formales N:1</text>
   </g>
 
-  <text x="960" y="898" text-anchor="middle" class="note">Esquema galaxia: fact_ventas_final y fact_precios_comp comparten dimensiones. dim_categorias resuelve la relacion N:N; Market Basket se carga como analitica derivada sin relaciones formales.</text>
+  <text x="960" y="898" text-anchor="middle" class="note">Esquema galaxia central + analitica derivada: Market Basket sin relaciones, clustering integrable por ClienteID y cohortes como analisis longitudinal independiente.</text>
 </svg>

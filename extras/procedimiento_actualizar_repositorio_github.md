@@ -212,7 +212,7 @@ git restore --staged README.md
 Cuando ya verificaste que está todo correcto, creá el commit:
 
 ```powershell
-git commit -m "Actualización dashboard y diccionario d datos"
+git commit -m "Tableros preliminares en power bi. Fases 1 a 8 del Proyecto"
 ```
 
 El mensaje debe resumir qué cambio estás subiendo.
