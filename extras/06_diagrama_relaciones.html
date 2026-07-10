@@ -18,18 +18,18 @@ const W = C.width, H = C.height;
 
 // ── Paleta ──────────────────────────────────────────────────────────────────
 const P = {
-  bg:   '#0d1117',
-  grid: '#161b22',
-  fact:     { hdr: '#7B1515', body: '#1A0E0E', border: '#A02020', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#D8B8B8' },
-  dim:      { hdr: '#1A3A6B', body: '#0E1520', border: '#2A60B0', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#B0CCE8' },
-  dimGreen: { hdr: '#1A5230', body: '#0E1810', border: '#2A8248', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#A8E0B8' },
-  analytic: { hdr: '#34495E', body: '#111820', border: '#6E8AA8', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#FFD700', fk: '#87CEEB', cal: '#90EE90', col: '#C7D2DF' },
-  cace:     { hdr: '#4A3800', body: '#140F00', border: '#886400', title: '#FFD878', sub: 'rgba(255,210,100,0.5)', col: '#C8A840' },
-  arrow:  '#3A7ABF',
-  arrowHL:'#5AA0EF',
-  lbl:    '#6A9FDF',
-  note:   '#6ECC88',
-  zone1:  { fill: 'rgba(30,60,120,0.07)', border: 'rgba(42,96,176,0.25)', text: '#3A6BBF' },
+  bg:   '#13151A',
+  grid: '#1C1F2A',
+  fact:     { hdr: '#6E1E1B', body: '#1F1210', border: '#E24B4A', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#EF9F27', fk: '#8FC3F5', cal: '#7FE0B8', col: '#E8B8B5' },
+  dim:      { hdr: '#1D3E5E', body: '#0E1520', border: '#378ADD', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#EF9F27', fk: '#8FC3F5', cal: '#7FE0B8', col: '#C9E1FA' },
+  dimGreen: { hdr: '#155C42', body: '#0E1810', border: '#1D9E75', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#EF9F27', fk: '#8FC3F5', cal: '#7FE0B8', col: '#B8ECD9' },
+  analytic: { hdr: '#3A3568', body: '#111820', border: '#7F77DD', title: '#FFFFFF', sub: 'rgba(255,255,255,0.5)', pk: '#EF9F27', fk: '#8FC3F5', cal: '#7FE0B8', col: '#D6D2F5' },
+  cace:     { hdr: '#4A3800', body: '#140F00', border: '#EF9F27', title: '#FFD878', sub: 'rgba(255,210,100,0.5)', col: '#C8A840' },
+  arrow:  '#378ADD',
+  arrowHL:'#5FA3E0',
+  lbl:    '#5FA3E0',
+  note:   '#5DCAA5',
+  zone1:  { fill: 'rgba(55,138,221,0.07)', border: 'rgba(55,138,221,0.25)', text: '#378ADD' },
 };
 
 const TW = 192, RH = 16, HH = 42, BPAD = 8;
@@ -193,7 +193,7 @@ function connLabel(lbl,x,y) {
   ctx.fillStyle='rgba(13,17,23,0.75)';
   const w=ctx.measureText(lbl).width;
   ctx.fillRect(x-2,y-10,w+4,13);
-  text(lbl,x,y,P.lbl,8,false);
+  text(lbl,x,y,P.lbl,9,false);
 }
 
 // ── Función principal: dibujar tabla ────────────────────────────────────────
@@ -209,8 +209,8 @@ function drawTable(t) {
   rr(x,y,TW,h,6,null,pal.border);
   rrTop(x,y,TW,HH,6,pal.hdr);
 
-  text(name,x+8,y+16,pal.title,10,true);
-  text(sub,x+8,y+32,pal.sub,8.5,false);
+  text(name,x+8,y+16,pal.title,11,true);
+  text(sub,x+8,y+32,pal.sub,9.5,false);
 
   ctx.strokeStyle=pal.border; ctx.lineWidth=0.5;
   ctx.beginPath(); ctx.moveTo(x,y+HH); ctx.lineTo(x+TW,y+HH); ctx.stroke();
@@ -222,7 +222,7 @@ function drawTable(t) {
     if(pk.includes(i)){ color=pal.pk; prefix='◆ '; bold=true; }
     else if(fk.includes(i)){ color=pal.fk; prefix='◇ '; }
     else if(cal.includes(i)){ color=pal.cal; prefix='⟳ '; }
-    text(prefix+col, x+5, cy+11, color, 9, bold);
+    text(prefix+col, x+5, cy+11, color, 10, bold);
   });
 }
 
@@ -326,14 +326,14 @@ ctx.fillRect(14,36,W-28,28);
 
 LEG.forEach(item=>{
   ctx.fillStyle=item.c; ctx.fillRect(lx,42,12,12);
-  text(item.l, lx+16, 52, '#A0B0C8',10,false);
+  text(item.l, lx+16, 52, '#A0B0C8',11,false);
   lx += 16 + ctx.measureText(item.l).width + 22;
 });
 
 lx += 10;
 legendItems.forEach(item=>{
-  text(item.sym, lx, 52, item.col, 10, true);
-  text(item.lbl, lx+14, 52, '#A0B0C8', 10, false);
+  text(item.sym, lx, 52, item.col, 11, true);
+  text(item.lbl, lx+14, 52, '#A0B0C8', 11, false);
   lx += 14 + ctx.measureText(item.lbl).width + 20;
 });
 
@@ -362,25 +362,25 @@ const CX0 = (W-totalCW)/2;
 const CY0 = 920;
 
 rr(CX0-14, CY0-28, totalCW+28, CTH+52, 8, 'rgba(74,56,0,0.18)', 'rgba(136,100,0,0.4)', 1);
-text('Tablas de Referencia CACE  —  Sin relaciones formales en el modelo. Se usan directamente en visualizaciones para comparar con benchmarks del mercado.', CX0-6, CY0-12, '#886400', 9, false);
+text('Tablas de Referencia CACE  —  Sin relaciones formales en el modelo. Se usan directamente en visualizaciones para comparar con benchmarks del mercado.', CX0-6, CY0-12, '#886400', 10, false);
 
 CACE_DATA.forEach((c,i)=>{
   const cx = CX0 + i*(CTW+CGAP);
   const cy = CY0;
   rr(cx,cy,CTW,CTH,5,P.cace.body,P.cace.border,1);
   rrTop(cx,cy,CTW,22,5,P.cace.hdr);
-  text(c.n, cx+5, cy+10, P.cace.title, 8.5, true);
+  text(c.n, cx+5, cy+10, P.cace.title, 9.5, true);
   ctx.strokeStyle=P.cace.border; ctx.lineWidth=0.4;
   ctx.beginPath(); ctx.moveTo(cx,cy+22); ctx.lineTo(cx+CTW,cy+22); ctx.stroke();
-  text(c.d, cx+5, cy+33, P.cace.col, 8, false);
-  text(c.ref, cx+5, cy+46, 'rgba(200,168,64,0.6)', 7.5, false);
+  text(c.d, cx+5, cy+33, P.cace.col, 9, false);
+  text(c.ref, cx+5, cy+46, 'rgba(200,168,64,0.6)', 8.5, false);
 });
 
 // Notas pie
 text('* dim_tiempo debe marcarse como "Tabla de fechas" en Power BI (columna fecha)  ·  dim_categorias es tabla puente N:N entre dim_productos y fact_precios_comp',
-     20, 904, P.note, 9.5, false);
+     20, 904, P.note, 10.5, false);
 text('Todas las relaciones centrales son N:1  ·  Analitica derivada: Market Basket, clustering y cohortes  ·  PeriodoID = anio×100+mes',
-     20, 916, '#5A7A9A', 9, false);
+     20, 916, '#5A7A9A', 10, false);
 </script>
 </body>
 </html>

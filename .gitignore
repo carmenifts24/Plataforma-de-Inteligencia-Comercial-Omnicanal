@@ -48,8 +48,10 @@ desktop.ini
 *.swp
 *.swo
 
-# Claude Code
+# Agentes
 .claude/
+.agents/
+.codex/
 
 # Archivos temporales de Office
 ~$*.docx
@@ -64,3 +66,17 @@ logs/
 *.pkl
 *.h5
 *.hdf5
+
+# Temporales y caches comunes
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.tmp
+*.temp
+*.bak
+
+# Temporales de Office/PowerPoint
+~$*.pptx
+~$*.ppt

@@ -13,7 +13,7 @@ Descripción de cada tabla, sus relaciones y las verificaciones principales a re
 5. [Orden de carga y relaciones](#5-orden-de-carga-y-relaciones)
 6. [Verificaciones generales](#6-verificaciones-generales)
 
-> **Última actualización:** modelo ampliado a esquema galaxia, esquema SQL v2 disponible en `sql/retailiq360_schema.sql` y nuevas etapas `05_market_basket.ipynb` y `06_clustering_clientes.ipynb`. Se agregaron salidas de reglas de asociación, clustering K-Means y cohortes de retención en `datos/04_procesados/`. Ver sección 5 para el orden de carga y relaciones actualizados.
+> **Última actualización:** modelo ampliado a esquema galaxia y nuevas etapas `05_market_basket.ipynb` y `06_clustering_clientes.ipynb`. Se agregaron salidas de reglas de asociación, clustering K-Means y cohortes de retención en `datos/04_procesados/`. Ver sección 5 para el orden de carga y relaciones actualizados.
 
 ---
 
@@ -813,7 +813,6 @@ Al cargar los CSV, configurar la **configuración regional del archivo como Ingl
 10. Cargar `market_basket_reglas.csv` y `market_basket_reglas_enriquecidas.csv` solo como tablas analíticas derivadas. No conectarlas automáticamente con `dim_categorias` ni con `dim_productos` salvo que se diseñe una vista específica de recomendaciones.
 11. Cargar `clustering_clientes.csv`. Para filtrar ventas por cluster, hacer merge de `cluster_nombre` en `dim_clientes_ar` dentro de Power Query. Para análisis descriptivo, puede quedar como tabla separada relacionada por `ClienteID`.
 12. Cargar `cohortes_retencion.csv`, `cohortes_resumen.csv` y, si se usará matriz/heatmap en Power BI, `cohortes_matriz_ancha.csv` como tablas independientes.
-13. Si se usa SQL Server, tomar `sql/retailiq360_schema.sql` como referencia de nombres físicos (`DimTiempo`, `FactVentas`, `FactPreciosComp`, etc.), tipos de dato y 13 claves foráneas esperadas.
 
 ---
 

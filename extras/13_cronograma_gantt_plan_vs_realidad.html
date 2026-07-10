@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetailIQ 360° — Plan vs Realidad</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#13151A;color:#F5F7FA;padding:32px;min-width:900px}
+.header{margin-bottom:24px;padding-bottom:16px;border-bottom:0.5px solid #2D3140}
+.badge{font-size:11px;font-weight:600;letter-spacing:1.5px;color:#B8C0CF;text-transform:uppercase;margin-bottom:8px}
+.title{font-size:22px;font-weight:600;color:#F5F7FA;margin-bottom:4px}
+.subtitle{font-size:12px;color:#B8C0CF}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1px;color:#B8C0CF;text-transform:uppercase;margin:20px 0 8px;padding-left:4px}
+.section-label.real{color:#1D9E75}
+.gantt-wrap{overflow-x:auto}
+.gantt{width:100%;border-collapse:collapse;min-width:700px}
+.gantt th{font-size:11px;color:#B8C0CF;font-weight:400;padding:4px 6px;text-align:center;border-bottom:0.5px solid #2D3140}
+.gantt td.label-col{font-size:11px;color:#F5F7FA;padding:6px 8px;width:220px;vertical-align:middle;border-bottom:0.5px solid #1C1F2A}
+.gantt td.label-col .phase-name{font-weight:600;font-size:11px;color:#F5F7FA}
+.gantt td.label-col .phase-sub{font-size:11px;color:#B8C0CF;margin-top:2px;line-height:1.4}
+.gantt td.bar-col{padding:4px 0;border-bottom:0.5px solid #1C1F2A;position:relative}
+.bar-wrap{position:relative;height:30px;width:100%}
+.bar{position:absolute;height:22px;top:4px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.3px}
+.week-line{position:absolute;top:0;bottom:0;width:0.5px;background:#2D3140}
+.today-line{position:absolute;top:-4px;bottom:-4px;width:1.5px;background:#E24B4A;opacity:0.8;z-index:10}
+.delivery-line{position:absolute;top:-4px;bottom:-4px;width:1.5px;background:#1D9E75;opacity:0.8;z-index:10}
+.diff-badge{font-size:10px;padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle;font-weight:500}
+.added{background:#0F3D2E;color:#1D9E75}
+.modified{background:#3D2A0A;color:#EF9F27}
+.completed{background:#1C1F2A;color:#378ADD}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px;padding-top:14px;border-top:0.5px solid #2D3140}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#B8C0CF}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.markers{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;align-items:center}
+.marker-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#B8C0CF}
+.marker-line-today{width:16px;height:2px;background:#E24B4A;opacity:0.8}
+.marker-line-delivery{width:16px;height:2px;background:#1D9E75;opacity:0.8}
+.row-even{background:#1C1F2A}
+.row-odd{background:#1C1F2A}
+.footer{margin-top:24px;padding-top:12px;border-top:0.5px solid #2D3140;font-size:11px;color:#8992A3;text-align:right}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">Plan de Trabajo Oficial · RetailIQ 360°</div>
+  <div class="title">Comparativa Plan vs Realidad</div>
+  <div class="subtitle">Plataforma de Inteligencia Comercial Omnicanal &nbsp;·&nbsp; IFTS N°24 · Tecnicatura Superior en Ciencia de Datos &nbsp;·&nbsp; Carmen Rodríguez &amp; Tamara Peña &nbsp;·&nbsp; 21 abr → 12 jun 2026 (entrega intermedia)</div>
+</div>
+
+<div id="plan-section">
+  <div class="section-label">Plan original</div>
+  <div class="gantt-wrap" id="plan-container"></div>
+</div>
+
+<div id="real-section">
+  <div class="section-label real">Ejecución real</div>
+  <div class="gantt-wrap" id="real-container"></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#7F77DD"></div>ETL y datos</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div>DAX y ventas</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div>Pricing</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#D85A30"></div>RFM y segmentación</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>Geografía y cliente</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Pulido y entrega</div>
+</div>
+
+<div class="markers">
+  <div class="marker-item"><div class="marker-line-today"></div>Corte de datos — 11 jun 2026</div>
+  <div class="marker-item"><div class="marker-line-delivery"></div>Entrega intermedia — 12 jun 2026</div>
+  <span style="font-size:11px;color:#8992A3">
+    <span class="diff-badge added">nueva</span> fase agregada &nbsp;
+    <span class="diff-badge modified">ampliada</span> alcance extendido &nbsp;
+    <span class="diff-badge completed">completada</span> cerrada
+  </span>
+</div>
+
+<div class="footer">RetailIQ 360° · IFTS N°24 · 2026 · Después de la entrega intermedia, el proyecto continuó con Power BI, análisis financiero (VAN) y la defensa final del 06 jul 2026</div>
+
+<script>
+const START = new Date('2026-04-21');
+const END   = new Date('2026-06-12');
+const TOTAL = (END - START) / 864e5;
+
+function pct(dateStr){
+  return ((new Date(dateStr) - START) / 864e5) / TOTAL * 100;
+}
+function barWidth(s, e){
+  return pct(e) - pct(s);
+}
+
+const weeks = [];
+let d = new Date('2026-04-21');
+while(d <= END){
+  weeks.push({
+    pct: pct(d.toISOString().slice(0,10)),
+    label: d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})
+  });
+  d.setDate(d.getDate()+7);
+}
+
+const todayPct    = pct('2026-06-11');
+const deliveryPct = pct('2026-06-12');
+
+const planRows = [
+  {name:'Fase 1', sub:'Datos, ETL y modelo relacional',        start:'2026-04-21', end:'2026-05-05', color:'#7F77DD', tc:'#D6D2F5'},
+  {name:'Fase 2', sub:'Medidas DAX y módulo de ventas',        start:'2026-05-05', end:'2026-05-19', color:'#378ADD', tc:'#C9E1FA'},
+  {name:'Fase 3', sub:'Pricing e inteligencia de precios',     start:'2026-05-19', end:'2026-06-02', color:'#EF9F27', tc:'#F9C97A'},
+  {name:'Fase 4', sub:'Cross-selling, RFM y segmentación',     start:'2026-06-02', end:'2026-06-09', color:'#D85A30', tc:'#F7C9B8'},
+  {name:'Fase 5', sub:'Pulido, narrativa y presentación final',start:'2026-06-09', end:'2026-06-12', color:'#E24B4A', tc:'#F7C9C7'},
+];
+
+const realRows = [
+  {name:'Fase 1', sub:'Datos, ETL y modelo relacional',                         start:'2026-04-28', end:'2026-05-28', color:'#7F77DD', tc:'#D6D2F5', badge:'completada', bc:'completed'},
+  {name:'Fase 2', sub:'Medidas DAX base y módulo de ventas',                    start:'2026-05-28', end:'2026-05-31', color:'#378ADD', tc:'#C9E1FA', badge:'completada', bc:'completed'},
+  {name:'Fase 3', sub:'Pricing + inflación + simulador What-If',                start:'2026-05-31', end:'2026-06-06', color:'#EF9F27', tc:'#F9C97A', badge:'ampliada',   bc:'modified'},
+  {name:'Fase 4', sub:'RFM + market basket + K-Means + cohortes de retención',  start:'2026-06-06', end:'2026-06-09', color:'#D85A30', tc:'#F7C9B8', badge:'ampliada',   bc:'modified'},
+  {name:'Fase 5', sub:'Geografía, logística y perfil de cliente',               start:'2026-06-06', end:'2026-06-09', color:'#1D9E75', tc:'#C7ECDD', badge:'nueva',       bc:'added'},
+  {name:'Fase 6', sub:'Pulido visual, conclusiones y entrega intermedia',       start:'2026-06-09', end:'2026-06-12', color:'#E24B4A', tc:'#F7C9C7', badge:'completada', bc:'completed'},
+];
+
+function buildTable(rows){
+  let html = '<table class="gantt"><thead><tr>';
+  html += '<th style="width:220px;text-align:left;padding-left:8px">Fase</th>';
+  html += '<th style="text-align:left;padding:0 4px">';
+  html += '<div style="position:relative;height:20px">';
+  weeks.forEach(w => {
+    html += `<span style="position:absolute;left:${w.pct.toFixed(2)}%;font-size:10px;color:#8992A3;transform:translateX(-50%)">${w.label}</span>`;
+  });
+  html += '</div></th></tr></thead><tbody>';
+
+  rows.forEach((row, i) => {
+    const l = pct(row.start).toFixed(2);
+    const w = barWidth(row.start, row.end).toFixed(2);
+    const rowClass = i % 2 === 0 ? 'row-even' : 'row-odd';
+    const badgeHtml = row.badge ? `<span class="diff-badge ${row.bc}">${row.badge}</span>` : '';
+
+    html += `<tr class="${rowClass}">
+      <td class="label-col">
+        <div class="phase-name">${row.name}${badgeHtml}</div>
+        <div class="phase-sub">${row.sub}</div>
+      </td>
+      <td class="bar-col">
+        <div class="bar-wrap">`;
+
+    weeks.forEach(w2 => {
+      html += `<div class="week-line" style="left:${w2.pct.toFixed(2)}%"></div>`;
+    });
+
+    html += `<div class="today-line" style="left:${todayPct.toFixed(2)}%"></div>`;
+    html += `<div class="delivery-line" style="left:${deliveryPct.toFixed(2)}%"></div>`;
+    html += `<div class="bar" style="left:${l}%;width:${w}%;background:${row.color};color:${row.tc}">${row.name}</div>`;
+    html += `</div></td></tr>`;
+  });
+
+  html += '</tbody></table>';
+  return html;
+}
+
+document.getElementById('plan-container').innerHTML = buildTable(planRows);
+document.getElementById('real-container').innerHTML = buildTable(realRows);
+</script>
+</body>
+</html>

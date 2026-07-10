@@ -14,6 +14,7 @@ Construir una plataforma de análisis que permita visualizar KPIs clave, detecta
 | CACE | Benchmarks del comercio electrónico argentino: KPIs, conversión, logística, medios de pago, distribución regional y perfil comprador. |
 | IPC INDEC | Índice de precios al consumidor usado para ajustar valores por inflación. |
 | Tipos de cambio | Cotizaciones históricas para conversión monetaria. |
+| Superstore | Dataset de referencia comercial usado para calibrar márgenes y descuentos de `FactPreciosComp`. |
 | Datos sintéticos | Capa argentina generada con Faker: clientes, sucursales, canales, ventas base y precios de competencia. |
 
 ## Estructura del Proyecto
@@ -27,15 +28,16 @@ integrador_carrera/
 │   ├── 03_EDA_nivel_2.ipynb
 │   ├── 04_ETL.ipynb
 │   ├── 05_market_basket.ipynb
-│   └── 06_clustering_clientes.ipynb
+│   ├── 06_clustering_clientes.ipynb
+│   ├── 07_generar_diccionario.py      # Genera extras/diccionario_datos_RetailIQ360.xlsx
+│   └── 08_generar_notebook_05.py      # Utilidad de desarrollo: regenera 05_market_basket.ipynb
 ├── datos/
+│   ├── 01_raw/                        # Datos originales sin modificar (Olist, CACE fuente, IPC, tipo de cambio, Superstore)
 │   ├── 02_cace_benchmarks/            # Tablas CACE de referencia
 │   ├── 03_sinteticos/                 # Datos sintéticos generados
 │   └── 04_procesados/                 # Outputs finales para Power BI
-├── sql/                               # Esquema SQL Server del modelo de datos
 ├── power_bi/                          # Archivo .pbix del dashboard
 ├── extras/                            # Guías, explicaciones y diagramas
-├── diseño/                            # Diagramas auxiliares del proyecto
 ├── docs/                              # Documentación final
 ├── src/                               # Funciones helper
 ├── requirements.txt
@@ -50,7 +52,6 @@ integrador_carrera/
 - Scikit-learn (K-Means, MLxtend Apriori)
 - JupyterLab
 - Power BI
-- SQL Server
 - Git / GitHub
 
 ## Instalación
@@ -68,7 +69,7 @@ El modelo final se organiza como un **esquema galaxia**, porque contiene más de
 
 Diagrama actualizado:
 
-[extras/07_modelo_relaciones_estrella_galaxia.svg](extras/07_modelo_relaciones_estrella_galaxia.svg)
+[extras/06_diagrama_relaciones.html](extras/06_diagrama_relaciones.html)
 
 ### Tablas de Hechos
 
@@ -134,10 +135,6 @@ Las tablas `cace_*` son **benchmarks de referencia**. No deben tener relaciones 
 | `05_market_basket.ipynb` | Descubrir patrones de compra conjunta con reglas de asociación (Apriori) a nivel categoría y producto. | `market_basket_reglas.csv`, `market_basket_reglas_enriquecidas.csv`. |
 | `06_clustering_clientes.ipynb` | Segmentación no supervisada K-Means sobre features RFM + análisis de cohortes de retención. | `clustering_clientes.csv`, `cohortes_retencion.csv`, `cohortes_resumen.csv`, `cohortes_matriz_ancha.csv`. |
 
-## Esquema SQL
-
-`sql/retailiq360_schema.sql` contiene el DDL completo para SQL Server con todas las tablas del modelo, tipos de dato unificados, claves primarias y foráneas. Permite importar los CSV exportados por el pipeline de notebooks en una base de datos relacional para análisis adicionales.
-
 ## Documentación Explicativa
 
 La carpeta `extras/` contiene material de apoyo para entender y presentar el proyecto:
@@ -149,21 +146,21 @@ La carpeta `extras/` contiene material de apoyo para entender y presentar el pro
 | `02_EDA_nivel_1_explicacion.md` | Guía narrativa del notebook 02. |
 | `03_EDA_nivel_2_explicacion.md` | Guía narrativa del notebook 03. |
 | `04_ETL_explicacion.md` | Guía narrativa del notebook 04. |
-| `05_guia_tablas_power_bi.md` | Guía de carga y configuración de tablas en Power BI. |
-| `06_diagrama_relaciones.html` | Diagrama interactivo de relaciones del modelo. |
-| `07_modelo_relaciones_estrella_galaxia.svg` | Diagrama SVG del esquema galaxia. |
-| `08_dashboard_retailiq360.html` | Dashboard explicativo completo del proyecto (HTML estático). |
-| `09_generar_diccionario.py` | Script que genera el diccionario de datos en Excel. |
-| `10_dashboard_validaciones_eda_etl.html` | Dashboard interactivo de validaciones del ETL y EDA. |
-| `11_diagrama_de_pert_del_proyecto.html` | Diagrama PERT interactivo del proyecto. |
-| `12_cronograma_interactivo_de_proyecto.html` | Cronograma interactivo de fases y tareas. |
-| `13_cronograma_gantt_interactivo.html` | Diagrama de Gantt interactivo del proyecto. |
+| `05_guia_tablas_power_bi.md` | Guía de carga y configuración de tablas en Power BI (incluye tablas de los notebooks 05 y 06). |
+| `06_diagrama_relaciones.html` | Diagrama interactivo (canvas) de todas las tablas y relaciones del modelo galaxia. |
+| `07_dashboard_validaciones_eda_etl.html` | Dashboard interactivo de validaciones y decisiones del EDA y el ETL. |
+| `08_dashboard_proyecto.html` | Dashboard explicativo integral del proyecto (HTML estático). |
+| `09_flujo_real_proyecto.html` | Diagrama de las 6 etapas reales de ejecución del proyecto. |
+| `10_matriz_riesgos_retailiq360.html` | Matriz de riesgos del proyecto (probabilidad × impacto) con mitigaciones. |
+| `11_diagrama_de_pert_del_proyecto.html` | Diagrama PERT interactivo con ruta crítica del proyecto (plan original). |
+| `12_cronograma_interactivo_de_proyecto.html` | Cronograma Gantt interactivo planificado (fases y tareas). |
+| `13_cronograma_gantt_plan_vs_realidad.html` | Comparativa entre el cronograma planificado y la ejecución real. |
 | `14_ResumenProyecto_RetailIQ360.docx` | Resumen ejecutivo del proyecto. |
-| `diccionario_datos_RetailIQ360.xlsx` | Diccionario de datos completo: tablas, columnas y descripciones. |
-| `CostosFinancieros_RetailIQ360.xlsx` | Análisis de costos financieros del proyecto. |
-| `VAN_RetailIQ360.xlsx` | Cálculo del Valor Actual Neto (VAN) del proyecto. |
+| `15_procedimiento_actualizar_repositorio_github.md` | Guía paso a paso para hacer push a GitHub. |
+| `16_guia_github_paso_a_paso.md` | Guía complementaria de uso de Git y GitHub. |
+| `diccionario_datos_RetailIQ360.xlsx` | Diccionario de datos completo: tablas, columnas y descripciones (generado por `notebooks/07_generar_diccionario.py`). |
+| `VAN_RetailIQ360.xlsx` | Análisis de costos y cálculo del Valor Actual Neto (VAN) del proyecto. |
 | `contexto_agente_ia.md` | Contexto del proyecto para uso con asistente de IA. |
-| `procedimiento_actualizar_repositorio_github.md` | Guía paso a paso para hacer push a GitHub. |
 
 ## Estado del Proyecto
 
@@ -177,8 +174,8 @@ La carpeta `extras/` contiene material de apoyo para entender y presentar el pro
 | 5 | Market Basket Analysis: reglas de asociación Apriori por categoría y producto | Completo |
 | 6 | Clustering K-Means: segmentación RFM en 4 clusters (Alto valor / Frecuente / Ocasional / Inactivo) | Completo |
 | 7 | Análisis de cohortes: retención mensual, resumen por cohorte y matriz ancha para Power BI | Completo |
-| 8 | Dashboards en Power BI: fases 1 a 8 con KPIs, segmentación, cohortes y market basket | En progreso |
-| 9 | Análisis financiero: VAN, costos del proyecto y documentación final | En progreso |
+| 8 | Dashboards en Power BI: 10 páginas con KPIs, segmentación, cohortes y market basket | Completo |
+| 9 | Análisis financiero (VAN a 3 años positivo, USD 26.913 a tasa 30%) y defensa final del proyecto (06/07/2026) | Completo |
 
 ## Autoras
 

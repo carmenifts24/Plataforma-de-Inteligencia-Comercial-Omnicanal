@@ -1,0 +1,109 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{background:#13151A;padding:24px;font-family:'Segoe UI',sans-serif;border-radius:12px}
+.title-pill{background:#242835;border:0.5px solid #2D3140;border-radius:20px;padding:8px 24px;text-align:center;color:#F5F7FA;font-size:14px;font-weight:600;margin:0 auto 16px;width:fit-content}
+.arrow{text-align:center;color:#8992A3;font-size:18px;line-height:1;margin:8px 0}
+.stage{border-radius:10px;margin-bottom:4px;overflow:hidden}
+.stage-title{text-align:center;font-size:13px;font-weight:600;padding:10px 12px 8px}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:0.5px solid rgba(255,255,255,0.1)}
+.col{padding:8px 12px;text-align:center}
+.col+.col{border-left:0.5px solid rgba(255,255,255,0.1)}
+.col-label{font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;opacity:0.7;margin-bottom:4px}
+.col-text{font-size:11px;line-height:1.5}
+.footer{text-align:center;font-size:10px;color:#8992A3;margin-top:16px}
+
+.s1{background:#211C3B;border:1px solid #7F77DD}
+.s1 .stage-title{color:#D6D2F5}
+.s1 .col-label{color:#9B93E8}
+.s1 .col-text{color:#B7B2ED}
+
+.s2{background:#0F2135;border:1px solid #378ADD}
+.s2 .stage-title{color:#C9E1FA}
+.s2 .col-label{color:#5FA3E0}
+.s2 .col-text{color:#8FC3F5}
+
+.s3{background:#241C00;border:1px solid #EF9F27}
+.s3 .stage-title{color:#F9C97A}
+.s3 .col-label{color:#EF9F27}
+.s3 .col-text{color:#EF9F27}
+
+.s4{background:#241200;border:1px solid #D85A30}
+.s4 .stage-title{color:#F7C9B8}
+.s4 .col-label{color:#D9683A}
+.s4 .col-text{color:#F2A688}
+
+.s5{background:#041E15;border:1px solid #1D9E75}
+.s5 .stage-title{color:#9FE1CB}
+.s5 .col-label{color:#1D9E75}
+.s5 .col-text{color:#5DCAA5}
+
+.s6{background:#1C1F2A;border:1px solid #2D3140}
+.s6 .stage-title{color:#F5F7FA;font-size:12px}
+.s6 .col-text{color:#B8C0CF;font-size:11px;text-align:center;padding:8px 12px}
+</style>
+<div class="wrap">
+  <div class="title-pill">RetailIQ 360° — flujo real del proyecto</div>
+
+  <div class="stage s1">
+    <div class="stage-title">Etapa 1 — Datos, ETL y modelo relacional</div>
+    <div class="cols">
+      <div class="col"><div class="col-label">Entradas</div><div class="col-text">Olist · IPC INDEC · BCRA · Superstore</div></div>
+      <div class="col"><div class="col-label">Proceso</div><div class="col-text">EDA Nivel 1 y 2 · ETL · Faker es_AR · Diccionario</div></div>
+      <div class="col"><div class="col-label">Salida</div><div class="col-text">7 CSVs procesados · Esquema galaxia · 13 relaciones</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="stage s2">
+    <div class="stage-title">Etapa 2 — Medidas DAX y módulo de ventas</div>
+    <div class="cols">
+      <div class="col"><div class="col-label">Entradas</div><div class="col-text">Modelo galaxia validado · fact_ventas_final</div></div>
+      <div class="col"><div class="col-label">Proceso</div><div class="col-text">DAX base · YTD/MTD · Margen estimado · Inteligencia de tiempo</div></div>
+      <div class="col"><div class="col-label">Salida</div><div class="col-text">17 medidas · Dashboard M1 omnicanal</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="stage s3">
+    <div class="stage-title">Etapa 3 — Pricing e inteligencia de precios</div>
+    <div class="cols">
+      <div class="col"><div class="col-label">Entradas</div><div class="col-text">fact_precios_comp · Benchmarks CACE 2025</div></div>
+      <div class="col"><div class="col-label">Proceso</div><div class="col-text">USERELATIONSHIP · Price index · Descuento promedio</div></div>
+      <div class="col"><div class="col-label">Salida</div><div class="col-text">Simulador What-If · Dashboard M2</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="stage s4">
+    <div class="stage-title">Etapa 4 — Segmentación y minería de datos</div>
+    <div class="cols">
+      <div class="col"><div class="col-label">Entradas</div><div class="col-text">fact_ventas · dim_clientes · Python mlxtend</div></div>
+      <div class="col"><div class="col-label">Proceso</div><div class="col-text">Apriori · RFM DAX · K-Means · Cohortes retención</div></div>
+      <div class="col"><div class="col-label">Salida</div><div class="col-text">4 segmentos · Reglas lift &gt;28 · Matriz cohortes</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="stage s5">
+    <div class="stage-title">Etapa 5 — Inflación, geografía y perfil de cliente</div>
+    <div class="cols">
+      <div class="col"><div class="col-label">Entradas</div><div class="col-text">dim_inflacion · dim_geografia · dim_clientes</div></div>
+      <div class="col"><div class="col-label">Proceso</div><div class="col-text">Nominal vs real · AMBA vs interior · NSE y rango etario</div></div>
+      <div class="col"><div class="col-label">Salida</div><div class="col-text">Dashboards M3–M5 · Perfil de cliente completo</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="stage s6">
+    <div class="stage-title">Etapa 6 — Pulido, conclusiones y entrega final</div>
+    <div class="col-text">Correcciones · Pulido visual y storytelling · Executive summary · Análisis VAN · GitHub · Defensa 06 julio 2026</div>
+  </div>
+
+  <div class="footer">RetailIQ 360° · IFTS N°24 · Tecnicatura Superior en Ciencia de Datos · Estado: proyecto defendido</div>
+</div>

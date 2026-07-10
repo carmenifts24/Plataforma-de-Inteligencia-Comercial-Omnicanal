@@ -1,0 +1,150 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{background:#13151A;padding:20px;font-family:'Segoe UI',sans-serif;border-radius:12px}
+.hdr{margin-bottom:16px;border-bottom:0.5px solid #2D3140;padding-bottom:12px}
+.hdr h1{font-size:15px;font-weight:600;color:#F5F7FA;margin-bottom:3px}
+.hdr p{font-size:11px;color:#B8C0CF}
+.matrix-wrap{display:grid;grid-template-columns:52px 1fr;gap:0;margin-bottom:20px}
+.y-label-wrap{display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:32px 0 0}
+.y-label{font-size:12px;color:#B8C0CF;writing-mode:horizontal-tb;text-align:center;padding:2px}
+.matrix-inner{display:flex;flex-direction:column;gap:0}
+.x-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:3px;padding:0}
+.x-label{font-size:12px;color:#B8C0CF;text-align:center;padding:2px 4px}
+.matrix-row{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:3px}
+.matrix-row-label{font-size:12px;color:#B8C0CF;text-align:right;padding-right:6px;display:flex;align-items:center;justify-content:flex-end}
+.cell{border-radius:6px;padding:6px 8px;min-height:70px;display:flex;flex-direction:column;gap:3px}
+.cell-id{font-size:11px;font-weight:600;letter-spacing:0.3px}
+.cell-title{font-size:12px;font-weight:600;line-height:1.3}
+.cell-sub{font-size:11px;line-height:1.3;opacity:0.85}
+.empty{background:#1C1F2A;border:0.5px solid #1C1F2A;min-height:70px;border-radius:6px}
+.c-critical{background:#3D0A0A;border:0.5px solid #C62828}
+.c-critical .cell-id{color:#EF9A9A}
+.c-critical .cell-title{color:#FFCDD2}
+.c-critical .cell-sub{color:#EF9A9A}
+.c-high{background:#2D1A00;border:0.5px solid #E65100}
+.c-high .cell-id{color:#FFCC80}
+.c-high .cell-title{color:#FFE0B2}
+.c-high .cell-sub{color:#FFCC80}
+.c-med{background:#1A1A00;border:0.5px solid #B8860B}
+.c-med .cell-id{color:#FFF176}
+.c-med .cell-title{color:#FFFDE7}
+.c-med .cell-sub{color:#FFF176}
+.c-low{background:#0A1A0A;border:0.5px solid #2E7D32}
+.c-low .cell-id{color:#A5D6A7}
+.c-low .cell-title{color:#C8E6C9}
+.c-low .cell-sub{color:#A5D6A7}
+.legend-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:#B8C0CF}
+.leg-dot{width:12px;height:12px;border-radius:3px}
+.risks-section{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.risk-card{background:#1C1F2A;border:0.5px solid #2D3140;border-radius:8px;padding:12px}
+.risk-card.critical{border-color:#C62828}
+.risk-card.high{border-color:#E65100}
+.risk-tag{font-size:11px;font-weight:600;letter-spacing:0.5px;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px}
+.risk-tag.critical{background:#3D0A0A;color:#EF9A9A}
+.risk-tag.high{background:#2D1A00;color:#FFCC80}
+.risk-name{font-size:11px;font-weight:600;color:#F5F7FA;margin-bottom:4px}
+.risk-detail{font-size:12px;color:#B8C0CF;line-height:1.5}
+.risk-mit{font-size:12px;color:#5DCAA5;line-height:1.5;margin-top:4px;border-top:0.5px solid #1C1F2A;padding-top:4px}
+.section-title{font-size:11px;font-weight:600;color:#B8C0CF;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px}
+.row-wrap{display:grid;grid-template-columns:52px 1fr;align-items:center;margin-bottom:3px}
+</style>
+<div class="wrap">
+  <div class="hdr">
+    <h1>Matriz de riesgos — RetailIQ 360°</h1>
+    <p>IFTS N°24 · Tecnicatura Superior en Ciencia de Datos · Período: 28 abril – 06 julio 2026 (defensa final)</p>
+  </div>
+
+  <div class="legend-row">
+    <div class="leg"><div class="leg-dot" style="background:#C62828"></div>Crítico</div>
+    <div class="leg"><div class="leg-dot" style="background:#E65100"></div>Alto</div>
+    <div class="leg"><div class="leg-dot" style="background:#B8860B"></div>Medio</div>
+    <div class="leg"><div class="leg-dot" style="background:#2E7D32"></div>Bajo</div>
+  </div>
+
+  <div style="margin-bottom:6px">
+    <div class="x-labels" style="margin-left:52px">
+      <div class="x-label">Catastrófico</div>
+      <div class="x-label">Alto impacto</div>
+      <div class="x-label">Impacto medio</div>
+      <div class="x-label">Impacto bajo</div>
+      <div class="x-label">Mínimo</div>
+    </div>
+  </div>
+
+  <div class="row-wrap">
+    <div style="font-size:12px;color:#B8C0CF;text-align:center">Muy alta</div>
+    <div class="matrix-row">
+      <div class="cell c-critical"><div class="cell-id">R1</div><div class="cell-title">Errores ETL no detectados</div><div class="cell-sub">Inconsistencia en conversión BRL→ARS</div></div>
+      <div class="cell c-critical"><div class="cell-id">R2</div><div class="cell-title">Complejidad DAX</div><div class="cell-sub">Medidas con USERELATIONSHIP incorrectas</div></div>
+      <div class="empty"></div>
+      <div class="empty"></div>
+      <div class="empty"></div>
+    </div>
+  </div>
+
+  <div class="row-wrap">
+    <div style="font-size:12px;color:#B8C0CF;text-align:center">Alta</div>
+    <div class="matrix-row">
+      <div class="empty"></div>
+      <div class="cell c-critical"><div class="cell-id">R3</div><div class="cell-title">Desvío de cronograma</div><div class="cell-sub">Retraso en ETL por errores de validación</div></div>
+      <div class="cell c-high"><div class="cell-id">R4</div><div class="cell-title">Relaciones ambiguas</div><div class="cell-sub">Filtros bidireccionales en modelo galaxia</div></div>
+      <div class="empty"></div>
+      <div class="empty"></div>
+    </div>
+  </div>
+
+  <div class="row-wrap">
+    <div style="font-size:12px;color:#B8C0CF;text-align:center">Media</div>
+    <div class="matrix-row">
+      <div class="empty"></div>
+      <div class="cell c-high"><div class="cell-id">R5</div><div class="cell-title">Apriori con pocas reglas</div><div class="cell-sub">Dataset Olist con bajo cross-selling</div></div>
+      <div class="cell c-med"><div class="cell-id">R6</div><div class="cell-title">Cobertura IPC incompleta</div><div class="cell-sub">317 filas sin IPC (sep–dic 2016)</div></div>
+      <div class="cell c-low"><div class="cell-id">R7</div><div class="cell-title">Datos sintéticos</div><div class="cell-sub">K-Means sobre clientes Faker</div></div>
+      <div class="empty"></div>
+    </div>
+  </div>
+
+  <div class="row-wrap">
+    <div style="font-size:12px;color:#B8C0CF;text-align:center">Baja</div>
+    <div class="matrix-row">
+      <div class="empty"></div>
+      <div class="empty"></div>
+      <div class="cell c-low"><div class="cell-id">R8</div><div class="cell-title">Encoding CSV</div><div class="cell-sub">Caracteres acentuados sin UTF-8-SIG</div></div>
+      <div class="cell c-low"><div class="cell-id">R9</div><div class="cell-title">Tipos de dato Power BI</div><div class="cell-sub">Inferencia incorrecta al importar</div></div>
+      <div class="empty"></div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:600;color:#B8C0CF;letter-spacing:0.5px;text-transform:uppercase;margin:16px 0 8px">Riesgos críticos y altos — mitigación aplicada</div>
+
+  <div class="risks-section">
+    <div class="risk-card critical">
+      <span class="risk-tag critical">R1 · Crítico</span>
+      <div class="risk-name">Errores ETL no detectados</div>
+      <div class="risk-detail">Prob: muy alta · Impacto: catastrófico<br>Conversión BRL→ARS con tipo de cambio incorrecto o forward fill fallido podría invalidar todas las métricas de ventas.</div>
+      <div class="risk-mit">Mitigación aplicada: semáforo de verificación DAX con 5 medidas de control antes de avanzar. Se detectó y corrigió el error antes de la etapa de dashboards.</div>
+    </div>
+    <div class="risk-card critical">
+      <span class="risk-tag critical">R2 · Crítico</span>
+      <div class="risk-name">Complejidad DAX con relaciones inactivas</div>
+      <div class="risk-detail">Prob: muy alta · Impacto: alto<br>Medidas con USERELATIONSHIP mal configuradas devuelven valores incorrectos sin error visible.</div>
+      <div class="risk-mit">Mitigación aplicada: todas las relaciones inactivas documentadas. Verificación con tablas de prueba antes de usar en dashboards. Tabla _Medidas centralizada.</div>
+    </div>
+    <div class="risk-card critical">
+      <span class="risk-tag critical">R3 · Crítico</span>
+      <div class="risk-name">Desvío de cronograma en ETL</div>
+      <div class="risk-detail">Prob: alta · Impacto: catastrófico<br>Errores detectados en Power BI obligaron a reiniciar el ETL. Fase 1 se extendió 2 semanas sobre lo planificado.</div>
+      <div class="risk-mit">Mitigación aplicada: compresión de fases 2–5 sin comprometer calidad. El desvío fue absorbido y la entrega final se mantiene en la fecha acordada.</div>
+    </div>
+    <div class="risk-card high">
+      <span class="risk-tag high">R5 · Alto</span>
+      <div class="risk-name">Market basket con pocas reglas</div>
+      <div class="risk-detail">Prob: media · Impacto: alto<br>Dataset Olist con bajo volumen de compras repetidas generó solo 4 reglas de asociación.</div>
+      <div class="risk-mit">Mitigación aplicada: se documentó como hallazgo analítico válido. Lift de 28–32 confirma asociaciones fuertes intra-categoría. Conclusión incluida en el informe.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-size:12px;color:#8992A3;margin-top:16px">RetailIQ 360° · Carmen Rodríguez & Tamara Peña · IFTS N°24</div>
+</div>

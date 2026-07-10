@@ -5,9 +5,9 @@ Salida:
     extras/diccionario_datos_RetailIQ360.xlsx
 
 Version actualizada segun notebooks/04_ETL.ipynb, notebooks/05_market_basket.ipynb,
-notebooks/06_clustering_clientes.ipynb, el esquema SQL v2 y el archivo vigente
-de Power BI. El script toma la estructura real de los CSV del proyecto para no
-depender de conteos escritos a mano.
+notebooks/06_clustering_clientes.ipynb y el archivo vigente de Power BI. El script
+toma la estructura real de los CSV del proyecto para no depender de conteos
+escritos a mano.
 """
 
 from __future__ import annotations
@@ -374,7 +374,6 @@ VERIFICACIONES = [
     ("clustering_clientes", "Modelo", "Relacionar con dim_clientes_ar por ClienteID solo si se necesita perfilado; para filtrar ventas por cluster, integrar cluster_nombre en dim_clientes_ar en Power Query."),
     ("cohortes_retencion", "Integridad", "216 filas en formato largo. tasa_retencion entre 0 y 1, mes_vida no negativo y clientes_iniciales mayor que 0."),
     ("cohortes_matriz_ancha", "Formato", "14 filas y 14 columnas. Usar mes_0 a mes_12 para matriz con formato condicional en Power BI."),
-    ("SQL", "Modelo", "sql/retailiq360_schema.sql documenta el esquema relacional v2 con nombres SQL Dim*/Fact*, PK/FK y tipos compatibles con importacion CSV."),
     ("Benchmarks CACE", "Modelo", "No crear relaciones formales con tablas CACE. Usarlas directamente en visualizaciones de comparacion."),
 ]
 
@@ -676,7 +675,7 @@ def build_indice(wb, tables: list[dict]):
     subtitle(
         ws,
         "A2:J2",
-        "Modelo actualizado desde notebooks/04_ETL.ipynb, 05_market_basket.ipynb y 06_clustering_clientes.ipynb: galaxia, segmentacion, cohortes y SQL v2.",
+        "Modelo actualizado desde notebooks/04_ETL.ipynb, 05_market_basket.ipynb y 06_clustering_clientes.ipynb: galaxia, segmentacion y cohortes.",
     )
 
     headers = ["#", "Tabla", "Categoria", "Subcategoria", "Archivo", "Carpeta", "Existe", "Filas", "Columnas", "Descripcion"]

@@ -6,17 +6,17 @@
   <title>Validaciones y Cambios EDA/ETL - RetailIQ 360</title>
   <style>
     :root {
-      --bg: #f4f6f8;
+      --bg: #F5F7FA;
       --panel: #ffffff;
-      --ink: #17212b;
-      --muted: #647282;
-      --line: #d9e1e8;
-      --navy: #19384d;
-      --teal: #2f8f83;
-      --blue: #426f9f;
-      --gold: #b98632;
-      --rose: #ad5966;
-      --green: #5f8d63;
+      --ink: #13151A;
+      --muted: #8992A3;
+      --line: #B8C0CF;
+      --navy: #242835;
+      --teal: #5DCAA5;
+      --blue: #378ADD;
+      --gold: #EF9F27;
+      --rose: #E24B4A;
+      --green: #1D9E75;
       --shadow: 0 14px 34px rgba(20, 32, 44, 0.08);
       --radius: 8px;
     }
@@ -44,8 +44,8 @@
       top: 0;
       height: 100vh;
       padding: 24px 20px;
-      background: #102839;
-      color: #eef5f7;
+      background: #13151A;
+      color: #F5F7FA;
       overflow: auto;
     }
 
@@ -73,7 +73,7 @@
 
     .brand p {
       margin: 0;
-      color: #b8c8d2;
+      color: #B8C0CF;
       font-size: 0.9rem;
     }
 
@@ -88,7 +88,7 @@
       font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #9fb4c0;
+      color: #B8C0CF;
     }
 
     .legend {
@@ -101,7 +101,7 @@
       display: flex;
       align-items: center;
       gap: 9px;
-      color: #dfe9ee;
+      color: #EAEEF5;
     }
 
     .dot {
@@ -213,7 +213,7 @@
       padding: 9px 10px;
       font: inherit;
       color: var(--ink);
-      background: #fbfcfd;
+      background: #F5F7FA;
     }
 
     button {
@@ -251,8 +251,8 @@
       position: sticky;
       top: 0;
       z-index: 1;
-      background: #eef3f6;
-      color: #40505e;
+      background: #EAF0FB;
+      color: #2D3140;
       font-size: 0.74rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -260,7 +260,7 @@
     }
 
     tbody tr:hover {
-      background: #f8fbfc;
+      background: #F5F7FA;
     }
 
     .pill {
@@ -275,14 +275,14 @@
       border: 1px solid transparent;
     }
 
-    .pill.eda1 { background: #e5f4ef; color: #236e60; }
-    .pill.eda2 { background: #e7eef7; color: #315f91; }
-    .pill.etl { background: #fff3dc; color: #8a5d15; }
-    .pill.integracion { background: #f7e9ed; color: #8b4653; }
-    .pill.ok { background: #e6f2e7; color: #456f48; }
-    .pill.warn { background: #fff5dc; color: #7c5a14; }
-    .pill.review { background: #f9e7ea; color: #884653; }
-    .pill.info { background: #e6eef7; color: #385f89; }
+    .pill.eda1 { background: #DCF5EC; color: #14654F; }
+    .pill.eda2 { background: #DCEAFB; color: #1F5FA8; }
+    .pill.etl { background: #FDF3E2; color: #8A5D15; }
+    .pill.integracion { background: #FBE4E2; color: #8B3226; }
+    .pill.ok { background: #E3F7EF; color: #14654F; }
+    .pill.warn { background: #FDF3E2; color: #8A5D15; }
+    .pill.review { background: #FBE4E2; color: #8B3226; }
+    .pill.info { background: #DCEAFB; color: #1F5FA8; }
 
     .why {
       color: var(--muted);
@@ -374,7 +374,6 @@
           <span>02_EDA_nivel_1.ipynb</span>
           <span>03_EDA_nivel_2.ipynb</span>
           <span>04_ETL.ipynb</span>
-          <span>05_ETL_integracion.ipynb</span>
         </div>
       </div>
     </aside>
@@ -509,7 +508,7 @@
         decision: "No usar directamente los medios de pago originales; reemplazarlos por una capa argentina sintética calibrada con CACE.",
         porque: "El proyecto representa una operación argentina y los medios brasileños no reflejan el comportamiento local buscado.",
         estado: "Revisar/Justificar",
-        fuente: "02_EDA_nivel_1, 05_ETL_integracion"
+        fuente: "02_EDA_nivel_1, 04_ETL"
       },
       {
         etapa: "EDA Nivel 1",
@@ -669,7 +668,7 @@
         decision: "Usar CACE para calibrar variables argentinas como canal, medios de pago y logística.",
         porque: "Aporta contexto local para que la simulación omnicanal sea coherente con Argentina.",
         estado: "OK",
-        fuente: "03_EDA_nivel_2, 05_ETL_integracion"
+        fuente: "03_EDA_nivel_2, 04_ETL"
       },
       {
         etapa: "EDA Nivel 2",
@@ -779,7 +778,7 @@
         decision: "Generar fact_ventas_final.csv con contexto argentino sintético.",
         porque: "La tabla original ya tenía precios reales, pero faltaba contexto omnicanal para responder preguntas de negocio local.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -789,7 +788,7 @@
         decision: "Distribuir ventas entre tienda física, web, marketplace y app.",
         porque: "Permite analizar facturación por canal sin perder la base económica construida en FactVentas.",
         estado: "Revisar/Justificar",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -799,7 +798,7 @@
         decision: "Vincular ventas con clientes argentinos sintéticos.",
         porque: "Habilita segmentación, geografía y análisis de comportamiento sin datos personales reales.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -809,7 +808,7 @@
         decision: "Respetar que no toda venta digital necesita sucursal asociada.",
         porque: "Evita forzar relaciones falsas y mantiene coherencia operacional por canal.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -819,7 +818,7 @@
         decision: "Usar medios argentinos sintéticos en lugar de pagos Olist.",
         porque: "Permite estudiar comportamiento local de pagos con una distribución más representativa del mercado argentino.",
         estado: "Revisar/Justificar",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -829,7 +828,7 @@
         decision: "Asignar cuotas solo donde corresponde.",
         porque: "El financiamiento no aplica igual a todos los medios de pago y debe conservar lógica comercial.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -839,7 +838,7 @@
         decision: "Incorporar logística local a la tabla final.",
         porque: "Habilita cruces entre canal, entrega, plazo, venta y precio real.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -849,7 +848,7 @@
         decision: "Mantener una fila por ítem vendido.",
         porque: "La granularidad ya representa cada ítem; sumar cantidad cuenta unidades vendidas.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -859,7 +858,7 @@
         decision: "Usar PeriodoID para relacionar ventas con DimInflacionIpc en Power BI.",
         porque: "Power BI trabaja mejor con una clave compartida explícita que con una relación compuesta anio + mes.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -869,7 +868,7 @@
         decision: "Completar la relación geográfica de clientes.",
         porque: "Permite mapas y filtros por provincia incluso cuando no existe coincidencia exacta de ciudad.",
         estado: "Advertencia",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -879,7 +878,7 @@
         decision: "Reportar provincias sin match si existieran.",
         porque: "La dimensión geográfica es crítica para visualizaciones por ubicación; los faltantes deben ser visibles.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -889,7 +888,7 @@
         decision: "Alinear la dimensión IPC con FactVentasFinal.",
         porque: "Ambas tablas necesitan la misma clave para crear una relación estándar en Power BI.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",
@@ -899,7 +898,7 @@
         decision: "Avisar períodos sin IPC si aparecen.",
         porque: "Una relación temporal incompleta dejaría ventas sin contexto inflacionario en el modelo.",
         estado: "OK",
-        fuente: "05_ETL_integracion"
+        fuente: "04_ETL"
       },
       {
         etapa: "ETL Integración",

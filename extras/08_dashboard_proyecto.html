@@ -6,17 +6,17 @@
   <title>Dashboard explicativo RetailIQ 360</title>
   <style>
     :root {
-      --bg: #f6f7f9;
+      --bg: #F5F7FA;
       --panel: #ffffff;
-      --ink: #17212b;
-      --muted: #607080;
-      --line: #d9e0e7;
-      --navy: #18364a;
-      --teal: #2d8f85;
-      --blue: #4f79a8;
-      --gold: #c8943f;
-      --rose: #b85f6a;
-      --green: #5d8b61;
+      --ink: #13151A;
+      --muted: #8992A3;
+      --line: #B8C0CF;
+      --navy: #242835;
+      --teal: #5DCAA5;
+      --blue: #378ADD;
+      --gold: #EF9F27;
+      --rose: #E24B4A;
+      --green: #1D9E75;
       --shadow: 0 12px 34px rgba(23, 33, 43, 0.08);
       --radius: 8px;
     }
@@ -53,8 +53,8 @@
       top: 0;
       height: 100vh;
       padding: 24px 20px;
-      background: #102839;
-      color: #eef5f7;
+      background: #13151A;
+      color: #F5F7FA;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
       overflow: auto;
     }
@@ -84,7 +84,7 @@
 
     .brand p {
       margin: 8px 0 0;
-      color: #bfd0d9;
+      color: #B8C0CF;
       font-size: 0.9rem;
     }
 
@@ -97,7 +97,7 @@
       display: block;
       padding: 10px 12px;
       border-radius: 8px;
-      color: #dce9ee;
+      color: #EAEEF5;
       font-size: 0.92rem;
     }
 
@@ -116,9 +116,7 @@
       display: grid;
       align-items: center;
       padding: 54px clamp(24px, 5vw, 72px) 42px;
-      background:
-        linear-gradient(90deg, rgba(16, 40, 57, 0.92), rgba(16, 40, 57, 0.55)),
-        url("../diseño/flujo_datos_analitica.svg") center / cover no-repeat;
+      background: linear-gradient(90deg, rgba(19, 21, 26, 0.96), rgba(19, 21, 26, 0.75)), #242835;
       color: #fff;
     }
 
@@ -131,7 +129,7 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 18px;
-      color: #d9f1ef;
+      color: #DCF5EC;
       font-size: 0.86rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -149,7 +147,7 @@
     .hero p {
       max-width: 760px;
       margin: 22px 0 0;
-      color: #e2edf0;
+      color: #DCEAFB;
       font-size: clamp(1rem, 2vw, 1.22rem);
     }
 
@@ -179,7 +177,7 @@
     .metric span {
       display: block;
       margin-top: 5px;
-      color: #d0dde2;
+      color: #D8E4F5;
       font-size: 0.84rem;
     }
 
@@ -288,7 +286,7 @@
       place-items: center;
       margin-bottom: 12px;
       border-radius: 50%;
-      background: #eef4f4;
+      background: #EAF6F1;
       color: var(--navy);
       font-weight: 800;
     }
@@ -323,7 +321,7 @@
     }
 
     .tech-table th {
-      background: #edf2f5;
+      background: #EAF0FB;
       color: var(--navy);
       font-size: 0.86rem;
       text-transform: uppercase;
@@ -345,6 +343,7 @@
       min-height: 360px;
       padding: 18px;
       overflow: hidden;
+      align-self: start;
     }
 
     .diagram img {
@@ -353,6 +352,17 @@
       min-height: 310px;
       object-fit: contain;
       display: block;
+    }
+
+    .diagram iframe {
+      width: 100%;
+      aspect-ratio: 1800 / 1040;
+      height: auto;
+      min-height: 310px;
+      display: block;
+      border: 0;
+      border-radius: 6px;
+      background: #13151A;
     }
 
     .kpi-list {
@@ -372,7 +382,7 @@
       position: relative;
       overflow: hidden;
       background:
-        linear-gradient(180deg, #ffffff, #f4f8f8);
+        linear-gradient(180deg, #ffffff, #F5F7FA);
     }
 
     .schema-map__body {
@@ -418,12 +428,12 @@
       width: 198px;
       min-height: 104px;
       border: 2px solid var(--teal);
-      background: #eef9f7;
+      background: #E3F7EF;
     }
 
     .schema-node--pricing {
       border-color: var(--gold);
-      background: #fff8eb;
+      background: #FDF3E2;
     }
 
     .schema-node--ventas {
@@ -549,8 +559,8 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: #dff1ed;
-      color: #176d65;
+      background: #DCF5EC;
+      color: #14654F;
       font-weight: 800;
     }
 
@@ -566,8 +576,8 @@
 
     .footer {
       padding: 30px clamp(20px, 5vw, 72px);
-      background: #102839;
-      color: #d9e8ed;
+      background: #13151A;
+      color: #EAEEF5;
     }
 
     .footer strong {
@@ -928,11 +938,6 @@
               <td>Agrega una mirada longitudinal sobre fidelización y repetición de compra.</td>
             </tr>
             <tr>
-              <td><strong>Esquema SQL v2</strong></td>
-              <td>Documentar tablas Dim*/Fact*, claves primarias, claves foráneas y tipos compatibles con importación CSV.</td>
-              <td>Permite llevar el modelo de Power BI a SQL Server sin perder trazabilidad de relaciones.</td>
-            </tr>
-            <tr>
               <td><strong>Forward fill en tipo de cambio</strong></td>
               <td>Completar cotizaciones faltantes (fines de semana y feriados) con el último valor conocido.</td>
               <td>Garantiza que cada transacción Olist tenga un tipo de cambio asignado sin inventar valores.</td>
@@ -975,18 +980,18 @@
             <div class="schema-map__body">
               <svg class="schema-lines" viewBox="0 0 760 520" preserveAspectRatio="none" aria-hidden="true">
                 <!-- fact_ventas_final → 6 dimensiones (líneas azules punteadas) -->
-                <line x1="380" y1="260" x2="115" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="380" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="642" y2="78" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="115" y2="260" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="115" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
-                <line x1="380" y1="260" x2="642" y2="448" stroke="#4f79a8" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="115" y2="78" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="380" y2="78" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="642" y2="78" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="115" y2="260" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="115" y2="448" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
+                <line x1="380" y1="260" x2="642" y2="448" stroke="#378ADD" stroke-width="2" stroke-dasharray="7 7"/>
                 <!-- fact_precios_comp → dim_tiempo, dim_canal, dim_categorias (líneas doradas sólidas) -->
-                <line x1="380" y1="406" x2="115" y2="78" stroke="#c8943f" stroke-width="2"/>
-                <line x1="380" y1="406" x2="115" y2="260" stroke="#c8943f" stroke-width="2"/>
-                <line x1="380" y1="406" x2="563" y2="128" stroke="#c8943f" stroke-width="2"/>
+                <line x1="380" y1="406" x2="115" y2="78" stroke="#EF9F27" stroke-width="2"/>
+                <line x1="380" y1="406" x2="115" y2="260" stroke="#EF9F27" stroke-width="2"/>
+                <line x1="380" y1="406" x2="563" y2="128" stroke="#EF9F27" stroke-width="2"/>
                 <!-- dim_categorias → dim_productos (tabla puente, línea verde punteada) -->
-                <line x1="563" y1="128" x2="380" y2="78" stroke="#5d8b61" stroke-width="1.5" stroke-dasharray="5 5"/>
+                <line x1="563" y1="128" x2="380" y2="78" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 5"/>
               </svg>
 
               <div class="schema-node schema-node--tiempo">
@@ -1084,7 +1089,7 @@
 
         <div class="viz">
           <div class="card diagram">
-            <img src="../diseño/retailiq_modelo_estrella_galaxia.svg" alt="Diagrama del modelo de datos RetailIQ 360">
+            <iframe src="06_diagrama_relaciones.html" title="Diagrama del modelo de datos RetailIQ 360" loading="lazy"></iframe>
           </div>
           <div class="kpi-list">
             <article class="card kpi">
@@ -1114,10 +1119,6 @@
             <article class="card kpi">
               <strong>Cohortes de retención</strong>
               <span>cohortes_retencion.csv (216 filas), cohortes_resumen.csv (16 filas) y cohortes_matriz_ancha.csv (14 filas) permiten analizar retención por mes de primera compra.</span>
-            </article>
-            <article class="card kpi">
-              <strong>SQL v2</strong>
-              <span>sql/retailiq360_schema.sql define el esquema relacional con tablas Dim*/Fact*, 13 claves foráneas y tipos aptos para importar los CSV desde SQL Server.</span>
             </article>
           </div>
         </div>
@@ -1309,13 +1310,6 @@
             <div>
               <strong>Cohortes de retención listas</strong>
               <span>Las salidas de cohortes incluyen formato largo, resumen ejecutivo, matriz ancha y heatmap para analizar fidelización.</span>
-            </div>
-          </div>
-          <div class="check">
-            <div class="check__icon">✓</div>
-            <div>
-              <strong>Esquema SQL documentado</strong>
-              <span>El script SQL v2 conserva la estructura del modelo con PK/FK, tipos de datos y comentarios para importación desde CSV.</span>
             </div>
           </div>
           <div class="check">
